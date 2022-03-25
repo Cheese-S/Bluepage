@@ -1,10 +1,14 @@
 const { logger } = require('bs-logger')
 const { 
     registerSchema,
-    changePwdSchema
+    changePwdSchema,
+    followUserSchema,
+    loginSchema
 } = require('./user.schema')
 
 module.exports = {
     registerUser: registerSchema,
-    changeUserPwd: changePwdSchema 
+    changeUserPwd: changePwdSchema,
+    followUser: followUserSchema,
+    loginUser: loginSchema
 }

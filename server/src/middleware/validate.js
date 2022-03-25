@@ -8,7 +8,6 @@ module.exports = function(schema) {
         try {
             const validated = await Schemas[schema].validateAsync(req.body);
             req.body = validated
-            console.log(req.body);
             next()
         } catch (e) {
             if (Joi.isError(e)) {
