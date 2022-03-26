@@ -35,14 +35,54 @@ const changePwdSchema = Joi.object({
     isLoggedIn: Joi.boolean().required()
 }).with('password', 'passwordConfirmation')
 .messages({
-    "any.required": "Please enter all required fields",
     "any.only": "Your password must agree with your passwordConfirmation",
     "object.with": "You must enter passwordConfirmation"
+})
+
+const followContentSchema = Joi.object({
+    contentID: Joi.string().length(24).messages({
+        'string.length': 'contentID must be a valid ObjectID'
+    }),
+    contentType: Joi.string().valid(CONSTANT.CONTENT_TYPE.STORY, CONSTANT.CONTENT_TYPE.COMIC).required(),
+    action: Joi.string().valid(CONSTANT.FOLLOW_ACTION_TYPE.FOLLOW, CONSTANT.FOLLOW_ACTION_TYPE.UNFOLLOW).required()
+})
+
+const voteOnContentSchema = Joi.object({
+    prev: Joi.string().valid(
+        CONSTANT.VOTE_STATE_TYPE.LIKE,
+        CONSTANT.VOTE_STATE_TYPE.DISLIKE,
+        CONSTANT.VOTE_STATE_TYPE.NEUTRAL
+    ).required(),
+    current: Joi.string().valid(
+        CONSTANT.VOTE_STATE_TYPE.LIKE,
+        CONSTANT.VOTE_STATE_TYPE.DISLIKE,
+        CONSTANT.VOTE_STATE_TYPE.NEUTRAL
+    ).required(),
+    contentID: Joi.string().length(24).required(),
+    contentType: Joi.string().valid(CONSTANT.CONTENT_TYPE.STORY, CONSTANT.CONTENT_TYPE.COMIC).required(),
+});
+
+const voteOnSubcontentSchema = Joi.object({
+    prev: Joi.string().valid(
+        CONSTANT.VOTE_STATE_TYPE.LIKE,
+        CONSTANT.VOTE_STATE_TYPE.DISLIKE,
+        CONSTANT.VOTE_STATE_TYPE.NEUTRAL
+    ).required(),
+    current: Joi.string().valid(
+        CONSTANT.VOTE_STATE_TYPE.LIKE,
+        CONSTANT.VOTE_STATE_TYPE.DISLIKE,
+        CONSTANT.VOTE_STATE_TYPE.NEUTRAL
+    ).required(),
+    SubcontentID: Joi.string().length(24).required(),
+    SubcontentType: Joi.string().valid(CONSTANT.SUBCONTENT_TYPE.PAGE, CONSTANT.SUBCONTENT_TYPE.CHAPTER).required(),
 })
 
 module.exports = {
     registerSchema,
     changePwdSchema,
     followUserSchema,
+    followContentSchema,
+    voteOnContentSchema,
+    voteOnSubcontentSchema, 
     loginSchema
 }

@@ -1,32 +1,41 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
+const CONSTANT = require('../constant')
 
-const SubcommnetSchema = new Schema(
+const UserDataSchema = new Schema(
     {
-        user: {
-            ObjectId,
-            ref: 'User',
-            required: true
-        },
+        id: { type: ObjectId, required: true },
+        name: { type: String, required: true }
+    },
+    { _id: false }  
+)
+
+
+const SubcommentSchema = new Schema(
+    {
+        user: { type: UserDataSchema, required: true },
         text: { type: String, required: true }
+    },
+    { 
+        timestamps: { createdAt: true, updatedAt: false },
+        _id: false
     }
 )
 
 const CommentSchema = new Schema(
     {
-        user: {
-            ObjectId,
-            ref: 'User',
-            required: true
-        },
+        user: { type: UserDataSchema, required: true },
         text: { type: String, required: true },
-        subcomments: [{ type: subcommentSchema, default: [] }]
+        subcomments: [{ type: SubcommentSchema, default: [] }]
     },
-    { timestamps: { createdAt: true, updatedAt: false } }
+    { 
+        timestamps: { createdAt: true, updatedAt: false },
+    }
 )
 
 module.exports = {
-    SubcommnetSchema,
-    CommentSchema
+    SubcommentSchema,
+    CommentSchema,
+    UserDataSchema,
 }

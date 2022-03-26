@@ -15,7 +15,6 @@ if (!env.DB_CONNECT || !env.JWT_SECRET || !env.PORT) {
 
 
 
-
 const PORT = process.env.PORT || 4000;
 const app = express();
 

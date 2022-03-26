@@ -1,5 +1,6 @@
 const {
-    CommentSchema
+    CommentSchema,
+    UserDataSchema,
 } = require('./internal')
 
 const mongoose = require('mongoose');
@@ -9,15 +10,13 @@ const ObjectId = Schema.Types.ObjectId;
 
 const ChapterSchema = new Schema({
     parentID: { type: ObjectId, ref: 'Story', required: true },
+    title: {type: Stirng, required: true },
     editorContent: { type: Object },
-    content: { type: String },
-    author: {
-        type: ObjectId,
-        ref: 'User',
-        required: true
-    },
+    content: { type: Object },
+    author: { type: UserDataSchema, required: true },
     views: { type: Number, default: 0 },
-    votes: { type: Schema.Types.Map, of: Boolean },
+    likes: { type: Number, default: 0 },
+    dislikes: { type: Number, default: 0 },
     published: { type: Boolean, default: false },
     comments: [{ type: CommentSchema, default: [] }]
 },

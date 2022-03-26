@@ -4,9 +4,45 @@ const { logger } = require('bs-logger');
 const bcrypt = require('bcrypt');
 const env = require('../env.config')
 const CONSTANT = require('../constant')
+const ContentService = require('./content.service')
+
+
+function getUserVoteAction(contentType, subcontentType, prev, current, contentID) {
+    let postfix, doAction = {}, undoAction = {};
+
+    if (contentType) {
+        postfix = contentType === CONSTANT.CONTENT_TYPE.COMIC ? 'Comics' : 'Stories'
+    } else {
+        postfix = subcontentType === CONSTANT.SUBCONTENT_TYPE.CHAPTER ? 'Chapters' : 'Pages'
+    }
+
+    if (prev === CONSTANT.VOTE_STATE_TYPE.DISLIKE) {
+        let target = `disliked${postfix}`; 
+        doAction['$pull'] = {}
+        doAction['$pull'][target] = contentID; 
+    } else if (prev === CONSTANT.VOTE_STATE_TYPE.LIKE) {
+        let target = `liked${postfix}`; 
+        doAction['$pull'] = {}
+        doAction['$pull'][target] = contentID; 
+    }
+
+    if (current === CONSTANT.VOTE_STATE_TYPE.DISLIKE) {
+        let target = `disliked${postfix}`; 
+        doAction['$addToSet'] = {}
+        doAction['$addToSet'][target] = contentID; 
+    } else if (current === CONSTANT.VOTE_STATE_TYPE.LIKE) {
+        let target = `liked${postfix}`; 
+        doAction['$addToSet'] = {}
+        doAction['$addToSet'][target] = contentID; 
+    }
 
 
 
+    return {
+        ...undoAction,
+        ...doAction
+    }
+}
 
 const UserService = {
 
@@ -108,7 +144,7 @@ const UserService = {
             case CONSTANT.FOLLOW_ACTION_TYPE.FOLLOW:
                 updateAction = { $addToSet: targetAttr };
             case CONSTANT.FOLLOW_ACTION_TYPE.UNFOLLOW:
-                updateAction = { $addToSet: targetAttr }
+                updateAction = { $pull: targetAttr }
         }
         return UserService.updateUser(
             { _id: userID },
@@ -116,6 +152,24 @@ const UserService = {
             { lean: true, new: true }
         )
     },
+
+    voteOnContent: async (userID, contentID, contentType, prev, current) => {
+        const updateAction = getUserVoteAction(contentType, '', prev, current, contentID);
+        return UserService.updateUser(
+            { _id: userID },
+            updateAction,
+            { lean: true, new: true }
+        )
+    },
+
+    voteOnSubcontent: async (userID, contentID, subcontentType, prev, current) => {
+        const updateAction = getUserVoteAction('', subcontentType, prev, current, contentID);
+        return UserService.updateUser(
+            { _id: userID },
+            updateAction,
+            { lean: true, new: true }
+        )
+    }, 
 
     /**
      * 
@@ -126,10 +180,10 @@ const UserService = {
     validateAnswers: async (userAnswers, answers) => {
         try {
             return userAnswers.every(async (ans, i) => {
-                await bcrypt.compare(ans, answers[i]).catch((e) => false); 
+                await bcrypt.compare(ans, answers[i]).catch((e) => false);
             })
-        } catch(e) {
-            throw e; 
+        } catch (e) {
+            throw e;
         }
     },
 
@@ -145,10 +199,24 @@ const UserService = {
                 throw new Error("The user does not exist");
             }
             return omit(user, ['password', 'answers']);
-        } catch(e) {
+        } catch (e) {
+            throw e;
+        }
+    },
+
+    isUserAdmin: async (userID) => {
+        try {
+            const user = await UserService.findUser({_id: userID});
+            if (!user) {
+                throw new Error("The user does not exist");
+            }
+            return user.isAdmin; 
+        } catch (e) {
             throw e; 
         }
     }
+
+
 
 }
 

@@ -1,9 +1,10 @@
 const {
-    SubcommnetSchema,
+    UserDataSchema,
     CommentSchema
 } = require('./internal')
 
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
@@ -11,10 +12,12 @@ const ObjectId = Schema.Types.ObjectId;
 const ComicSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    author: {type: ObjectId, ref: 'User' ,requierd: true}, 
+    author: { type: UserDataSchema, required: true },
     views: { type: Number, default: 0 },
+    followers: { type: Number, default: 0 },
+    published: { type: Boolean, default: false },
     tags: {
-        type: String, 
+        type: [String],
         enum: [
             'Action',
             'Romance',
@@ -27,10 +30,15 @@ const ComicSchema = new Schema({
         ],
         default: []
     },
-    votes: {type: Map, of: Boolean},
-    contentList: [{type: ObjectId, ref: 'Page', default: []}],
-    comments: [{type: CommentSchema, default: []}],
-    thumbnail: {type: Buffer}
+    likes: { type: Number, default: 0 },
+    dislikes: { type: Number, default: 0 },
+    contentList: [
+        { id: ObjectId, title: String, default: [] }
+    ],
+    comments: [{ type: CommentSchema, default: [] }],
+    thumbnail: { type: Buffer }
 })
+
+ComicSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Comic', ComicSchema); 

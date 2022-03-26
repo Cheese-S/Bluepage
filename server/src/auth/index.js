@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const env = require('../env.config')
 const { logger } = require('bs-logger')
 const CONSTANT = require('../constant')
+const UserService = require('../service/user.service')
 
 
 
@@ -16,11 +17,19 @@ function authManager() {
                     error: "unauthorized user"
                 })
             }
-
+            
             const verified = jwt.verify(token, env.JWT_SECRET);
             req.locals = {
                 userID: verified.userID,
                 name: verified.name
+            }
+
+            const user = UserService.findUser({_id: verified.userID});
+            if (!user) {
+                return  res.status(400).json({
+                    user: CONSTANT.EMPTY_USER,
+                    error: "This user does not exist"
+                })
             }
             next();
         } catch(e) {

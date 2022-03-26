@@ -8,16 +8,14 @@ const ObjectId = Schema.Types.ObjectId;
 
 
 const PageSchema = new Schema({
+    title: {type: String, required: true},
     parentID: { type: ObjectId, ref: 'Comic', required: true },
     editorContent: { type: Object },
-    content: { type: Buffer },
-    author: {
-        type: ObjectId,
-        ref: 'User',
-        required: true
-    },
+    content: { type: String },
+    author: { type: UserDataSchema, required: true },
     views: { type: Number, default: 0 },
-    votes: { type: Schema.Types.Map, of: Boolean },
+    likes: { type: Number, default: 0 },
+    dislikes: { type: Number, default: 0 },
     published: { type: Boolean, default: false },
     comments: [{ type: CommentSchema, default: [] }]
 },

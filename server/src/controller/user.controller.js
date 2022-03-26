@@ -2,6 +2,8 @@ const UserService = require('../service/user.service')
 const { omit } = require('lodash')
 const auth = require('../auth')
 const CONSTANT = require('../constant')
+const path = require('path');
+const ContentService = require('../service/content.service');
 
 const UserController = {
     registerUser: async (req, res, next) => {
@@ -107,18 +109,46 @@ const UserController = {
 
     followContent: async (req, res) => {
         try {
-            let content;
             const { contentID, contentType, action } = req.body;
-            if (contentType === CONSTANT.CONTENT_TYPE.COMIC) {
+            
+            const user = await UserService.followContent(req.locals.userID, contentID, contentType, action);
 
-            }
-            const user = UserService.followContent(req.locals.userID, contentID, contentType, action);
-            if (!user) {
+            const content = await ContentService.followContent(contentType, contentID, action);
+            if (!content) {
+                await UserService.followContent(req.locals.userID, contentID, contentType, CONSTANT.FOLLOW_ACTION_TYPE.invert(action)); 
                 return res.status(400).send({
-
+                    error: `The ${contentType === CONSTANT.CONTENT_TYPE.COMIC ? 'comic' : 'story'} does not exist`
                 })
             }
         } catch (e) {
+            return res.status(500).send({
+                error: e.message
+            })
+        }
+    },
+
+    voteOnContent: async(req, res) => {
+        try {
+            const { contentID, contentType, prev, current } = req.body;
+            if (prev === current) {
+                return res.status(400).send({
+                    error:'Your current and prev state should not be the same'
+                })
+            }
+            const { userID } = req.locals;
+            const user = await UserService.voteOnContent(userID, contentID, contentType, prev, current); 
+            const content = await ContentService.voteOnContent(contentType, contentID, prev, current);
+            if (!content) {
+                await UserService.voteOnContent(userID, contentID, contentType, current, prev); 
+                return res.status(400).send({
+                    error: `The ${contentType === CONSTANT.CONTENT_TYPE.COMIC ? 'comic' : 'story'} does not exist`
+                })
+            }
+            return res.status(200).send({
+                user: omit(user, ["password", "answers"]),
+                content: content 
+            })
+        } catch(e) {
             return res.status(500).send({
                 error: e.message
             })
@@ -132,11 +162,7 @@ const UserController = {
                     const { userID } = req.locals;
                     const { password } = req.body;
                     const user = await UserService.findUser({ _id: userID });
-                    if (!user) {
-                        return res.status(400).send({
-                            error: "The user does not exist"
-                        })
-                    }
+                    
                     await UserService.changePassword(userID, password);
                     return res.sendStatus(200);
                 } catch (e) {
@@ -149,11 +175,7 @@ const UserController = {
             try {
                 const { password, answers, nameOrEmail } = req.body;
                 const user = await UserService.findUser({ $or: [{ name: nameOrEmail }, { email: nameOrEmail }] });
-                if (!user) {
-                    return res.status(400).send({
-                        error: "The user does not exist"
-                    })
-                }
+                
                 const isValid = await UserService.validateAnswers(user.answers, answers);
                 if (!isValid) {
                     return res.status(400).send({
@@ -163,13 +185,29 @@ const UserController = {
                 await UserService.changePassword(user._id, password);
                 return res.sendStatus(200);
             } catch (e) {
-                return res.status(400).send({
+                return res.status(500).send({
                     error: e.message
                 })
             }
         }
+    },
 
-        
+    isUserAdmin: async (req, res, next) => {
+        try {
+            const { userID } = req.locals; 
+            const isUserAdmin = await UserService.isUserAdmin(userID);
+            console.log(isUserAdmin);
+            if (!isUserAdmin) {
+                return res.status(400).send({
+                    error: "Unauthorized user"
+                })
+            }
+            next(); 
+        } catch (e) {
+            return res.status(500).send({
+                error: e.message
+            })
+        }
     }
 
 }
