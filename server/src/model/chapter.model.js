@@ -10,9 +10,9 @@ const ObjectId = Schema.Types.ObjectId;
 
 const ChapterSchema = new Schema({
     parentID: { type: ObjectId, ref: 'Story', required: true },
-    title: {type: Stirng, required: true },
-    editorContent: { type: Object },
-    content: { type: Object },
+    title: { type: String, required: true },
+    editorContent: { type: Object, default: {} },
+    body: { type: Object, default: {} },
     author: { type: UserDataSchema, required: true },
     views: { type: Number, default: 0 },
     likes: { type: Number, default: 0 },
@@ -20,7 +20,7 @@ const ChapterSchema = new Schema({
     published: { type: Boolean, default: false },
     comments: [{ type: CommentSchema, default: [] }]
 },
-    { timestamps: true }
+    { timestamps: true, minimize: false }
 )
 
 module.exports = mongoose.model('Chapter', ChapterSchema); 

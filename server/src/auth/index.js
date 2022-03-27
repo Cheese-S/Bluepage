@@ -8,7 +8,7 @@ const UserService = require('../service/user.service')
 
 function authManager() {
 
-    verify = (req, res, next) => {
+    verify = async (req, res, next) => {
         try {
             const token = req.cookies.token;
             if (!token) {
@@ -19,17 +19,21 @@ function authManager() {
             }
             
             const verified = jwt.verify(token, env.JWT_SECRET);
-            req.locals = {
-                userID: verified.userID,
-                name: verified.name
-            }
+            console.log(verified);
+            
 
-            const user = UserService.findUser({_id: verified.userID});
+            const user = await UserService.findUser({_id: verified.userID});
             if (!user) {
                 return  res.status(400).json({
                     user: CONSTANT.EMPTY_USER,
                     error: "This user does not exist"
                 })
+            }
+            req.locals = {
+                ...req.locals,
+                userID: verified.userID,
+                name: verified.name,
+                user: user
             }
             next();
         } catch(e) {

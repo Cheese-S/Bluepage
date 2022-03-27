@@ -52,8 +52,9 @@ const updateContentSchema = Joi.object({
         CONSTANT.BP_TAGS.SCI_FI,
         CONSTANT.BP_TAGS.THRILLER,
     )).required(),
-    published: Joi.boolean().required(),
+    published: Joi.boolean().required(), 
     contentID: Joi.string().length(24).required(),
+    subcontentIDs: Joi.array().items(Joi.string().length(24)).when('published', {is: true, then: Joi.array().min(1)}),
     contentType: Joi.string().valid(CONSTANT.CONTENT_TYPE.STORY, CONSTANT.CONTENT_TYPE.COMIC).required(),
 });
 
@@ -61,11 +62,17 @@ const setContentThumbnailSchema = viewContentSchema;
 
 const takeOffContentSchema = viewContentSchema;
 
+const deleteContentSchema = viewContentSchema;
+
+const getContentByIDSchema = viewContentSchema;
+
 module.exports = {
     takeOffContentSchema,
     updateContentSchema,
     commentContentSchema,
     createContentSchema,
     viewContentSchema,
-    setContentThumbnailSchema
+    setContentThumbnailSchema,
+    deleteContentSchema,
+    getContentByIDSchema
 }

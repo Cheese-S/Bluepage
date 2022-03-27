@@ -4,6 +4,7 @@ const auth = require('../auth')
 const CONSTANT = require('../constant')
 const path = require('path');
 const ContentService = require('../service/content.service');
+const SubcontentService = require('../service/subcontent.service')
 
 const UserController = {
     registerUser: async (req, res, next) => {
@@ -66,9 +67,18 @@ const UserController = {
                     error: "You cannot follow yourself"
                 })
             }
+            const followingUser = await UserService.findUser(
+                { _id: req.body.followingUserID }
+            );
+            if (!followingUser) {
+                return res.status(400).send({
+                    error: "The user you are trying to follow does not exist"
+                })
+            }
             const user = await UserService.followUser(req.locals.userID, req.body.followingUserID, req.body.action);
+
             return res.status(200).send({
-                user: user
+                user: omit(user, ['password', 'answers'])
             })
         } catch (e) {
             return res.status(500).send({
@@ -110,16 +120,36 @@ const UserController = {
     followContent: async (req, res) => {
         try {
             const { contentID, contentType, action } = req.body;
-            
-            const user = await UserService.followContent(req.locals.userID, contentID, contentType, action);
+            const { userID } = req.locals;
+
+            const isUserFollowing = await UserService.isUserFollowingContent(contentType, contentID, userID);
+
+            if (isUserFollowing && action === CONSTANT.FOLLOW_ACTION_TYPE.FOLLOW) {
+                return res.status(400).send({
+                    error: 'You cannot follow a user that you are already following'
+                })
+            }
+
+            if (!isUserFollowing && action === CONSTANT.FOLLOW_ACTION_TYPE.UNFOLLOW) {
+                return res.status(400).send({
+                    error: 'You cannot unfollow a user that you are not already following'
+                })
+            }
 
             const content = await ContentService.followContent(contentType, contentID, action);
             if (!content) {
-                await UserService.followContent(req.locals.userID, contentID, contentType, CONSTANT.FOLLOW_ACTION_TYPE.invert(action)); 
                 return res.status(400).send({
-                    error: `The ${contentType === CONSTANT.CONTENT_TYPE.COMIC ? 'comic' : 'story'} does not exist`
+                    error: `The ${contentType} might not exist or might not be published yet`
                 })
             }
+
+            const user = await UserService.followContent(userID, contentID, contentType, action);
+
+            return res.status(200).send({
+                user: omit(user, ['password', 'answers']),
+                content: content
+            })
+
         } catch (e) {
             return res.status(500).send({
                 error: e.message
@@ -127,28 +157,54 @@ const UserController = {
         }
     },
 
-    voteOnContent: async(req, res) => {
+    voteOnContent: async (req, res) => {
         try {
             const { contentID, contentType, prev, current } = req.body;
             if (prev === current) {
                 return res.status(400).send({
-                    error:'Your current and prev state should not be the same'
+                    error: 'Your current and prev state should not be the same'
                 })
             }
             const { userID } = req.locals;
-            const user = await UserService.voteOnContent(userID, contentID, contentType, prev, current); 
             const content = await ContentService.voteOnContent(contentType, contentID, prev, current);
             if (!content) {
-                await UserService.voteOnContent(userID, contentID, contentType, current, prev); 
                 return res.status(400).send({
-                    error: `The ${contentType === CONSTANT.CONTENT_TYPE.COMIC ? 'comic' : 'story'} does not exist`
+                    error: `The ${contentType} might not exist or might not be published yet`
                 })
             }
+            const user = await UserService.voteOnContent(userID, contentID, contentType, prev, current);
             return res.status(200).send({
                 user: omit(user, ["password", "answers"]),
-                content: content 
+                content: content
             })
-        } catch(e) {
+        } catch (e) {
+            return res.status(500).send({
+                error: e.message
+            })
+        }
+    },
+
+    voteOnSubcontent: async (req, res) => {
+        try {
+            const { subcontentID, subcontentType, prev, current } = req.body;
+            if (prev === current) {
+                return res.status(400).send({
+                    error: 'Your current and prev state should not be the same'
+                })
+            }
+            const { userID } = req.locals;
+            const subcontent = await SubcontentService.voteOnSubcontent(subcontentType, subcontentID, prev, current);
+            if (!subcontent) {
+                return res.status(400).send({
+                    error: `The ${subcontentType} might not exist or might not be published yet`
+                })
+            }
+            const user = await UserService.voteOnSubcontent(userID, subcontentID, subcontentType, prev, current);
+            return res.status(200).send({
+                user: omit(user, ["password", "answers"]),
+                subcontent: subcontent
+            })
+        } catch (e) {
             return res.status(500).send({
                 error: e.message
             })
@@ -157,12 +213,10 @@ const UserController = {
 
     changePassword: async (req, res) => {
         if (req.body.isLoggedIn) {
-            auth.verify(req, res, async () => {
+            await auth.verify(req, res, async () => {
                 try {
                     const { userID } = req.locals;
                     const { password } = req.body;
-                    const user = await UserService.findUser({ _id: userID });
-                    
                     await UserService.changePassword(userID, password);
                     return res.sendStatus(200);
                 } catch (e) {
@@ -175,7 +229,7 @@ const UserController = {
             try {
                 const { password, answers, nameOrEmail } = req.body;
                 const user = await UserService.findUser({ $or: [{ name: nameOrEmail }, { email: nameOrEmail }] });
-                
+
                 const isValid = await UserService.validateAnswers(user.answers, answers);
                 if (!isValid) {
                     return res.status(400).send({
@@ -194,7 +248,7 @@ const UserController = {
 
     isUserAdmin: async (req, res, next) => {
         try {
-            const { userID } = req.locals; 
+            const { userID } = req.locals;
             const isUserAdmin = await UserService.isUserAdmin(userID);
             console.log(isUserAdmin);
             if (!isUserAdmin) {
@@ -202,7 +256,7 @@ const UserController = {
                     error: "Unauthorized user"
                 })
             }
-            next(); 
+            next();
         } catch (e) {
             return res.status(500).send({
                 error: e.message

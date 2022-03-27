@@ -4,6 +4,7 @@ const CONSTANT = require('../constant')
 const fs = require('fs')
 const path = require('path')
 const { query } = require('express')
+const mongoose = require('mongoose');
 
 function getContentVoteAction(prev, current) {
     let doAction, undoAction;
@@ -58,7 +59,7 @@ const ContentService = {
 
     findManyContent: async (contentType, query, option = { lean: true }) => {
         const model = ContentService.getModel(contentType);
-        return model.find(query, null, option); 
+        return model.find(query, null, option);
     },
 
     updateContent: async (contentType, query, update, option = { lean: true, new: true }) => {
@@ -69,6 +70,20 @@ const ContentService = {
     deleteContent: async (contentType, query) => {
         const model = ContentService.getModel(contentType);
         return model.findOneAndDelete(query);
+    },
+
+    deleteContentSubcontent: async (contentType, contentID, subcontentID) => {
+        return ContentService.updateContent(contentType,
+            { _id: contentID },
+            { $pull: { contentList: { id: subcontentID } } }
+        )
+    },
+
+    addSubcontent: async (contentType, contentID, subcontentID, subcontentTitle) => {
+        return ContentService.updateContent(contentType,
+            { _id: contentID },
+            { $addToSet: { contentList: { id: subcontentID, title: subcontentTitle } } }
+        )
     },
 
     commentContent: async (contentType, contentID, userID, name, text) => {
@@ -133,7 +148,7 @@ const ContentService = {
 
     followContent: async (contentType, contentID) => {
         return ContentService.updateContent(contentType,
-            { _id: contentID },
+            { _id: contentID, published: true },
             { $inc: { followers: 1 } }
         )
     },
@@ -141,22 +156,22 @@ const ContentService = {
     voteOnContent: async (contentType, contentID, prev, current) => {
         const updateAction = getContentVoteAction(prev, current);
         return ContentService.updateContent(contentType,
-            { _id: contentID },
+            { _id: contentID, published: true },
             updateAction
         );
     },
 
     viewContent: async (contentType, contentID) => {
         return ContentService.updateContent(contentType,
-            { _id: contentID },
-            { $inc: {views: 1} }    
+            { _id: contentID, published: true },
+            { $inc: { views: 1 } }
         )
     },
 
     takeOffContent: async (contentType, contentID) => {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
-            { published: false }    
+            { published: false }
         )
     },
 
@@ -171,15 +186,22 @@ const ContentService = {
     },
 
     isOwnedByUser: async (contentType, contentID, userID) => {
-        return ContentService.findContent(contentType, 
-            { 
+        return ContentService.findContent(contentType,
+            {
+                _id: mongoose.Types.ObjectId(contentID),
+                "author.id": userID
+            }
+        )
+    },
+
+    isContentPublished: async (contentType, contentID) => {
+        return ContentService.findContent(contentType,
+            {
                 _id: contentID,
-                "author.id": userID 
+                published: true
             }
         )
     }
-
-
 
 }
 

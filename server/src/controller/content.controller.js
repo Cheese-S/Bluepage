@@ -1,7 +1,12 @@
 const ContentService = require('../service/content.service')
+const UserService = require('../service/user.service')
 const CONSTANT = require('../constant')
 const { PaginationParameters } = require('mongoose-paginate-v2');
 const fs = require('fs');
+const SubcontentService = require('../service/subcontent.service');
+const auth = require('../auth');
+const { omit } = require('lodash')
+const mongoose = require('mongoose')
 
 const ContentController = {
 
@@ -10,7 +15,9 @@ const ContentController = {
             const { contentType, title, description, tags } = req.body;
             const { userID, name } = req.locals;
             const content = await ContentService.createContent(contentType, title, description, userID, name, tags);
+            const user = await UserService.addUserContent(contentType, userID, content._id);
             return res.status(200).send({
+                user: { ...omit(user, ['password', 'answers']), isLoggedIn: true },
                 content: content
             });
         } catch (e) {
@@ -64,7 +71,7 @@ const ContentController = {
             }
             if (!content) {
                 return res.status(400).send({
-                    error: `The ${contentType} does not exist or it is not published yet`
+                    error: `The ${contentType}/comment does not exist or it is not published yet`
                 })
             }
             return res.status(200).send({
@@ -87,6 +94,27 @@ const ContentController = {
                 return res.status(400).send({
                     error: `The ${contentType} does not exist`
                 })
+            }
+
+            if (!content.published) {
+                req.locals = { ...req.locals, content: content };
+                await auth.verify(req, res, () => {
+                    const { userID, content } = req.locals;
+                    if (userID !== content.author.id.toString()) {
+                        return res.status(400).send({
+                            error: "Unauthorized"
+                        })
+                    } else {
+                        return res.status(200).send({
+                            content: content
+                        })
+                    }
+                })
+            } else {
+                return res.status(200).send({
+                    content: content
+                })
+
             }
         } catch (e) {
             return res.status(500).send({
@@ -111,14 +139,15 @@ const ContentController = {
 
     updateContent: async (req, res) => {
         try {
-            const { title, description, tags, published, contentID, contentType } = req.body;
-            const { userID } = req.locals;
+            const { title, description, tags, published, contentID, contentType, subcontentIDs } = req.body;
+            const { userID, name, user } = req.locals;
             const isOwnedByUser = await ContentService.isOwnedByUser(contentType, contentID, userID)
             if (!isOwnedByUser) {
                 return res.status(400).send({
-                    error: `Unauthorized User`
+                    error: `No ${contentType} with this ID is owned by this user`
                 })
             }
+
             const content = await ContentService.updateContent(contentType,
                 { _id: contentID, published: false },
                 {
@@ -133,6 +162,30 @@ const ContentController = {
                     error: `The ${contentType} either does not exist or the ${contentType} is already published`
                 })
             }
+
+            const subcontentType = CONSTANT.CONTENT_TYPE.getSubcontentType(contentType);
+            const result = await SubcontentService.publishSubcontents(subcontentType, userID, contentID, subcontentIDs);
+
+            if (!result.modifiedCount) {
+                await ContentService.updateContent(contentType,
+                    { _id: contentID },
+                    { published: false }
+                );
+                return res.status(400).send({
+                    error: `These subcontentIDs are not valid ids because one of the following reasons:
+                        1. subcontent already published
+                        2. doesn't belong to the user
+                        3. doesn't belong to this content
+                        4. subcontents does not exist
+                        5. subcontent's type does not agree with content's type 
+                    `
+                })
+            } else {
+                await UserService.addNotificationToFollowers(contentType, contentID, userID, user.followers,
+                    { text: `${name} has just published a new ${contentType}. Check it out!`, link: contentID }
+                )
+            }
+
             return res.status(200).send({
                 content: content
             })
@@ -149,7 +202,7 @@ const ContentController = {
             const content = await ContentService.viewContent(contentType, contentID);
             if (!content) {
                 return res.status(400).send({
-                    error: `The ${contentType} does not exist`
+                    error: `The ${contentType} either does not exist or is not published`
                 })
             }
             return res.status(200).send({
@@ -171,6 +224,19 @@ const ContentController = {
                     error: `The ${contentType} does not exist or it is not published`
                 })
             }
+            const subcontentType = CONSTANT.CONTENT_TYPE.getSubcontentType(contentType);
+            const subcontentIDs = content.contentList.map(e => e.id);
+            await SubcontentService.takeOffSubcontents(subcontentType, subcontentIDs);
+
+            const user = await UserService.addNotifications(
+                contentType,
+                [content.author.id],
+                {
+                    text: `Your ${contentType} "${content.title}" has been taken down because it has been deemed inappropriate for our website.`,
+                    link: content._id
+                }
+            )
+
             return res.status(200).send({
                 content: content
             })
@@ -180,6 +246,48 @@ const ContentController = {
             })
         }
     },
+
+    deleteContent: async (req, res) => {
+        try {
+            const { contentType, contentID } = req.body;
+            const { userID } = req.locals;
+            const isOwnedByUser = await ContentService.isOwnedByUser(contentType, contentID, userID)
+
+            if (!isOwnedByUser) {
+                return res.status(400).send({
+                    error: `No ${contentType} with this ID is owned by you`
+                })
+            }
+            const content = await ContentService.deleteContent(contentType, contentID);
+            if (!content) {
+                return res.status(400).send({
+                    error: `The ${contentType} does not exist`
+                })
+            }
+            const subcontentIDs = content.contentList.map((e) => e.id);
+            await SubcontentService.deleteManySubcontents({ _id: { $in: subcontentIDs } });
+            const user = await UserService.deleteUserContent(contentType, contentID, userID);
+            if (contentType === CONSTANT.CONTENT_TYPE.COMIC) {
+                await UserService.updateManyUser(
+                    { followingComics: content._id },
+                    { $pull: { followingComics: content._id } }
+                )
+            } else {
+                await UserService.updateManyUser(
+                    { followingStories: content._id },
+                    { $pull: { followingStories: content._id } }
+                )
+            }
+            return res.status(200).send({
+                content: content,
+                user: { ...omit(user, ['password', 'answers']), isLoggedIn: true }
+            })
+        } catch (e) {
+            return res.status(500).send({
+                error: e.message
+            })
+        }
+    }
 }
 
 module.exports = ContentController

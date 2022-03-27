@@ -16,23 +16,37 @@ const FOLLOW_ACTION_TYPE = {
     FOLLOW: 'follow',
     UNFOLLOW: 'unfollow',
     invert: (action) => {
-        return action === FOLLOW_ACTION_TYPE.FOLLOW ? FOLLOW_ACTION_TYPE.UNFOLLOW : FOLLOW_ACTION_TYPE.FOLLOW; 
+        return action === FOLLOW_ACTION_TYPE.FOLLOW ? FOLLOW_ACTION_TYPE.UNFOLLOW : FOLLOW_ACTION_TYPE.FOLLOW;
     }
 }
 
 const COMMENT_ACTION_TYPE = {
     COMMENT: 'comment',
-    SUBCOMMENT: 'subcomment'
+    SUBCOMMENT: 'subcomment',
+
 }
 
 const CONTENT_TYPE = {
     STORY: 'story',
-    COMIC: 'comic'
+    COMIC: 'comic',
+    getSubcontentType: (contentType) => {
+        return contentType === CONTENT_TYPE.STORY ? SUBCONTENT_TYPE.CHAPTER : SUBCONTENT_TYPE.PAGE;
+    },
+    doTypesAgree: (subcontentType, contentType) => {
+        return (
+            (subcontentType === SUBCONTENT_TYPE.CHAPTER && contentType === CONTENT_TYPE.STORY) ||
+            (subcontentType === SUBCONTENT_TYPE.PAGE && contentType === CONTENT_TYPE.COMIC)
+        )
+    }
 }
 
 const SUBCONTENT_TYPE = {
     CHAPTER: 'chapter',
-    PAGE: 'page'
+    PAGE: 'page',
+    getContentType: (contentType) => {
+        return contentType === SUBCONTENT_TYPE.CHAPTER ? CONTENT_TYPE.STORY : CONTENT_TYPE.COMIC;
+    },
+    doTypesAgree: CONTENT_TYPE.doTypesAgree
 }
 
 const BP_TAGS = {

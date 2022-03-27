@@ -1,5 +1,6 @@
 const {
-    CommentSchema
+    CommentSchema,
+    UserDataSchema
 } = require('./internal')
 
 const mongoose = require('mongoose');
@@ -10,8 +11,8 @@ const ObjectId = Schema.Types.ObjectId;
 const PageSchema = new Schema({
     title: {type: String, required: true},
     parentID: { type: ObjectId, ref: 'Comic', required: true },
-    editorContent: { type: Object },
-    content: { type: String },
+    editorContent: { type: Schema.Types.Mixed },
+    body: { type: Schema.Types.Mixed, required: true },
     author: { type: UserDataSchema, required: true },
     views: { type: Number, default: 0 },
     likes: { type: Number, default: 0 },
@@ -19,7 +20,7 @@ const PageSchema = new Schema({
     published: { type: Boolean, default: false },
     comments: [{ type: CommentSchema, default: [] }]
 },
-    { timestamps: true }
+    { timestamps: true, minimize: false }
 )
 
 module.exports = mongoose.model('Page', PageSchema); 

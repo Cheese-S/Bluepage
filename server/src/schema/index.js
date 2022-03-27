@@ -14,8 +14,21 @@ const {
     commentContentSchema,
     createContentSchema,
     setContentThumbnailSchema,
-    viewContentSchema
+    viewContentSchema,
+    deleteContentSchema,
+    getContentByIDSchema
 } = require('./content.schema')
+
+const {
+    takeOffSubcontentSchema,
+    updateSubcontentSchema,
+    commentSubcontentSchema,
+    createSubcontentSchema,
+    getSubcontentByIDSchema,
+    viewSubcontentSchema,
+    deleteSubcontentSchema,
+    publishSubcontentsSchema
+} = require('./subcontent.schema')
 
 module.exports = {
     registerUser: registerSchema,
@@ -31,5 +44,17 @@ module.exports = {
     commentContent: commentContentSchema,
     createContent: createContentSchema,
     setContentThumbnail: setContentThumbnailSchema,
-    viewContent: viewContentSchema
+    viewContent: viewContentSchema,
+    deleteContent: deleteContentSchema,
+    getContentByID: getContentByIDSchema,
+
+    takeOffSubcontent:takeOffSubcontentSchema,
+    updateSubcontent:updateSubcontentSchema,
+    commentSubcontent: commentSubcontentSchema,
+    createSubcontent: createSubcontentSchema,
+    viewSubcontent: viewSubcontentSchema,
+    deleteSubcontent: deleteSubcontentSchema,
+    getSubcontentByID: getSubcontentByIDSchema,
+    publishSubcontents: publishSubcontentsSchema
+
 }
