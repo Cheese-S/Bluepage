@@ -16,7 +16,8 @@ const {
     setContentThumbnailSchema,
     viewContentSchema,
     deleteContentSchema,
-    getContentByIDSchema
+    getContentByIDSchema,
+    getContentsSchema
 } = require('./content.schema')
 
 const {
@@ -47,6 +48,7 @@ module.exports = {
     viewContent: viewContentSchema,
     deleteContent: deleteContentSchema,
     getContentByID: getContentByIDSchema,
+    getContents: getContentsSchema,
 
     takeOffSubcontent:takeOffSubcontentSchema,
     updateSubcontent:updateSubcontentSchema,

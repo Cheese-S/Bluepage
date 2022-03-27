@@ -50,6 +50,8 @@ function routes(app) {
 
     app.get("/api/content/id", validator('getContentByID'), ContentController.getContentByID);
 
+    app.get("/api/content", validator('getContents'), ContentController.getContents);
+
 
     /* ----------------------------- SUBCONTENT API ----------------------------- */
     app.post("/api/subcontent", auth.verify, validator('createSubcontent'), SubcontentController.createSubcontent)

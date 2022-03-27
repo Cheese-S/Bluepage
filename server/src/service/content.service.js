@@ -175,12 +175,13 @@ const ContentService = {
         )
     },
 
-    getPaginatedContent: async (contentType, pagianteOption, queryOption) => {
+    getPaginatedContent: async (contentType, queryOption, pagianteOption) => {
         const model = ContentService.getModel(contentType);
-        model.paginate(queryOption, pagianteOption, (err, result) => {
+        return model.paginate(queryOption, pagianteOption, (err, result) => {
             if (err) {
                 throw err;
             }
+            console.log(result);
             return result;
         })
     },

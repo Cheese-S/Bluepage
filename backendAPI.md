@@ -480,12 +480,14 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
     ⚠️ SEE https://www.npmjs.com/package/mongoose-paginate-v2 ⚠️
     - Description
       - Get paginated content based on query
-      - 
-    - Request
+    - Request Query
+      - Paginate Option (see above)
+    - Request Body
       - contentType: CONTENT_TYPE
+      - query: Mongoose Query 
     - Response
       - 200
-        - contentList: [content]
+        - result: result (see above link)
       - 400
         - does not match schema
         - invalid query
@@ -499,9 +501,10 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
       - 500
         - Server / Database error
     - Example
+    http://localhost:4000/api/content/?page=1&limit=1
     {
-        "contentType": "comic",
-        "contentID": "623e534778d5c84703f84dfe"
+      "contentType": "comic",
+      "query": {}
     }
 
 ### 💚 **GET** 💚 /id
@@ -614,6 +617,11 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
         - content already published 
         - content does not belong to user 
         - User does not exist
+        - subcontent does not belong to content
+        - subcontent does not belong to user
+        - subcontent are published
+        - subcontent does not exist
+        - content & subcontent type does not agree
       - 401
         - error: String
         - user: emptyUser
@@ -996,9 +1004,18 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
       - 400
         - error: String
           - does not match schema
+          - subcontent does not belong to content
+          - subcontent does not belong to user
+          - subcontent are published
           - subcontent does not exist
-          - subcontent not published 
+          - content & subcontent type does not agree 
           - parent content is not published
+          - parent content does not belong to user
+          - user does not exist
+      - 401
+        - error: String
+        - user: emptyUser
+          - Authorization failed
       - 500
         - error: String
           - Server / Database error

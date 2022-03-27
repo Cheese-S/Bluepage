@@ -66,6 +66,8 @@ const deleteContentSchema = viewContentSchema;
 
 const getContentByIDSchema = viewContentSchema;
 
+const getContentsSchema = Joi.object().required();
+
 module.exports = {
     takeOffContentSchema,
     updateContentSchema,
@@ -74,5 +76,6 @@ module.exports = {
     viewContentSchema,
     setContentThumbnailSchema,
     deleteContentSchema,
-    getContentByIDSchema
+    getContentByIDSchema,
+    getContentsSchema
 }

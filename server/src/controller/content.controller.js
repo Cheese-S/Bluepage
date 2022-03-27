@@ -123,13 +123,23 @@ const ContentController = {
         }
     },
 
-    getContents: (req, res) => {
+    getContents: async (req, res) => {
         try {
             const { query, contentType } = req.body;
-            const result = ContentService.getPaginatedContent(contentType, query, ...new PaginationParameters(req).get());
-            return res.status(400).send({
-                result: result
-            })
+            if (!query.published) {
+                await auth.verify(req, res, () => {});
+                const { userID } = req.locals;
+                const newQuery = { ...query, "author.id": userID };
+                const result = await ContentService.getPaginatedContent(contentType, newQuery, req.query);
+                return res.status(200).send({
+                    result: result
+                })
+            } else {
+                const result = ContentService.getPaginatedContent(contentType, query, req.query);
+                return res.status(200).send({
+                    result: result
+                })
+            }
         } catch (e) {
             return res.status(500).send({
                 error: e.message
@@ -265,7 +275,7 @@ const ContentController = {
                 })
             }
             const subcontentIDs = content.contentList.map((e) => e.id);
-            await SubcontentService.deleteManySubcontents({ _id: { $in: subcontentIDs } });
+            await SubcontentService.deleteManySubcontents(CONSTANT.CONTENT_TYPE.getSubcontentType(contentType), { _id: { $in: subcontentIDs } });
             const user = await UserService.deleteUserContent(contentType, contentID, userID);
             if (contentType === CONSTANT.CONTENT_TYPE.COMIC) {
                 await UserService.updateManyUser(
