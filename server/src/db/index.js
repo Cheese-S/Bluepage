@@ -1,6 +1,5 @@
 const env = require('../env.config')
 const mongoose = require('mongoose')
-const logger = require('bs-logger')
 const { logger } = require('bs-logger')
 
 mongoose
