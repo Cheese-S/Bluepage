@@ -596,6 +596,8 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
     ⚠️ JWT REQUIRED ⚠️
     - Description
       - Upadte a piece of content 
+      - ** IFF published = true **
+        - A notification will be pushed to users that follow whoever made this request
     - Request
       - contentType: CONTENT_TYPE
       - contentID: ObjectID

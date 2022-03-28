@@ -246,7 +246,7 @@ const UserService = {
      * @param  {{ text: String, contentID: String }} notification 
      */
 
-    addNotificationToFollowers: async (contentType, contentID, authorID, followers, ...notifications) => {
+    addNotificationToFollowers: async (contentType, contentID, followers, ...notifications) => {
         let updateAction, filter;
         if (contentType === CONSTANT.CONTENT_TYPE.COMIC || contentType === CONSTANT.SUBCONTENT_TYPE.PAGE) {
             filter = {
@@ -269,6 +269,19 @@ const UserService = {
             filter,
             updateAction,
             { lean: true, new: true }
+        )
+    },
+
+    addNotificationToUser: async (contentType, userID, notification) => {
+        let updateAction;
+        if (contentType === CONSTANT.CONTENT_TYPE.COMIC || contentType === CONSTANT.SUBCONTENT_TYPE.PAGE) {
+            updateAction = { $push: { comicNotifications: notification } };
+        } else {
+            updateAction = { $push: { storyNotifications: notification } };
+        }
+        return UserService.updateUser(
+            { _id: userID },
+            updateAction
         )
     },
 
