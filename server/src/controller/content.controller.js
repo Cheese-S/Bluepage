@@ -238,9 +238,9 @@ const ContentController = {
             const subcontentIDs = content.contentList.map(e => e.id);
             await SubcontentService.takeOffSubcontents(subcontentType, subcontentIDs);
 
-            const user = await UserService.addNotifications(
+            await UserService.addNotificationToUser(
                 contentType,
-                [content.author.id],
+                content.author.id,
                 {
                     text: `Your ${contentType} "${content.title}" has been taken down because it has been deemed inappropriate for our website.`,
                     link: content._id

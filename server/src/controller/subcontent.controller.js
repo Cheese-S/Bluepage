@@ -188,11 +188,11 @@ const SubcontentController = {
                 })
             }
 
-            const user = await UserService.addNotifications(
+            await UserService.addNotificationToUser(
                 subcontentType,
-                [subcontent.author.id],
+                content.author.id,
                 {
-                    text: `Your ${subcontentType} "${subcontent.title}" has been taken down because it has been deemed inappropriate for our website.`,
+                    text: `Your ${contentType} "${subcontent.title}" has been taken down because it has been deemed inappropriate for our website.`,
                     link: subcontent._id
                 }
             )
