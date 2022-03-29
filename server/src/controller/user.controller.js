@@ -29,7 +29,7 @@ const UserController = {
                 secure: true,
                 sameSite: 'none'
             }).status(200).send({
-                user: { ...user, isLoggedIn: true }
+                user: omit({ ...user.toJSON() , isLoggedIn: true }, ['password', 'answers'])
             }).send();
         } catch (e) {
             return res.status(500).send({
