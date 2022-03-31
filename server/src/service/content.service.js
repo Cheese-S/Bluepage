@@ -79,10 +79,11 @@ const ContentService = {
         )
     },
 
-    addSubcontent: async (contentType, contentID, subcontentID, subcontentTitle) => {
+    addSubcontent: async (contentType, contentID, subcontentID) => {
         return ContentService.updateContent(contentType,
             { _id: contentID },
-            { $addToSet: { contentList: { id: subcontentID, title: subcontentTitle } } }
+            { $addToSet: { contentList: { subcontent: subcontentID } } },
+            { lean: false, new: true }
         )
     },
 

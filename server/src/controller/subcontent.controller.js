@@ -24,9 +24,9 @@ const SubcontentController = {
                 })
             }
             const subcontent = await SubcontentService.createSubcontent(subcontentType, parentID, title, body, userID, name);
-            const content = await ContentService.addSubcontent(contentType, parentID, subcontent._id, title);
+            const content = await ContentService.addSubcontent(contentType, parentID, subcontent._id);
             return res.status(200).send({
-                content: content,
+                content: await content.populate('contentList.subcontent', ['published', 'title'], {lean: true}),
                 subcontent: subcontent
             });
         } catch (e) {
@@ -118,7 +118,7 @@ const SubcontentController = {
 
             const contentType = CONSTANT.SUBCONTENT_TYPE.getContentType(subcontentType);
             const content = await ContentService.findContent(contentType,
-                { _id: parentID }
+                { _id: parentID },
             )
 
             if (!content.published && published) {

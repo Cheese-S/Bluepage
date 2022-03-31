@@ -32,11 +32,10 @@ const ComicSchema = new Schema({
     },
     likes: { type: Number, default: 0 },
     dislikes: { type: Number, default: 0 },
-    contentList: {
-        type: [{ id: ObjectId, title: String }],
-        default: [],
+    contentList: [{
+        subcontent: {type: ObjectId, ref: 'Page'},
         _id: false
-    },
+    }],
     comments: [{ type: CommentSchema, default: [] }],
     thumbnail: { type: Buffer }
 })

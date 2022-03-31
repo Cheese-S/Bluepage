@@ -88,7 +88,8 @@ const ContentController = {
         try {
             const { contentID, contentType } = req.body;
             const content = await ContentService.findContent(contentType,
-                { _id: contentID }
+                { _id: contentID },
+                { lean: false }
             )
             if (!content) {
                 return res.status(400).send({
@@ -112,7 +113,7 @@ const ContentController = {
                 })
             } else {
                 return res.status(200).send({
-                    content: content
+                    content: await content.populate('contentList.subcontent', ['published', 'title'], {lean: true})
                 })
 
             }
