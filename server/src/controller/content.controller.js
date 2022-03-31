@@ -40,17 +40,19 @@ const ContentController = {
             const isOwnedByUser = await ContentService.isOwnedByUser(contentType, contentID, userID)
             if (!isOwnedByUser) {
                 return res.status(400).send({
-                    error: `Unauthorized User`
+                    error: `No ${contentType} with this id is owned by you`
                 })
             }
             const content = await ContentService.setContentThumbnail(contentType, contentID, req.file.path);
+
+
             if (!content) {
                 return res.status(400).send({
                     error: `The ${contentType} does not exist`
                 })
             }
             return res.status(200).send({
-                content: content
+                content: await content.populate('contentList.subcontent', ['published', 'title'], { lean: true })
             })
         } catch (e) {
             return res.status(500).send({
@@ -75,7 +77,7 @@ const ContentController = {
                 })
             }
             return res.status(200).send({
-                content: content
+                content: await content.populate('contentList.subcontent', ['published', 'title'], { lean: true })
             });
         } catch (e) {
             return res.status(500).send({
@@ -99,21 +101,22 @@ const ContentController = {
 
             if (!content.published) {
                 req.locals = { ...req.locals, content: content };
-                await auth.verify(req, res, () => {
+                await auth.verify(req, res, async () => {
                     const { userID, content } = req.locals;
+
                     if (userID !== content.author.id.toString()) {
                         return res.status(400).send({
                             error: "Unauthorized"
                         })
                     } else {
                         return res.status(200).send({
-                            content: content
+                            content: await content.populate('contentList.subcontent', ['published', 'title'], { lean: true })
                         })
                     }
                 })
             } else {
                 return res.status(200).send({
-                    content: await content.populate('contentList.subcontent', ['published', 'title'], {lean: true})
+                    content: await content.populate('contentList.subcontent', ['published', 'title'], { lean: true })
                 })
 
             }
@@ -128,7 +131,7 @@ const ContentController = {
         try {
             const { query, contentType } = req.body;
             if (!query.published) {
-                await auth.verify(req, res, () => {});
+                await auth.verify(req, res, () => { });
                 const { userID } = req.locals;
                 const newQuery = { ...query, "author.id": userID };
                 const result = await ContentService.getPaginatedContent(contentType, newQuery, req.query);
@@ -166,7 +169,8 @@ const ContentController = {
                     description: description,
                     tags: tags,
                     published: published,
-                }
+                },
+                { lean: false, new: true }
             )
             if (!content) {
                 return res.status(400).send({
@@ -174,31 +178,32 @@ const ContentController = {
                 })
             }
 
-            const subcontentType = CONSTANT.CONTENT_TYPE.getSubcontentType(contentType);
-            const result = await SubcontentService.publishSubcontents(subcontentType, userID, contentID, subcontentIDs);
-
-            if (!result.modifiedCount) {
-                await ContentService.updateContent(contentType,
-                    { _id: contentID },
-                    { published: false }
-                );
-                return res.status(400).send({
-                    error: `These subcontentIDs are not valid ids because one of the following reasons:
-                        1. subcontent already published
-                        2. doesn't belong to the user
-                        3. doesn't belong to this content
-                        4. subcontents does not exist
-                        5. subcontent's type does not agree with content's type 
-                    `
-                })
-            } else {
-                await UserService.addNotificationToFollowers(contentType, contentID, userID, user.followers,
-                    { text: `${name} has just published a new ${contentType}. Check it out!`, link: contentID }
-                )
+            if (published) {
+                const subcontentType = CONSTANT.CONTENT_TYPE.getSubcontentType(contentType);
+                const result = await SubcontentService.publishSubcontents(subcontentType, userID, contentID, subcontentIDs);
+                if (!result.modifiedCount) {
+                    await ContentService.updateContent(contentType,
+                        { _id: contentID },
+                        { published: false }
+                    );
+                    return res.status(400).send({
+                        error: `These subcontentIDs are not valid ids because one of the following reasons:
+                            1. subcontent already published
+                            2. doesn't belong to the user
+                            3. doesn't belong to this content
+                            4. subcontents does not exist
+                            5. subcontent's type does not agree with content's type 
+                        `
+                    })
+                } else {
+                    await UserService.addNotificationToFollowers(contentType, contentID, userID, user.followers,
+                        { text: `${name} has just published a new ${contentType}. Check it out!`, link: contentID }
+                    )
+                }
             }
 
             return res.status(200).send({
-                content: content
+                content: await content.populate('contentList.subcontent', ['published', 'title'], { lean: true })
             })
         } catch (e) {
             return res.status(500).send({
@@ -217,7 +222,7 @@ const ContentController = {
                 })
             }
             return res.status(200).send({
-                content: content
+                content: await content.populate('contentList.subcontent', ['published', 'title'], { lean: true })
             })
         } catch (e) {
             return res.status(500).send({
@@ -249,7 +254,7 @@ const ContentController = {
             )
 
             return res.status(200).send({
-                content: content
+                content: await content.populate('contentList.subcontent', ['published', 'title'], { lean: true })
             })
         } catch (e) {
             return res.status(500).send({

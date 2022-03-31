@@ -44,7 +44,7 @@
     tags: [BP_TAGS]
     likes: Number
     dislikes: Number
-    contentList: [{ id: ObjectId, title: String }]
+    contentList: [{ subcontent: ObjectId }]
     comments: [Comment]
     thumbnail: Buffer
 
@@ -198,7 +198,29 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
     isLoggedIn: boolean
 
 
-### Content Same as Database Content
+### Content 
+
+    _id: ObjectID
+    title: String
+    description: String
+    author: UserData
+    views: Number
+    followers: Number
+    published: boolean
+    tags: [BP_TAGS]
+    likes: Number
+    dislikes: Number
+    contentList: [
+      { 
+        subcontent: {
+          _id: ObjectId,
+          title: String,
+          published: boolean
+        }
+      } 
+    ]
+    comments: [Comment]
+    thumbnail: Buffer
 
 ### Subcontent Same as Database Subcontent
 

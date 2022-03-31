@@ -100,7 +100,8 @@ const ContentService = {
                         text: text
                     },
                 }
-            }
+            },
+            {lean: false, new: true}
         )
     },
 
@@ -127,7 +128,7 @@ const ContentService = {
                 }
             },
             {
-                lean: true,
+                lean: false,
                 new: true,
                 arrayFilters: [{ "comment._id": commentID }]
             }
@@ -140,7 +141,8 @@ const ContentService = {
             encodedThumbnail = encodedThumbnail.toString('base64');
             return ContentService.updateContent(contentType,
                 { _id: id },
-                { thumbnail: Buffer.from(encodedThumbnail, 'base64') }
+                { thumbnail: Buffer.from(encodedThumbnail, 'base64') },
+                { lean: false, new: true}
             )
         } catch (e) {
             throw e;
@@ -150,7 +152,8 @@ const ContentService = {
     followContent: async (contentType, contentID) => {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
-            { $inc: { followers: 1 } }
+            { $inc: { followers: 1 } },
+            { lean: false, new: true }
         )
     },
 
@@ -158,21 +161,24 @@ const ContentService = {
         const updateAction = getContentVoteAction(prev, current);
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
-            updateAction
+            updateAction,
+            { lean: false, new: true }
         );
     },
 
     viewContent: async (contentType, contentID) => {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
-            { $inc: { views: 1 } }
+            { $inc: { views: 1 } },
+            {lean: false, new: true}
         )
     },
 
     takeOffContent: async (contentType, contentID) => {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
-            { published: false }
+            { published: false },
+            {lean: false, new: true}
         )
     },
 
