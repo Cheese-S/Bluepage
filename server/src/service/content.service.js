@@ -101,7 +101,7 @@ const ContentService = {
                     },
                 }
             },
-            {lean: false, new: true}
+            { lean: false, new: true }
         )
     },
 
@@ -142,7 +142,7 @@ const ContentService = {
             return ContentService.updateContent(contentType,
                 { _id: id },
                 { thumbnail: Buffer.from(encodedThumbnail, 'base64') },
-                { lean: false, new: true}
+                { lean: false, new: true }
             )
         } catch (e) {
             throw e;
@@ -170,7 +170,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             { $inc: { views: 1 } },
-            {lean: false, new: true}
+            { lean: false, new: true }
         )
     },
 
@@ -178,7 +178,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             { published: false },
-            {lean: false, new: true}
+            { lean: false, new: true }
         )
     },
 
