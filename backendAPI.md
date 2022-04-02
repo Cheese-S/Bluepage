@@ -492,13 +492,13 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
 ---
 ## Content Route
 
-## Note: all routes starts with /api/subcontent 
+## Note: all routes starts with /api/content 
     - e.g 
       - /view = /api/content/view
 
 ⚠️ **NO SPECIFIC PATH MEANS ITS JUST /api/content** ⚠️
 
-### 💚 **GET** /paginated 💚
+### 💛 **POST** /paginate 💛
     ⚠️ SEE https://www.npmjs.com/package/mongoose-paginate-v2 ⚠️
     - Description
       - Get paginated content based on query
@@ -529,7 +529,7 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
       "query": {}
     }
 
-### 💚 **GET** 💚 /id
+### 💚 **POST** 💚 /id
     - Description
       - Get a content by ID
     - Request
@@ -810,7 +810,7 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
 
 ⚠️ **NO SPECIFIC PATH MEANS ITS JUST /api/subcontent** ⚠️
 
-### 💚 **GET** 💚 /id
+### 💚 **POST** 💚 /id
     - Description
       - Get a subcontent by ID
     - Request

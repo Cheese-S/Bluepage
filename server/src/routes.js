@@ -48,9 +48,9 @@ function routes(app) {
 
     app.delete("/api/content", auth.verify, validator('deleteContent'), ContentController.deleteContent)
 
-    app.get("/api/content/id", validator('getContentByID'), ContentController.getContentByID);
+    app.post("/api/content/id", validator('getContentByID'), ContentController.getContentByID);
 
-    app.get("/api/content", validator('getContents'), ContentController.getContents);
+    app.post("/api/content/paginate", validator('getContents'), ContentController.getContents);
 
 
     /* ----------------------------- SUBCONTENT API ----------------------------- */
@@ -62,7 +62,7 @@ function routes(app) {
 
     app.put("/api/subcontent/view", auth.verify, validator('viewSubcontent'), SubcontentController.viewSubcontent)
 
-    app.get("/api/subcontent/id", validator('getSubcontentByID'), SubcontentController.getSubcontentByID)
+    app.post("/api/subcontent/id", validator('getSubcontentByID'), SubcontentController.getSubcontentByID)
 
     app.delete("/api/subcontent", auth.verify, validator('deleteSubcontent'), SubcontentController.deleteSubcontent)
 
