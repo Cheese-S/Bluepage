@@ -131,13 +131,17 @@ const ContentController = {
         try {
             const { query, contentType } = req.body;
             if (!query.published) {
-                await auth.verify(req, res, () => { });
-                const { userID } = req.locals;
-                const newQuery = { ...query, "author.id": userID };
-                const result = await ContentService.getPaginatedContent(contentType, newQuery, req.query);
-                return res.status(200).send({
-                    result: result
-                })
+                await auth.verify(req, res, async () => {
+                    const { userID } = req.locals;
+                    if (userID) {
+                        const newQuery = { ...query, "author.id": userID };
+                        const result = await ContentService.getPaginatedContent(contentType, newQuery, req.query);
+                        return res.status(200).send({
+                            result: result
+                        })
+                    }
+                });
+
             } else {
                 const result = ContentService.getPaginatedContent(contentType, query, req.query);
                 return res.status(200).send({
@@ -145,6 +149,7 @@ const ContentController = {
                 })
             }
         } catch (e) {
+            console.log(e);
             return res.status(500).send({
                 error: e.message
             })

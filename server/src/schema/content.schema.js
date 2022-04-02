@@ -66,7 +66,10 @@ const deleteContentSchema = viewContentSchema;
 
 const getContentByIDSchema = viewContentSchema;
 
-const getContentsSchema = Joi.object().required();
+const getContentsSchema = Joi.object({
+    contentType: Joi.string().valid(CONSTANT.CONTENT_TYPE.STORY, CONSTANT.CONTENT_TYPE.COMIC).required(),
+    query: Joi.object().required()
+})
 
 module.exports = {
     takeOffContentSchema,
