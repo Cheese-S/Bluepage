@@ -512,9 +512,6 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
         - result: result (see above link)
       - 400
         - does not match schema
-        - invalid query
-        - content does not exist
-        - Non owner attempting to get a unpublished content
     - User does not exist
       - 401
         - error: String
@@ -810,7 +807,7 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
 
 ⚠️ **NO SPECIFIC PATH MEANS ITS JUST /api/subcontent** ⚠️
 
-### 💚 **POST** 💚 /id
+### 💛 **POST** 💛 /id
     - Description
       - Get a subcontent by ID
     - Request
