@@ -22,6 +22,11 @@ export const logIn = (nameOrEmail,password) =>{
     })
 }
 
+export const logOut = () =>{
+    return api.post(`/users/logout`,{
+    })
+}
+
 export const followUser = (followingUserID,action) =>{
     return api.put(`/users/followUser`,{
         followingUserID : followingUserID,
@@ -38,14 +43,20 @@ export const followContent = (contentType,contentID,action) =>{
 }
 
 export const getContentPage = (contentType,query) =>{
-    return api.get(`/content/?page=1&limit=1`,{
+    return api.post(`/content/paginate/?page=1&limit=1`,{
         contentType : contentType,
         query : query
     })
 }
 
+export const wrong_getContentPage = (contentType) =>{
+    return api.post(`/content/paginate/?page=1&limit=1`,{
+        contentType : contentType
+    })
+}
+
 export const getContentById = (contentType,contentID) =>{
-    return api.get(`/content/ ${contentID}`,{
+    return api.post(`/content/ ${contentID}`,{
         contentType : contentType,
         contentID : contentID
     })
@@ -119,9 +130,12 @@ var vieweremail = 'viewer@viewer.com';
 var password = '12345678';
 var answer = ["SHanghai", "NewYork","USA"];
 var comictype="comic";
+var storytype="story";
 var comictitle="test comic";
+var storytitle="test story";
 var comicdescription="test comic";
-var comcictag=["Action"];
+var storydescription="test story";
+var tag=["Action"];
 
 export async function initlize(){
     try{
@@ -131,10 +145,105 @@ export async function initlize(){
         console.log("succesfully registered admin");
         await registerUser(viewerusername,password,password,vieweremail,answer);
         console.log("succesfully registered viewer");
-        await logIn(createrusername,password);
-        console.log("succesfully initlized user, logged in as creater, please manuelly change the admin user to admin");
+        console.log("succesfully initlized user, please don't forget to manuelly change the admin user to admin before continue \n");
     }
     catch(error){
         console.log("initlize failed, please make sure data base is cleared of entry from previous test\n");
     }
+}
+
+export async function test_content(){
+    console.log("preaping test");
+    try{
+        await logIn(createrusername,password);
+        console.log("log in as creater");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        await createNewContent(comictype,comictitle+"0",comicdescription,tag);
+        console.log("create test comic 0");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        await createNewContent(comictype,comictitle+"1",comicdescription,tag);
+        console.log("create test comic 1");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        await createNewContent(comictype,comictitle+"2",comicdescription,tag);
+        console.log("create test comic 2");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        await createNewContent(storytype,storytitle+"0",storydescription,tag);
+        console.log("create test story 0");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        await createNewContent(storytype,storytitle+"1",storydescription,tag);
+        console.log("create test story 1");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        await createNewContent(storytype,storytitle+"2",storydescription,tag);
+        console.log("create test story 2");
+    }
+    catch(err){
+        console.log(err);
+    }
+    console.log("-----------------------Testing /paginate--------------------------- \n")
+    try{
+        var response=await getContentPage(comictype,{});
+        console.log(response.data.result.docs);
+        console.log("sucess getContentPage");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        var response=await wrong_getContentPage(comictype);
+        console.log(response.data);
+        console.log("wrong schema test fail")
+    }
+    catch(err){
+        if(err.response.status==400){
+            console.log("wrong schema test sucess, expected code 400, get:"+err.response.status);
+        }
+        else{
+            console.log("wrong schema test fail, expected code 400, get:"+err.response.status);
+        }
+    }
+    try{
+        await logOut();
+        console.log("log out of creater")
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        var response=await getContentPage(comictype,{"published":false});
+        console.log(response.data.result.docs);
+        console.log("failed unpublished");
+    }
+    catch(err){
+        if(err.response.status==401){
+            console.log("unpublished test sucess, expected code 401, get:"+err.response.status);
+        }
+        else{
+            console.log("unpublished test fail, expected code 401, get:"+err.response.status);
+        }
+    }
+    console.log("-----------------------Testing /id--------------------------- \n");
 }

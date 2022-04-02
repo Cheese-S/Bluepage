@@ -4,10 +4,14 @@ import './App.css';
 import { render } from 'react-dom';
 import { Component } from 'react';
 import Terminal from 'terminal-in-react';
-import { initlize } from './test_content_controller';
+import { initlize,test_content} from './test_content_controller';
 
 const handleinit=()=>{
-    initlize();
+  initlize();
+}
+
+const handletest=()=>{
+  test_content();
 }
 
 class App extends Component {
@@ -29,7 +33,10 @@ class App extends Component {
           backgroundColor='black'
           barColor='black'
           style={{ fontWeight: "bold", fontSize: "1em" }}
-          commands={{'init':()=>handleinit()}}
+          commands={{
+            'init':()=>handleinit() ,
+            'testc':()=>handletest()              
+            }}
           msg='Backend Testing'
           watchConsoleLogging 
         />
