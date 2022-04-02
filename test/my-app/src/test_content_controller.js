@@ -56,9 +56,15 @@ export const wrong_getContentPage = (contentType) =>{
 }
 
 export const getContentById = (contentType,contentID) =>{
-    return api.post(`/content/ ${contentID}`,{
+    return api.post(`/content/id`,{
         contentType : contentType,
         contentID : contentID
+    })
+}
+
+export const wrong_getContentById = (contentType) =>{
+    return api.post(`/content/id`,{
+        contentType : contentType
     })
 }
 
@@ -206,7 +212,7 @@ export async function test_content(){
     console.log("-----------------------Testing /paginate--------------------------- \n")
     try{
         var response=await getContentPage(comictype,{});
-        console.log(response.data.result.docs);
+        console.log(response.data);
         console.log("sucess getContentPage");
     }
     catch(err){
@@ -234,16 +240,143 @@ export async function test_content(){
     }
     try{
         var response=await getContentPage(comictype,{"published":false});
-        console.log(response.data.result.docs);
-        console.log("failed unpublished");
+        console.log(response.data);
+        console.log("failed unauthroized");
     }
     catch(err){
         if(err.response.status==401){
-            console.log("unpublished test sucess, expected code 401, get:"+err.response.status);
+            console.log("unauthroized test sucess, expected code 401, get:"+err.response.status);
         }
         else{
-            console.log("unpublished test fail, expected code 401, get:"+err.response.status);
+            console.log("unauthroized test fail, expected code 401, get:"+err.response.status);
         }
     }
     console.log("-----------------------Testing /id--------------------------- \n");
+    try{
+        var response = await logIn(createrusername,password);
+        var comicid=response.data.user.ownComics;
+        console.log("log in as creater");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        var response = await getContentById(comictype,comicid[0]);
+        console.log(response.data);
+        console.log("sucess get content by id");
+    }
+    catch(err){
+        console.log(err);
+        console.log("failed get content by id");
+    }
+    try{
+        var response=await wrong_getContentById(comictype);
+        console.log(response.data);
+        console.log("wrong schema test fail")
+    }
+    catch(err){
+        if(err.response.status==400){
+            console.log("wrong schema test sucess, expected code 400, get:"+err.response.status);
+        }
+        else{
+            console.log("wrong schema test fail, expected code 400, get:"+err.response.status);
+        }
+    }
+    try{
+        var response = await getContentById(comictype,"12314124124");
+        console.log(response.data);
+        console.log("non exist test fail")
+    }
+    catch(err){
+        if(err.response.status==400){
+            console.log("non exist test sucess, expected code 400, get:"+err.response.status);
+        }
+        else{
+            console.log("non exist test fail, expected code 400, get:"+err.response.status);
+        }
+    }
+    try{
+        await logOut();
+        console.log("log out of creater")
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        var response = await logIn(viewerusername,password);
+        console.log("log in as viewer");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        var response = await getContentById(comictype,comicid[0]);
+        console.log(response.data);
+        console.log("non publish test fail")
+    }
+    catch(err){
+        if(err.response.status==400){
+            console.log("non publish test sucess, expected code 400, get:"+err.response.status);
+        }
+        else{
+            console.log("non publish test fail, expected code 400, get:"+err.response.status);
+        }
+    }
+    try{
+        await logOut();
+        console.log("log out of viewer")
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        var response=await getContentById(comictype,comicid[0]);
+        console.log(response.data);
+        console.log("failed unauthroized");
+    }
+    catch(err){
+        if(err.response.status==401){
+            console.log("unauthroized test sucess, expected code 401, get:"+err.response.status);
+        }
+        else{
+            console.log("unauthroized test fail, expected code 401, get:"+err.response.status);
+        }
+    }
+    console.log("-----------------------Testing /   --------------------------- \n");
+    try{
+        var response = await logIn(createrusername,password);
+        var comicid=response.data.user.ownComics;
+        console.log("log in as creater");
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        await createNewContent(comictype,comictitle+"999",comicdescription,tag);
+        console.log("sucess createNewContent");
+    }
+    catch(err){
+        console.log(err);
+        console.log("failed createNewContent");
+    }
+    try{
+        await logOut();
+        console.log("log out of viewer")
+    }
+    catch(err){
+        console.log(err);
+    }
+    try{
+        var response=await createNewContent(comictype,comictitle+"999",comicdescription,tag);
+        console.log(response.data);
+        console.log("failed createNewContent");
+    }
+    catch(err){
+        if(err.response.status==401){
+            console.log("unauthroized test sucess, expected code 401, get:"+err.response.status);
+        }
+        else{
+            console.log("unauthroized test fail, expected code 401, get:"+err.response.status);
+        }
+    }
 }
