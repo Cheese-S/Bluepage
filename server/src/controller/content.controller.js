@@ -143,7 +143,7 @@ const ContentController = {
                 });
 
             } else {
-                const result = ContentService.getPaginatedContent(contentType, query, req.query);
+                const result = await ContentService.getPaginatedContent(contentType, query, req.query);
                 return res.status(200).send({
                     result: result
                 })
