@@ -6,6 +6,7 @@ const UserService = require('../service/user.service')
 
 
 
+
 function authManager() {
 
     verify = async (req, res, next) => {
@@ -46,6 +47,7 @@ function authManager() {
     }
 
     signToken = (user) => {
+        
         return jwt.sign({
             userID: user._id,
             name: user.name
@@ -55,7 +57,7 @@ function authManager() {
     invalidToken = () => {
         return jwt.sign(
             {},
-            evn.JWT_SECRET,
+            env.JWT_SECRET,
             {expiresIn: 0}
         )
     }
