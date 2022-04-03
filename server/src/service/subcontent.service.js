@@ -179,7 +179,7 @@ const SubcontentService = {
         )
     },
 
-    takeOffSubcontents: async (subcontentType, ...subcontentIDs) => {
+    takeOffSubcontents: async (subcontentType, subcontentIDs) => {
         return SubcontentService.updateManySubcontents(subcontentType,
             { _id: { $in: subcontentIDs } },
             { published: false }

@@ -1,6 +1,6 @@
 import './App.css';                                     
 import Terminal from 'terminal-in-react';
-import { initlize,test_content,continuetest} from './test_content_controller';
+import { initlize, test_content, continuetest} from './test_content_controller';
 import * as React from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -8,20 +8,18 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import {  init_users, current_test } from './test_user_controller'; 
-
-
+import { initSubContentUsers, test_subcontent } from './test_subcontent_controller';
+import {  init_users, user_test } from './test_user_controller'; 
 
 const App =() => {
   const [open, setOpen] = React.useState(false);
   const [File, setFile] = React.useState(null);
 
+  const handleTestUser = () => {
+    user_test();
+  };
   const handleInitUser = () => {
     init_users();
-  };
-  
-  const handleTestUser = () => {
-    current_test();
   };
 
   const handleClose = () => {
@@ -29,39 +27,46 @@ const App =() => {
     continuetest(File);
   };
 
-  const handleinit=()=>{
+  const handleinit = () => {
     initlize();
   }
-  
-  const handletest=()=>{
+
+  const handletest = () => {
     test_content();
     console.log("waiting for file selection..........................");
     setOpen(true);
   }
-
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh"
+  const handleinitsub = () => {
+    initSubContentUsers();
+  }
+  const handlesubtest = () => {
+    test_subcontent();
+  }
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh"
+      }}
+    >
+      <Terminal
+        color='green'
+        backgroundColor='black'
+        barColor='black'
+        style={{ fontWeight: "bold", fontSize: "1em" }}
+        commands={{
+          'init': () => handleinit(),
+          'testc': () => handletest(),
+          'initu': () => handleInitUser(),
+          'testu': () => handleTestUser(),
+          'initsub': () => handleinitsub(),
+          'testsub': () => handlesubtest()
         }}
-      >
-        <Terminal
-          color='green'
-          backgroundColor='black'
-          barColor='black'
-          style={{ fontWeight: "bold", fontSize: "1em" }}
-          commands={{
-            'init':()=>handleinit() ,
-            'testc':()=>handletest(),
-            'initu':()=>handleInitUser(),
-            'testu':()=>handleTestUser()
-          }}
-            msg='Backend Testing'
-            watchConsoleLogging 
-            />
+        msg='Backend Testing'
+        watchConsoleLogging
+      />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{"Please selecte a file"}</DialogTitle>
         <DialogContent>
@@ -73,8 +78,8 @@ const App =() => {
           <Button onClick={handleClose}>Submit</Button>
         </DialogActions>
       </Dialog>
-      </div>  
-    );
+    </div>
+  );
 }
 
 export default App;
