@@ -28,12 +28,12 @@ const UserSchema = new Schema(
         dislikedComics: [{ type: ObjectId, ref: 'Comic', default: [] }],
         likedStories: [{ type: ObjectId, ref: 'Story', default: [] }],
         dislikedStories: [{ type: ObjectId, ref: 'Story', default: [] }],
-        likedPages: [{ type: ObjectId, ref: 'Comic', default: [] }],
-        dislikedPages: [{ type: ObjectId, ref: 'Comic', default: [] }],
-        likedChapters: [{ type: ObjectId, ref: 'Story', default: [] }],
-        dislikedChapters: [{ type: ObjectId, ref: 'Story', default: [] }],
-        ownComics: [{ type: ObjectId, ref: 'Story', default: [] }],
-        ownStories: [{ type: ObjectId, ref: 'Comic', default: [] }],
+        likedPages: [{ type: ObjectId, ref: 'Page', default: [] }],
+        dislikedPages: [{ type: ObjectId, ref: 'Page', default: [] }],
+        likedChapters: [{ type: ObjectId, ref: 'Chapter', default: [] }],
+        dislikedChapters: [{ type: ObjectId, ref: 'Chapter', default: [] }],
+        ownComics: [{ type: ObjectId, ref: 'Comic', default: [] }],
+        ownStories: [{ type: ObjectId, ref: 'Story', default: [] }],
         answers: [{ type: String, required: true, immutable: true }]
     }
 )
