@@ -172,10 +172,7 @@ export const wrong_addView = (contentID) =>{
 }
 
 export const deleteContent = (contentType,contentID) =>{
-    return api.delete(`/content`,{
-        contentType : contentType,
-        contentID : contentID
-    })
+    return api.delete(`/content`,{ data: { contentType : contentType,contentID : contentID }});
 }
 
 export const wrong_deleteContent = (contentID) =>{
