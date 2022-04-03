@@ -1060,7 +1060,8 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
     - Example
     {
         "subcontentType": "chapter",
-        "contentID": "623e534778d5c84703f84dfe"
+        "subcontentIDs": "[623e534778d5c84703f84dfe]",
+        "parentID": "623e534778d5c84703f84dfe"
     }
 
 ### ❤️ **DELETE** ❤️ 

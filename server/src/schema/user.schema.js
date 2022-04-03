@@ -73,8 +73,8 @@ const voteOnSubcontentSchema = Joi.object({
         CONSTANT.VOTE_STATE_TYPE.DISLIKE,
         CONSTANT.VOTE_STATE_TYPE.NEUTRAL
     ).required(),
-    SubcontentID: Joi.string().length(24).required(),
-    SubcontentType: Joi.string().valid(CONSTANT.SUBCONTENT_TYPE.PAGE, CONSTANT.SUBCONTENT_TYPE.CHAPTER).required(),
+    subcontentID: Joi.string().length(24).required(),
+    subcontentType: Joi.string().valid(CONSTANT.SUBCONTENT_TYPE.PAGE, CONSTANT.SUBCONTENT_TYPE.CHAPTER).required(),
 })
 
 const getUserByIDSchema = Joi.object({
