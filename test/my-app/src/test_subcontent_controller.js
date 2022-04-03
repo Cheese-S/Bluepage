@@ -489,11 +489,9 @@ export async function test_subcontent(){
     }
     try {
         var response = await takeOffContent(pagetype, "aaaaaaaaaaaaaaaaaaaaaaaaa");
-        console.log(response);
         console.log("Bad Request Take Off Subcontent test failure, Expected Code: 400, Actual: 200");
     }
     catch (err) {
-        console.log(err);
         if (err.response.status == 400) {
             console.log("Bad Request Take Off Subcontent test success, Expected Code: 400, Actual Code: "+ err.response.status);
         }
