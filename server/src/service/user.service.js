@@ -200,10 +200,10 @@ const UserService = {
      * @param {Strring[]} answers 
      */
 
-    validateAnswers: async (userAnswers, answers) => {
+    validateAnswers: (userAnswers, answers) => {
         try {
-            return userAnswers.every(async (ans, i) => {
-                await bcrypt.compare(ans, answers[i]).catch((e) => false);
+            return userAnswers.every((ans, i) => {
+                return bcrypt.compareSync(answers[i], ans);   
             })
         } catch (e) {
             throw e;

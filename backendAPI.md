@@ -738,6 +738,7 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
     - Description
       - takeoff a piece of content
       - A notification will be pushed to a user to let them know that their content has been taken off
+      - All of this content's subcontent will be taken off as well. 
     - Request
       - contentType: CONTENT_TYPE
       - contentID: ObjectID
@@ -749,7 +750,6 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
         - does not match schema
         - content does not exist
         - content not published 
-        - content does not belong to user 
         - User does not exist
         - User is not an admin
       - 401
@@ -988,7 +988,6 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
           - does not match schema
           - subcontent does not exist
           - subcontent not published 
-          - subcontent does not belong to user 
           - User does not exist
           - User is not an admin
       - 401

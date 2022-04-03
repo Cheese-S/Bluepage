@@ -245,8 +245,14 @@ const UserController = {
             try {
                 const { password, answers, nameOrEmail } = req.body;
                 const user = await UserService.findUser({ $or: [{ name: nameOrEmail }, { email: nameOrEmail }] });
-
-                const isValid = await UserService.validateAnswers(user.answers, answers);
+                if (!user) {
+                    return res.status(400).send({
+                        error: "User does not exist"
+                    })
+                }
+                console.log(user.answers);
+                const isValid = UserService.validateAnswers(user.answers, answers);
+                
                 if (!isValid) {
                     return res.status(400).send({
                         error: "The answers to the security questions are not correct"
