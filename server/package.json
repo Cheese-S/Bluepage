@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serveProd": "cross-env NODE_ENV=production nodemon src/index.js",
-    "serveDev": "cross-env NODE_ENV=production nodemon src/index.js"
+    "serveDev": "cross-env NODE_ENV=development nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
