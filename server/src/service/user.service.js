@@ -105,12 +105,12 @@ const UserService = {
         )
         .populate({
             path: 'ownComics',
-            select: ['title', 'thumbnail'],
+            select: '-comments -contentList -published',
             match: { published: published }
         })
         .populate({
             path: 'ownStories',
-            select: ['title', 'thumbnail'],
+            select: '-comments -contentList -published',
             match: { published: published },
         })
         

@@ -307,7 +307,8 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
       {}
 
 ### 💚 **GET** /:id💚
-    NOTE: THE USER RETURN IN THIS CASE WILL NOT HAVE FIELDS ['password', 'answers', 'comicNotifications', 'storyNotifications', 'isAdmin']
+    NOTE: THE USER WILL NOT HAVE FIELDS ['password', 'answers', 'comicNotifications', 'storyNotifications', 'isAdmin']
+    THE CONTENT WILL NOT HAVE FIELDS ['contentList', 'comments', 'publihsed' (since all contents should be published)]
     - Description
       - Get an user's user object and his **published** content
     - Request Body
@@ -316,8 +317,6 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
     - Response
       - 200
         - user: User
-          - ownComics: {_id: ObjectID, title: String, thumbnail?: Base64 String}
-          - ownStories: {_id: ObjectID, title: String, thumbnail?: Base64 String}
       - 400
         - error: String
           - user does not exist
