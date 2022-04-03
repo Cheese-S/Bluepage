@@ -4,7 +4,8 @@ const auth = require('../auth')
 const CONSTANT = require('../constant')
 const path = require('path');
 const ContentService = require('../service/content.service');
-const SubcontentService = require('../service/subcontent.service')
+const SubcontentService = require('../service/subcontent.service');
+const { default: mongoose } = require('mongoose');
 
 const UserController = {
     registerUser: async (req, res, next) => {
@@ -29,7 +30,7 @@ const UserController = {
                 secure: true,
                 sameSite: 'none'
             }).status(200).send({
-                user: omit({ ...user.toJSON() , isLoggedIn: true }, ['password', 'answers'])
+                user: omit({ ...user.toJSON(), isLoggedIn: true }, ['password', 'answers'])
             }).send();
         } catch (e) {
             return res.status(500).send({
@@ -42,16 +43,31 @@ const UserController = {
     getUser: async (req, res, next) => {
         try {
             const userID = req.locals.userID;
-            const user = await UserService.findUser({
-                _id: userID
-            });
+            const user = await UserService.getUser(userID, false);
+
+            return res.status(200).send({
+                user: { ...omit(user.toJSON(), ['password', 'answers']), isLoggedIn: true }
+            })
+        } catch (e) {
+            return res.status(500).send({
+                error: e.message
+            })
+        }
+    },
+
+    getUserByID: async (req, res, next) => {
+        try {
+            const userID  = req.params.id
+            let user = await UserService.getUser(userID, true);
             if (!user) {
-                return res.status(500).send({
-                    error: "Corrupted Data, the user does not exist"
+                return res.status(400).send({
+                    error: "Could not find this user."
                 })
             }
+            
+            
             return res.status(200).send({
-                user: { ...omit(user, [`password`, `answers`]), isLoggedIn: true }
+                user: { ...omit(user.toJSON(), ['password', 'answers', 'comicNotifications', 'storyNotifications', 'isAdmin']) }
             })
         } catch (e) {
             return res.status(500).send({
@@ -90,7 +106,7 @@ const UserController = {
     loginUser: async (req, res) => {
         try {
             const user = await UserService.loginUser(req.body.nameOrEmail, req.body.password);
-
+            console.log(user);
             const token = auth.signToken(user);
             return res.cookie("token", token, {
                 httpOnly: true,
@@ -229,8 +245,14 @@ const UserController = {
             try {
                 const { password, answers, nameOrEmail } = req.body;
                 const user = await UserService.findUser({ $or: [{ name: nameOrEmail }, { email: nameOrEmail }] });
-
-                const isValid = await UserService.validateAnswers(user.answers, answers);
+                if (!user) {
+                    return res.status(400).send({
+                        error: "User does not exist"
+                    })
+                }
+                console.log(user.answers);
+                const isValid = UserService.validateAnswers(user.answers, answers);
+                
                 if (!isValid) {
                     return res.status(400).send({
                         error: "The answers to the security questions are not correct"

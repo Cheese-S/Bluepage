@@ -99,6 +99,23 @@ const UserService = {
         }
     },
 
+    getUser: async (userID, published) => {
+        return UserModel.findOne(
+            {_id: userID}
+        )
+        .populate({
+            path: 'ownComics',
+            select: '-comments -contentList -published',
+            match: { published: published }
+        })
+        .populate({
+            path: 'ownStories',
+            select: '-comments -contentList -published',
+            match: { published: published },
+        })
+        
+    },
+
     followUser: async (selfID, userID, action) => {
         let update = { $addToSet: { followers: selfID } };
         if (action === CONSTANT.FOLLOW_ACTION_TYPE.UNFOLLOW) {
@@ -183,10 +200,10 @@ const UserService = {
      * @param {Strring[]} answers 
      */
 
-    validateAnswers: async (userAnswers, answers) => {
+    validateAnswers: (userAnswers, answers) => {
         try {
-            return userAnswers.every(async (ans, i) => {
-                await bcrypt.compare(ans, answers[i]).catch((e) => false);
+            return userAnswers.every((ans, i) => {
+                return bcrypt.compareSync(answers[i], ans);   
             })
         } catch (e) {
             throw e;

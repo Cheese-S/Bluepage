@@ -298,12 +298,29 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
         - user: User
       - 400
         - error: String
-          - Database / Server error
           - Somehow the user does not exist
       - 401
         - error: String
         - user: emptyUser
           - Authrization Failed
+    - Example
+      {}
+
+### 💚 **GET** /:id💚
+    NOTE: THE USER WILL NOT HAVE FIELDS ['password', 'answers', 'comicNotifications', 'storyNotifications', 'isAdmin']
+    THE CONTENT WILL NOT HAVE FIELDS ['contentList', 'comments', 'publihsed' (since all contents should be published)]
+    - Description
+      - Get an user's user object and his **published** content
+    - Request Body
+    - Request Param
+      - id: ObjectID
+    - Response
+      - 200
+        - user: User
+      - 400
+        - error: String
+          - user does not exist
+          - Does not match Schema
     - Example
       {}
 
@@ -721,6 +738,7 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
     - Description
       - takeoff a piece of content
       - A notification will be pushed to a user to let them know that their content has been taken off
+      - All of this content's subcontent will be taken off as well. 
     - Request
       - contentType: CONTENT_TYPE
       - contentID: ObjectID
@@ -732,7 +750,6 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
         - does not match schema
         - content does not exist
         - content not published 
-        - content does not belong to user 
         - User does not exist
         - User is not an admin
       - 401
@@ -971,7 +988,6 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
           - does not match schema
           - subcontent does not exist
           - subcontent not published 
-          - subcontent does not belong to user 
           - User does not exist
           - User is not an admin
       - 401
@@ -1043,7 +1059,8 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
     - Example
     {
         "subcontentType": "chapter",
-        "contentID": "623e534778d5c84703f84dfe"
+        "subcontentIDs": "[623e534778d5c84703f84dfe]",
+        "parentID": "623e534778d5c84703f84dfe"
     }
 
 ### ❤️ **DELETE** ❤️ 
