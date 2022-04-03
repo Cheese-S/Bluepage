@@ -4,7 +4,8 @@ import './App.css';
 import { render } from 'react-dom';
 import { Component } from 'react';
 import Terminal from 'terminal-in-react';
-import { initlize,test_content} from './test_content_controller';
+import { initlize, test_content } from './test_content_controller';
+import {  init_users, current_test } from './test_user_controller'; 
 
 const handleinit=()=>{
   initlize();
@@ -13,6 +14,14 @@ const handleinit=()=>{
 const handletest=()=>{
   test_content();
 }
+
+const handleInitUser = () => {
+  init_users();
+};
+
+const handleTestUser = () => {
+  current_test();
+};
 
 class App extends Component {
   intro = () => "My name is Foo!"
@@ -35,7 +44,9 @@ class App extends Component {
           style={{ fontWeight: "bold", fontSize: "1em" }}
           commands={{
             'init':()=>handleinit() ,
-            'testc':()=>handletest()              
+            'testc':()=>handletest() ,
+            'initu':()=>handleInitUser() ,
+            'testu':()=>handleTestUser() ,             
             }}
           msg='Backend Testing'
           watchConsoleLogging 
