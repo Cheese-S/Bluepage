@@ -119,7 +119,12 @@ export const changePasswordLoggedOut = (password, answers, nameOrEmail) => {
         answers,
         nameOrEmail,
     });
-}
+};
+
+export const getUserByID = (id) => {
+    return api.get(`users/${id}`, {
+    });
+};
 
 const testName = 'testuser';
 const testPass = 'password1';
@@ -147,7 +152,7 @@ export async function init_users() {
         await logout();
         await login(testName, testPass);
 
-        console.log('created two users, logged in as the first');
+        console.log('success: created two users, logged in as the first');
     } catch(err) {
         console.log('failure: user creation was unsuccessful. err shown below:')
         console.log(err);
@@ -176,50 +181,9 @@ export async function init_users() {
     }
 }
 
-export async function current_test() {
-    /** Change Password test */
-    try {
-        // change password while logged in
-        const res = await changePassword('password2');
-        console.log(`success: changed password. expected 200, response was ${res.status}`); 
-    } catch(err) {
-        console.log('failure: did not change password. err shown below:');
-        console.log(err);
-    }
-    try {
-        // log out
-        await logout();
-
-        // bad change password request
-        const res = await changePasswordLoggedOut('password2', ['no', 'fake', 'answers'], testName);
-        console.log(`failure: changed password with wrong answers. expected 200, response was ${res.status}`);
-    } catch(err) {
-        console.log('success: did not change password. err shown below:');
-        console.log(err);
-    }
-    try {
-        // change password while logged out
-        const res = await changePasswordLoggedOut('password3', testAnswers, testName);
-        console.log(`success: changed password while logged out. expected 200, response was ${res.status}`);
-    } catch(err) {
-        console.log('failure: did not change password. err shown below:');
-        console.log(err);
-    }
-}
-
 export async function user_test() {
-    console.log('preparing user test:');
+    console.log('beginning user test:');
     /** Register test */
-    try {
-        const res = await registerUser(testName, testPass, testPass, testEmail, testAnswers);
-        console.log(`success: created a user. expected 200, response was ${res.status}`);
-
-        const second = await registerUser(secondName, testPass, testPass, secondEmail, secondAnswers);
-        secondID = second.data.user._id;
-    } catch(err) {
-        console.log('failure: user creation was unsuccessful. err shown below:');
-        console.log(err);
-    }
     try {
         const res = await registerUser(testName, testPass, testPass, testEmail, testAnswers);
         console.log(`failure: created a user when it should not have. expected 409, response was ${res.status}`);
@@ -349,6 +313,52 @@ export async function user_test() {
         console.log(`success: voted like on subcontent. expected 200, response was ${res.status}`);
     } catch(err) {
         console.log(`failure: didn't vote like on subcontent. err shown below:`);
+        console.log(err);
+    }
+    /** Change Password test */
+    try {
+        // change password while logged in
+        const res = await changePassword('password2');
+        console.log(`success: changed password. expected 200, response was ${res.status}`); 
+    } catch(err) {
+        console.log('failure: did not change password. err shown below:');
+        console.log(err);
+    }
+    try {
+        // log out
+        await logout();
+
+        // bad change password request
+        const res = await changePasswordLoggedOut('password2', ['no', 'fake', 'answers'], testName);
+        console.log(`failure: changed password with wrong answers. expected 200, response was ${res.status}`);
+    } catch(err) {
+        console.log('success: did not change password. err shown below:');
+        console.log(err);
+    }
+    try {
+        // change password while logged out
+        const res = await changePasswordLoggedOut('password3', testAnswers, testName);
+        console.log(`success: changed password while logged out. expected 200, response was ${res.status}`);
+    } catch(err) {
+        console.log('failure: did not change password. err shown below:');
+        console.log(err);
+    }
+    /** Get User By ID test */
+    try {
+        // Get from bad ID
+        const res = await getUserByID('abcdefghijklmnopqrstuvwx');
+        console.log(`failure: garbage ID returned a user. expected 200, response was ${res.status}`);
+    } catch(err) {
+        console.log('success: garbage ID returned no user. err shown below:');
+        console.log(err);
+    }
+    try {
+        // Get from good ID
+        const res = await getUserByID(userID);
+        console.log(`success: returned second user. expected 200, response was ${res.status}, user is:`);
+        console.log(res.data.user);
+    } catch(err) {
+        console.log('failure: second user ID returned no user. err shown below:');
         console.log(err);
     }
 }

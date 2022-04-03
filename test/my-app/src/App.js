@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import { Component } from 'react';
 import Terminal from 'terminal-in-react';
 import { initlize, test_content } from './test_content_controller';
-import {  init_users, current_test } from './test_user_controller'; 
+import {  init_users, user_test } from './test_user_controller'; 
 
 const handleinit=()=>{
   initlize();
@@ -20,7 +20,7 @@ const handleInitUser = () => {
 };
 
 const handleTestUser = () => {
-  current_test();
+  user_test();
 };
 
 class App extends Component {
