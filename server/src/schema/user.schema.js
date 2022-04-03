@@ -77,6 +77,10 @@ const voteOnSubcontentSchema = Joi.object({
     SubcontentType: Joi.string().valid(CONSTANT.SUBCONTENT_TYPE.PAGE, CONSTANT.SUBCONTENT_TYPE.CHAPTER).required(),
 })
 
+const getUserByIDSchema = Joi.object({
+    id: Joi.string().length(24).required()
+})
+
 module.exports = {
     registerSchema,
     changePwdSchema,
@@ -84,5 +88,6 @@ module.exports = {
     followContentSchema,
     voteOnContentSchema,
     voteOnSubcontentSchema, 
-    loginSchema
+    loginSchema,
+    getUserByIDSchema
 }

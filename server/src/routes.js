@@ -1,6 +1,7 @@
 const express = require('express');
 const auth = require('./auth');
 const validator = require('./middleware/validate')
+const ParamValidator = require('./middleware/validateParam')
 const UserController = require('./controller/user.controller')
 const ContentController = require('./controller/content.controller')
 const SubcontentController = require('./controller/subcontent.controller')
@@ -17,6 +18,8 @@ function routes(app) {
     app.post("/api/users", validator('registerUser'), UserController.registerUser);
 
     app.get("/api/users", auth.verify, UserController.getUser);
+
+    app.get("/api/users/:id", ParamValidator('getUserByID'), UserController.getUserByID);
     
     app.put("/api/users/password", validator('changeUserPwd'), UserController.changePassword);
 

@@ -298,12 +298,28 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
         - user: User
       - 400
         - error: String
-          - Database / Server error
           - Somehow the user does not exist
       - 401
         - error: String
         - user: emptyUser
           - Authrization Failed
+    - Example
+      {}
+
+### 💚 **GET** /:id💚
+    NOTE: THE USER RETURN IN THIS CASE WILL NOT HAVE FIELDS ['password', 'answers', 'comicNotifications', 'storyNotifications', 'isAdmin']
+    - Description
+      - Get an user's user object
+    - Request Body
+    - Request Param
+      - id: ObjectID
+    - Response
+      - 200
+        - user: User
+      - 400
+        - error: String
+          - user does not exist
+          - Does not match Schema
     - Example
       {}
 

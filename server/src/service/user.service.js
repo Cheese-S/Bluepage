@@ -99,6 +99,23 @@ const UserService = {
         }
     },
 
+    getUser: async (userID, published) => {
+        return UserModel.findOne(
+            {_id: userID}
+        )
+        .populate({
+            path: 'ownComics',
+            select: ['title', 'thumbnail'],
+            match: { published: published }
+        })
+        .populate({
+            path: 'ownStories',
+            select: ['title', 'thumbnail'],
+            match: { published: published },
+        })
+        
+    },
+
     followUser: async (selfID, userID, action) => {
         let update = { $addToSet: { followers: selfID } };
         if (action === CONSTANT.FOLLOW_ACTION_TYPE.UNFOLLOW) {
