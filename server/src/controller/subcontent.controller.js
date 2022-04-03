@@ -101,8 +101,8 @@ const SubcontentController = {
 
     updateSubcontent: async (req, res) => {
         try {
-            const { subcontentID, subcontentType, title, published, body, parentID } = req.body;
-            const { userID } = req.locals;
+            const { subcontentType, subcontentID, title, body, published, parentID } = req.body;
+            const { userID, user } = req.locals;
             const isOwnedByUser = await SubcontentService.isOwnedByUser(subcontentType, subcontentID, userID)
             if (!isOwnedByUser) {
                 return res.status(400).send({
@@ -143,8 +143,8 @@ const SubcontentController = {
             }
 
             if (published) {
-                await UserService.addNotificationToFollowers(subcontentType, content._id,
-                    { text: `A new ${subcontentType} has been published ${contentType} ${content.title} is updated` }
+                await UserService.addNotificationToFollowers(subcontentType, content._id, user.followers,
+                    { text: `A new ${subcontentType} has been published ${contentType} ${content.title} is updated`, link: subcontentID }
                 )
             }
 
@@ -190,9 +190,9 @@ const SubcontentController = {
 
             await UserService.addNotificationToUser(
                 subcontentType,
-                content.author.id,
+                subcontent.author.id,
                 {
-                    text: `Your ${contentType} "${subcontent.title}" has been taken down because it has been deemed inappropriate for our website.`,
+                    text: `Your ${subcontentType} "${subcontent.title}" has been taken down because it has been deemed inappropriate for our website.`,
                     link: subcontent._id
                 }
             )

@@ -8,6 +8,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { initSubContentUsers, test_subcontent } from './test_subcontent_controller';
 import {  init_users, current_test } from './test_user_controller'; 
 
 
@@ -38,7 +39,12 @@ const App =() => {
     console.log("waiting for file selection..........................");
     setOpen(true);
   }
-
+  const handleinitsub = () => {
+    initSubContentUsers();
+  }
+  const handlesubtest = () => {
+    test_subcontent();
+  }
     return (
       <div
         style={{
@@ -57,7 +63,9 @@ const App =() => {
             'init':()=>handleinit() ,
             'testc':()=>handletest(),
             'initu':()=>handleInitUser(),
-            'testu':()=>handleTestUser()
+            'testu':()=>handleTestUser(),
+            'initsub':()=>handleinitsub(),
+            'testsub':()=> handlesubtest()
           }}
             msg='Backend Testing'
             watchConsoleLogging 
