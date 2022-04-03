@@ -238,6 +238,7 @@ const ContentController = {
 
     takeOffContent: async (req, res) => {
         try {
+            console.log("aa");
             const { contentType, contentID } = req.body;
             const content = await ContentService.takeOffContent(contentType, contentID);
             if (!content) {
@@ -246,7 +247,8 @@ const ContentController = {
                 })
             }
             const subcontentType = CONSTANT.CONTENT_TYPE.getSubcontentType(contentType);
-            const subcontentIDs = content.contentList.map(e => e.id);
+            const subcontentIDs = content.toJSON().contentList.map(e => e.subcontent);
+            console.log(mongoose.Types.ObjectId.isValid(subcontentIDs[0]));
             await SubcontentService.takeOffSubcontents(subcontentType, subcontentIDs);
 
             await UserService.addNotificationToUser(

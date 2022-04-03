@@ -181,7 +181,7 @@ const SubcontentController = {
     takeOffSubcontent: async (req, res) => {
         try {
             const { subcontentType, subcontentID } = req.body;
-            const subcontent = await SubcontentService.takeOffSubcontent(subcontentType, subcontentID);
+            const subcontent = await SubcontentService.takeOffSubcontent(subcontentType, [subcontentID]);
             if (!subcontent) {
                 return res.status(400).send({
                     error: `The ${subcontentType} does not exist or it is not published`
