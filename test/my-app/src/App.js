@@ -62,7 +62,7 @@ const App =() => {
             msg='Backend Testing'
             watchConsoleLogging 
             />
-      <Dialog>
+      <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{"Please selecte a file"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
