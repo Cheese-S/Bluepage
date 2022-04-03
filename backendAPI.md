@@ -898,6 +898,7 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
       - title: String
       - body: Object
       - published: boolean
+      - parentID: ObjectID
     - Response
       - 200
         - subcontent: subcontent
@@ -920,7 +921,8 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
         "subcontentID": "623f883826f9a98b9a0c5091",
         "title": "SICK aGE2",
         "body": {"a": 5},
-        "published": true
+        "published": true,
+        "parentID": "623f883826f9a98b9a409cd9"
     }
 
 
