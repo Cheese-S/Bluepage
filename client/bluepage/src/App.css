@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+#splash-screen {
+  color: white;
+  font-size: 5vw;
+  border-color: black;
+  border-width: 2px;
+  border-bottom-style: solid;
+  padding-left: 5%;
+  padding-top: 5%;
+  padding-bottom: 5%;
+  height:70%;
+  text-align: center;
+  vertical-align: center;
+}
+
+
+body{
+  background-color: royalblue;
+}
