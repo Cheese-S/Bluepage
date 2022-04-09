@@ -15,7 +15,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
 import { Menu, MenuItem } from '@mui/material';
 
-export default function ButtonAppBar() {
+export const ButtonAppBar: React.FC = () => {
     const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [sortanchorEl, setsortAnchorEl] =  React.useState<null | HTMLElement>(null);
     const handleuserMenu = (event: React.MouseEvent<HTMLButtonElement>) => {

@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Link from '@mui/material/Link'
 
-export default function LogInPage(){
+export const LogInPage: React.FC = () => {
     return (
         <body>
             <Box  width="100%" height="100%" sx={{  display: 'flex' }}>
