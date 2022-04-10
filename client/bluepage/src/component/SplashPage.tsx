@@ -6,8 +6,8 @@ import { Typography } from '@mui/material';
 
 
 
-export default function SplashPage(){
-
+export const SplashPage: React.FC = ({}) => {
+    
     return (
         <body>
             <Box   height="50%" sx={{ minHeight:'200',overflow:'hidden' }}>
@@ -28,3 +28,4 @@ export default function SplashPage(){
         </body>
     );
 }
+
