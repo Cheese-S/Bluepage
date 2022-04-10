@@ -12,6 +12,8 @@ import ViewComicPage from './component/ViewComicPage';
 import ProfilePage from './component/ProfilePage';
 import EditPage from './component/EditPage';
 import SearchPage from './component/SearchPage';
+import {HomePage} from './component/HomePage';
+import EditChapter from './component/EditChapter';
 
 function App() {
   return (
@@ -27,9 +29,10 @@ function App() {
       <Route path="/profile/test" element={<ProfilePage/>} />
       <Route path="/page/edit" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />
+      <Route path="/home/test" element={<HomePage/>}/>
+      <Route path="chapter/edit" element={<EditChapter/>} />
     </Routes>
     </BrowserRouter>
   );
 }
-
 export default App;

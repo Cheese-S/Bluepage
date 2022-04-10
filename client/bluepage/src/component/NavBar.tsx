@@ -1,6 +1,7 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import Badge from '@mui/material/Badge';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -16,14 +17,13 @@ import SortIcon from '@mui/icons-material/Sort';
 import { Menu, MenuItem } from '@mui/material';
 import { ViewCard } from './ViewCard'
 import Grid from '@material-ui/core/Grid/Grid';
-
 export const ButtonAppBar: React.FC = () => {
-    const [useranchorEl, setuserAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [sortanchorEl, setsortAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
+    const [sortanchorEl, setsortAnchorEl] =  React.useState<null | HTMLElement>(null);
+    const [notificationanchorEl, setnotificationAnchorEl] = React.useState<null | HTMLElement>(null);
     const handleuserMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setuserAnchorEl(event.currentTarget);
     };
-
     const handleuserClose = () => {
         setuserAnchorEl(null);
     };
@@ -31,11 +31,18 @@ export const ButtonAppBar: React.FC = () => {
     const handlesortMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setsortAnchorEl(event.currentTarget);
     };
-
+    
     const handlesortClose = () => {
         setsortAnchorEl(null);
     };
 
+    const handleNotificationMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setnotificationAnchorEl(event.currentTarget);
+    }
+
+    const handleNotificationClose = () => {
+        setnotificationAnchorEl(null);
+    }
 
     return (
         <div>
@@ -43,33 +50,59 @@ export const ButtonAppBar: React.FC = () => {
                 <AppBar position="static">
                     <Toolbar>
                         <Box component="div" sx={{ flexGrow: 1 }}>
-                            <Link href="/" underline="none" variant="h6" color="#000000" sx={{ pl: "2%", pr: "2%" }}>
+                            <Link href="/" underline="none" variant="h6" color="#000000" sx={{pl:"2%",pr:"2%"}}>
                                 BLUE PAGE
                             </Link>
                             <Link href="/" underline="none" variant="body2" color="#5227cc">
                                 COMIC
                             </Link>
-                            <Link href="/" underline="none" variant="body2" color="#d52941" sx={{ pl: "2%" }}>
+                            <Link href="/" underline="none"  variant="body2" color="#d52941" sx={{pl:"2%"}}>
                                 STORY
                             </Link>
                         </Box>
-                        <IconButton size="large" color="inherit">
-                            <NotificationsIcon />
+
+                    <Badge badgeContent = {3} color = 'error'>
+                        <IconButton size="small"  color="inherit" onClick = {handleNotificationMenu}>
+                            <NotificationsIcon/>
                         </IconButton>
-                        <IconButton size="large" color="inherit" onClick={handleuserMenu}>
-                            <AccountCircleIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={useranchorEl}
+                    </Badge>
+                    <Menu 
+                            id = "notification-appbar"
+                            anchorEl={notificationanchorEl}
                             anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
+                            vertical: 'top',
+                            horizontal: 'right',
                             }}
                             keepMounted
                             transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
+                            vertical: 'top',
+                            horizontal: 'right',
+                            }}
+                            open={Boolean(notificationanchorEl)}
+                            onClose={handleNotificationClose}
+                            style={{ width: 370, maxHeight: 200}}
+                        >
+                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>"author name" uploads "title of page/chapter" or page/chapter X (if no name is provided) of (title of comic/story)</MenuItem>
+                            <Divider light/>
+                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>George uploaded Page 10 of Test Data</MenuItem>
+                            <Divider light/>
+                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>The scrolling works!!!</MenuItem>
+                    </Menu>
+
+                    <IconButton size="large"  color="inherit" onClick={handleuserMenu}>
+                        <AccountCircleIcon/>
+                    </IconButton>
+                    <Menu
+                            id="menu-appbar"
+                            anchorEl={useranchorEl}
+                            anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
                             }}
                             open={Boolean(useranchorEl)}
                             onClose={handleuserClose}
@@ -86,31 +119,31 @@ export const ButtonAppBar: React.FC = () => {
                 <AppBar position="static" style={{ background: '#5227cc' }}>
                     <Toolbar>
                         <Typography>Tag:</Typography>
-                        <Link href="/" underline="none" variant="body2" color="#ffffff" sx={{ pl: "2%" }}>
+                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Sci-fi
                         </Link>
-                        <Link href="/" underline="none" variant="body2" color="#ffffff" sx={{ pl: "2%" }}>
+                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Fantasy
                         </Link>
-                        <Link href="/" underline="none" variant="body2" color="#ffffff" sx={{ pl: "2%" }}>
+                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Comedy
                         </Link>
-                        <Link href="/" underline="none" variant="body2" color="#ffffff" sx={{ pl: "2%" }}>
+                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Action
                         </Link>
-                        <Link href="/" underline="none" variant="body2" color="#ffffff" sx={{ pl: "2%" }}>
+                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Adventure
                         </Link>
-                        <Link href="/" underline="none" variant="body2" color="#ffffff" sx={{ pl: "2%" }}>
+                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Romance
                         </Link>
-                        <Link href="/" underline="none" variant="body2" color="#ffffff" sx={{ pl: "2%" }}>
+                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Mystery
                         </Link>
-                        <Divider orientation="vertical" sx={{ flexGrow: 1 }} flexItem>
+                        <Divider orientation="vertical" sx={{ flexGrow: 1 }} flexItem>  
                         </Divider>
                         <Switch defaultChecked />
-                        <Typography sx={{ pr: "2%" }}>Search User</Typography>
+                        <Typography sx={{pr:"2%"}}>Search User</Typography>
                         <TextField
                             margin="normal"
                             required
@@ -119,30 +152,30 @@ export const ButtonAppBar: React.FC = () => {
                             name="Search"
                             autoComplete="Search"
                             autoFocus
-                            InputLabelProps={{ style: { color: 'white' } }}
-                            sx={{ color: 'white', input: { color: 'white' } }}
+                            InputLabelProps={{style : {color : 'white'} }}
+                            sx={{ color:'white',input: { color: 'white' }}}
                         />
                         <Button
                             type="submit"
                             variant="contained"
-                            sx={{ mt: 3, mb: 2, backgroundColor: '#5227cc', ml: "2%" }}
+                            sx={{ mt: 3, mb: 2,backgroundColor:'#5227cc',ml:"2%" }}
                         >
                             Search
                         </Button>
-                        <IconButton size="large" color="inherit" onClick={handlesortMenu}>
-                            <SortIcon />
+                        <IconButton size="large"  color="inherit" onClick={handlesortMenu}>
+                            <SortIcon/>
                         </IconButton>
                         <Menu
                             id="menu-appbar"
                             anchorEl={sortanchorEl}
                             anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
+                            vertical: 'top',
+                            horizontal: 'right',
                             }}
                             keepMounted
                             transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
+                            vertical: 'top',
+                            horizontal: 'right',
                             }}
                             open={Boolean(sortanchorEl)}
                             onClose={handlesortClose}
@@ -155,54 +188,6 @@ export const ButtonAppBar: React.FC = () => {
                     </Toolbar>
                 </AppBar>
             </Box>
-            <Grid container spacing={2}>
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-            </Grid>
-
         </div>
-    );
+  );
 }
