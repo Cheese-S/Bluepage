@@ -5,28 +5,23 @@ import Comment from '../subcomponents/Comment';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 
-export default function ViewChapterPage(){
+export default function ViewComicPage(){
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
                 <ContentBlurb />
             </Box>
-            <Box style={{ width: '90%', margin: 'auto', }}>
+            <Box style={{ width: '90%', margin: 'auto' }}>
                 <Box style={{ backgroundColor: '#ffffff', padding: '10px' }}>
-                    <Typography align='center' style={{ fontWeight: 'bold', fontSize: '20px' }}>Chapter 1: Example Chapter</Typography>
+                    <Typography align='center' style={{ fontWeight: 'bold', fontSize: '20px' }}>Page 1: Example Page</Typography>
                 </Box>
+            </Box>
+            <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px' }}>
+                <img src='https://manga.guya.moe/media/manga/Kaguya-Wants-To-Be-Confessed-To/chapters/0111-1_x1oc9802/3/01.png' style={{ width: '50%', height: '50%', display: 'block', marginLeft: 'auto', marginRight: 'auto', }}/>
             </Box>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px'}}/>
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
-                <Box style={{ width: '98%', margin: 'auto '}}>
-                    <Typography style={{ paddingBottom: '10px'}}>But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system.</Typography>
-                    <Typography style={{ paddingBottom: '10px'}}>And expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful.</Typography>
-                    <Typography style={{ paddingBottom: '10px'}}>Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure.</Typography>
-                    <Typography style={{ paddingBottom: '10px'}}>To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?</Typography>
-                </Box>
-                
                 <Box style={{ width: '98%', margin: 'auto'}}>
-                    <hr style={{ color: 'black', backgroundColor: 'black', height: 1}} />
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <Typography style={{ fontWeight: 'bold', width: '70%' }}>1,234 views</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>

@@ -7,18 +7,20 @@ import { LogInPage } from './component/LogInPage';
 import { RegisterPage } from './component/RegisterPage';
 import { ButtonAppBar } from './component/NavBar'
 import ListPage from './component/ListPage';
-import ViewChapterPage from './component/ViewChapter';
+import ViewStoryChapter from './component/ViewStoryChapter';
+import ViewComicPage from './component/ViewComicPage';
 
 function App() {
   return (
     <BrowserRouter>
     <Routes>
-      <Route path="/"  element={<ViewChapterPage/>} />
+      <Route path="/"  element={<SplashPage/>} />
       <Route path="/login"  element={<LogInPage/>} />
       <Route path="/signup"  element={<RegisterPage/>} />
       <Route path="/nav/test" element={<ButtonAppBar/>} />
       <Route path="/list/test" element={<ListPage/>} />
-      <Route path="chapter/test" element={<ViewChapterPage/>} />
+      <Route path="chapter/test" element={<ViewStoryChapter/>} />
+      <Route path="page/test" element={<ViewComicPage/>} />
     </Routes>
     </BrowserRouter>
   );
