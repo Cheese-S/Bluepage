@@ -7,6 +7,7 @@ import { LogInPage } from './component/LogInPage';
 import { RegisterPage } from './component/RegisterPage';
 import { ButtonAppBar } from './component/NavBar'
 import ListPage from './component/ListPage';
+import ViewChapterPage from './component/ViewChapter';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/signup"  element={<RegisterPage/>} />
       <Route path="/nav/test" element={<ButtonAppBar/>} />
       <Route path="/list/test" element={<ListPage/>} />
+      <Route path="chapter/test" element={<ViewChapterPage/>} />
     </Routes>
     </BrowserRouter>
   );
