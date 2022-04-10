@@ -14,8 +14,6 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
 import { Menu, MenuItem } from '@mui/material';
-import { ViewCard } from './ViewCard'
-import Grid from '@material-ui/core/Grid/Grid';
 
 export const ButtonAppBar: React.FC = () => {
     const [useranchorEl, setuserAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -155,53 +153,7 @@ export const ButtonAppBar: React.FC = () => {
                     </Toolbar>
                 </AppBar>
             </Box>
-            <Grid container spacing={2}>
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-
-                <Grid item xs={3}>
-                    <ViewCard />
-                </Grid>
-            </Grid>
+            
 
         </div>
     );

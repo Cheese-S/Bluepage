@@ -12,6 +12,7 @@ import ViewComicPage from './component/ViewComicPage';
 import ProfilePage from './component/ProfilePage';
 import EditPage from './component/EditPage';
 import SearchPage from './component/SearchPage';
+import HomePage from './component/HomePage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
       <Route path="/profile/test" element={<ProfilePage/>} />
       <Route path="/page/edit" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />
+      <Route path="/home" element={<HomePage/>} />
     </Routes>
     </BrowserRouter>
   );
