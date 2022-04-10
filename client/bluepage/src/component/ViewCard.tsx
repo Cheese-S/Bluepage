@@ -4,8 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
-import Chip from '@mui/material/Chip'
-import * as moment from 'moment'
+import Chip from '@mui/material/Chip';
 
 const cardData = {
     title: "To Kill a Mockingbird",
