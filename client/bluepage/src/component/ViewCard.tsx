@@ -28,12 +28,12 @@ const getFormattedNum = (num: number): string => {
 export const ViewCard: React.FC = ({ }) => {
 
     return (
-        <Card sx={{ width: 1 / 4 }}>
+        <Card sx={{ width: 1}}>
             <CardActionArea>
                 <CardMedia
                     component="img"
                     height="140"
-                    image="/static/images/cards/contemplative-reptile.jpg"
+                    image="https://reptilesmagazine.com/wp-content/uploads/data-import/1b08138d/green-iguana-shutterstock_637249666.jpg"
                     alt="green iguana"
                 />
                 <CardContent>
