@@ -11,6 +11,7 @@ import ViewStoryChapter from './component/ViewStoryChapter';
 import ViewComicPage from './component/ViewComicPage';
 import ProfilePage from './component/ProfilePage';
 import EditPage from './component/EditPage';
+import SearchPage from './component/SearchPage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
       <Route path="/page/test" element={<ViewComicPage/>} />
       <Route path="/profile/test" element={<ProfilePage/>} />
       <Route path="/page/edit" element={<EditPage/>} />
+      <Route path="/search" element={<SearchPage/>} />
     </Routes>
     </BrowserRouter>
   );
