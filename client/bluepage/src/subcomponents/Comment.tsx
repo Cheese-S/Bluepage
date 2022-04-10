@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Link, Typography } from '@mui/material/';
+import { Box, Typography } from '@mui/material/';
 
 export default function SubcontentListing(){
     return (

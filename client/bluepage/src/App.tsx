@@ -9,6 +9,7 @@ import { ButtonAppBar } from './component/NavBar'
 import ListPage from './component/ListPage';
 import ViewStoryChapter from './component/ViewStoryChapter';
 import ViewComicPage from './component/ViewComicPage';
+import ProfilePage from './component/ProfilePage';
 
 function App() {
   return (
@@ -19,8 +20,9 @@ function App() {
       <Route path="/signup"  element={<RegisterPage/>} />
       <Route path="/nav/test" element={<ButtonAppBar/>} />
       <Route path="/list/test" element={<ListPage/>} />
-      <Route path="chapter/test" element={<ViewStoryChapter/>} />
-      <Route path="page/test" element={<ViewComicPage/>} />
+      <Route path="/chapter/test" element={<ViewStoryChapter/>} />
+      <Route path="/page/test" element={<ViewComicPage/>} />
+      <Route path="/profile/test" element={<ProfilePage/>} />
     </Routes>
     </BrowserRouter>
   );
