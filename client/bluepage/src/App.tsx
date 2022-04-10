@@ -10,6 +10,7 @@ import ListPage from './component/ListPage';
 import ViewStoryChapter from './component/ViewStoryChapter';
 import ViewComicPage from './component/ViewComicPage';
 import ProfilePage from './component/ProfilePage';
+import EditPage from './component/EditPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Route path="/chapter/test" element={<ViewStoryChapter/>} />
       <Route path="/page/test" element={<ViewComicPage/>} />
       <Route path="/profile/test" element={<ProfilePage/>} />
+      <Route path="/page/edit" element={<EditPage/>} />
     </Routes>
     </BrowserRouter>
   );
