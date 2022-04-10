@@ -201,7 +201,6 @@ export const ButtonAppBar: React.FC = () => {
                 <Grid item xs={3}>
                     <ViewCard />
                 </Grid>
-
             </Grid>
 
         </div>
