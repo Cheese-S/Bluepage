@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material/';
 import ContentBlurb from '../subcomponents/ContentBlurb';
-import SubcontentListing from '../subcomponents/SubcontentListing';
 import Comment from '../subcomponents/Comment';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 
 export default function ViewChapterPage(){
     return (
@@ -26,6 +27,15 @@ export default function ViewChapterPage(){
                 
                 <Box style={{ width: '98%', margin: 'auto'}}>
                     <hr style={{ color: 'black', backgroundColor: 'black', height: 1}} />
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <Typography style={{ fontWeight: 'bold', width: '70%' }}>1,234 views</Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
+                            <Typography style={{ fontWeight: 'bold' }}>3</Typography>
+                            <ThumbDownOffAltIcon sx={{ fontSize: '40px' }}></ThumbDownOffAltIcon>
+                            <Typography style={{ fontWeight: 'bold', marginRight: '20px' }}>112</Typography>
+                            <ThumbUpOffAltIcon sx={{ fontSize: '40px' }}></ThumbUpOffAltIcon>
+                        </Box>
+                    </Box>
                     <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
                     <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
                         <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }}></Box>
@@ -35,7 +45,7 @@ export default function ViewChapterPage(){
                             <Button variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>
                         </Box>
                     </Box>
-                    <Box style={{ display: 'flex', flexDirection: 'row-reverse', paddingBottom: '20px', width: '90%' }}>
+                    <Box style={{ paddingBottom: '20px', width: '90%' }}>
                         
                     </Box>
                     <Comment/>
