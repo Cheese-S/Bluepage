@@ -33,7 +33,7 @@ export const SearchViewCard: React.FC = ({ }) => {
             <CardMedia
                 component="img"
                 sx={{ width: 300 }}
-                image="/static/images/cards/live-from-space.jpg"
+                image="https://i.scdn.co/image/ab67616d0000b2734052e974e7fc03fa49770986"
                 alt="Live from space album cover"
             />
             <Box sx={{ display: "flex", flexDirection: "column" }}>
