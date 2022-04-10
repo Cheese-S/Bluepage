@@ -15,12 +15,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
 import { Menu, MenuItem } from '@mui/material';
-<<<<<<< HEAD
-import { ViewCard } from './ViewCard'
-import Grid from '@material-ui/core/Grid/Grid';
-=======
 
->>>>>>> b139ac9fc55fc24fafedc80d92c27e27c3b10260
 export const ButtonAppBar: React.FC = () => {
     const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [sortanchorEl, setsortAnchorEl] =  React.useState<null | HTMLElement>(null);
@@ -192,11 +187,6 @@ export const ButtonAppBar: React.FC = () => {
                     </Toolbar>
                 </AppBar>
             </Box>
-<<<<<<< HEAD
-=======
-            
-
->>>>>>> b139ac9fc55fc24fafedc80d92c27e27c3b10260
         </div>
   );
 }

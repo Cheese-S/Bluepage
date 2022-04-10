@@ -30,7 +30,7 @@ function App() {
       <Route path="/page/edit" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />
       <Route path="/home/test" element={<HomePage/>}/>
-      <Route path="chapter/edit" element={<EditChapter/>} />
+      <Route path="/chapter/edit" element={<EditChapter/>} />
     </Routes>
     </BrowserRouter>
   );
