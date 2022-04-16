@@ -2,9 +2,15 @@ import Axios from "axios";
 import { BP_TAGS, COMMENT_ACTION_TYPE, CONTENT_TYPE, FOLLOW_ACTION_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from "../constant";
 
 Axios.defaults.withCredentials = true;
+let url: string;
 
+if (process.env.NODE_ENV === 'development') {
+    url = 'http://localhost:4000/api'; 
+} else {
+    url = 'http://18.217.187.50/backend'
+}
 const api = Axios.create({
-    baseURL: `http://localhost:4000/api`,
+    baseURL: url,
 });
 
 export const registerUser = (username: string, password: string, passwordConfirmation: string, email: string, answers: string[]) => {

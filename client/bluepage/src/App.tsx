@@ -15,7 +15,7 @@ import SearchPage from './component/SearchPage';
 import {HomePage} from './component/HomePage';
 import EditChapter from './component/EditChapter';
 
-function App() {
+function App() { 
   return (
     <BrowserRouter>
     <Routes>
