@@ -16,8 +16,9 @@ export const ButtonAppBar: React.FC = () => {
     const resetUserStore = userStore(state => state.resetStore);
 
     const handleLogout = async () => {
-        await logout();
+        handleuserClose();
         resetUserStore();
+        await logout();
         window.location.reload();
     }
 
