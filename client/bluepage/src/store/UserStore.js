@@ -1,5 +1,4 @@
 import create from 'zustand';
-import { useHistory } from 'react-router-dom';
 
 export const userStore = create(set => ({
     id: '',
@@ -29,5 +28,3 @@ export const userStore = create(set => ({
     siteIsComicMode: false,
     setIsComicMode: (isComicMode) => set({ isComicMode }),
 }));
-
-export const history = useHistory();
