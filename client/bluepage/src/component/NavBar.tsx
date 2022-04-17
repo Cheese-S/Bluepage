@@ -1,25 +1,18 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Badge from '@mui/material/Badge';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
+import { AppBar, Box, Badge, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Divider, Switch, TextField, Link } from '@mui/material/';
 import MenuIcon from '@mui/icons-material/Menu';
-import Divider from '@mui/material/Divider';
-import Switch from '@mui/material/Switch';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link'
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
-import { Menu, MenuItem } from '@mui/material';
+import { userStore } from '../store/UserStore';
 
 export const ButtonAppBar: React.FC = () => {
     const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [sortanchorEl, setsortAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [notificationanchorEl, setnotificationAnchorEl] = React.useState<null | HTMLElement>(null);
+    const id = userStore(state => state.id);
+    const isLoggedIn = userStore(state => state.isLoggedIn);
+
     const handleuserMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setuserAnchorEl(event.currentTarget);
     };
@@ -91,26 +84,47 @@ export const ButtonAppBar: React.FC = () => {
                     <IconButton size="large"  color="inherit" onClick={handleuserMenu}>
                         <AccountCircleIcon/>
                     </IconButton>
-                    <Menu
-                            id="menu-appbar"
-                            anchorEl={useranchorEl}
-                            anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                            }}
-                            open={Boolean(useranchorEl)}
-                            onClose={handleuserClose}
-                        >
-                            <MenuItem onClick={handleuserClose}>My Profile</MenuItem>
-                            <MenuItem onClick={handleuserClose}>My following</MenuItem>
-                            <MenuItem onClick={handleuserClose}>Contact Admin</MenuItem>
-                            <MenuItem onClick={handleuserClose}>Log out</MenuItem>
-                        </Menu>
+                    {isLoggedIn ?
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={useranchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(useranchorEl)}
+                                onClose={handleuserClose}
+                            >
+                                <MenuItem onClick={handleuserClose}>My Profile</MenuItem>
+                                <MenuItem onClick={handleuserClose}>My following</MenuItem>
+                                <MenuItem onClick={handleuserClose}>Contact Admin</MenuItem>
+                                <MenuItem onClick={handleuserClose}>Log out</MenuItem>
+                            </Menu>
+                    :
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={useranchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(useranchorEl)}
+                                onClose={handleuserClose}
+                            >
+                                <MenuItem><Link href="/login" underline="none">Login</Link></MenuItem>
+                                <MenuItem><Link href="/signup" underline="none">Sign up</Link></MenuItem>
+                            </Menu>
+                    }
                     </Toolbar>
                 </AppBar>
             </Box>

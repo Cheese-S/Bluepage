@@ -3,11 +3,8 @@ import { Box, Typography, Button, TextField, Link } from '@mui/material/';
 import { ButtonAppBar } from './NavBar';
 import { ViewCard } from './ViewCard'
 import Grid from '@material-ui/core/Grid/Grid';
-import { userStore } from '../store/UserStore';
 
 export const HomePage: React.FC = () => {
-    const id = userStore(state => state.id);
-    const isLoggedIn = userStore(state => state.isLoggedIn);
 
     return (
         <Box style={{ alignItems: 'center', justifyContent: 'center' }}>
