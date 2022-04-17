@@ -81,6 +81,10 @@ const getUserByIDSchema = Joi.object({
     id: Joi.string().length(24).required()
 })
 
+const changeUserDescriptionSchema = Joi.object({
+    description: Joi.string().required().max(150)
+})
+
 module.exports = {
     registerSchema,
     changePwdSchema,
@@ -89,5 +93,6 @@ module.exports = {
     voteOnContentSchema,
     voteOnSubcontentSchema, 
     loginSchema,
-    getUserByIDSchema
+    getUserByIDSchema,
+    changeUserDescriptionSchema
 }

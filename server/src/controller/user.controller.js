@@ -7,6 +7,7 @@ const ContentService = require('../service/content.service');
 const SubcontentService = require('../service/subcontent.service');
 const { default: mongoose } = require('mongoose');
 
+
 const UserController = {
     registerUser: async (req, res, next) => {
         try {
@@ -57,15 +58,14 @@ const UserController = {
 
     getUserByID: async (req, res, next) => {
         try {
-            const userID  = req.params.id
+            const userID = req.params.id
             let user = await UserService.getUser(userID, true);
             if (!user) {
                 return res.status(400).send({
                     error: "Could not find this user."
                 })
             }
-            
-            
+
             return res.status(200).send({
                 user: { ...omit(user.toJSON(), ['password', 'answers', 'comicNotifications', 'storyNotifications', 'isAdmin']) }
             })
@@ -92,9 +92,9 @@ const UserController = {
                 })
             }
             const user = await UserService.followUser(req.locals.userID, req.body.followingUserID, req.body.action);
-
+            await UserService.populateUser(user);
             return res.status(200).send({
-                user: omit(user, ['password', 'answers'])
+                user: omit(user.toJSON(), ['password', 'answers'])
             })
         } catch (e) {
             return res.status(500).send({
@@ -106,14 +106,14 @@ const UserController = {
     loginUser: async (req, res) => {
         try {
             const user = await UserService.loginUser(req.body.nameOrEmail, req.body.password);
-            console.log(user);
+            await UserService.populateUser(user);
             const token = auth.signToken(user);
             return res.cookie("token", token, {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'none'
             }).status(200).send({
-                user: { ...user, isLoggedIn: true }
+                user: { ...omit(user.toJSON(), ['password', 'answers']), isLoggedIn: true }
             }).send();
         } catch (e) {
             return res.status(400).send({
@@ -160,9 +160,9 @@ const UserController = {
             }
 
             const user = await UserService.followContent(userID, contentID, contentType, action);
-
+            await UserService.populateUser(user);
             return res.status(200).send({
-                user: omit(user, ['password', 'answers']),
+                user: omit(user.toJSON(), ['password', 'answers']),
                 content: content
             })
 
@@ -189,8 +189,9 @@ const UserController = {
                 })
             }
             const user = await UserService.voteOnContent(userID, contentID, contentType, prev, current);
+            await UserService.populateUser(user);
             return res.status(200).send({
-                user: omit(user, ["password", "answers"]),
+                user: omit(user.toJSON(), ["password", "answers"]),
                 content: content
             })
         } catch (e) {
@@ -216,8 +217,21 @@ const UserController = {
                 })
             }
             const user = await UserService.voteOnSubcontent(userID, subcontentID, subcontentType, prev, current);
+
+            await user
+                .populate({
+                    path: 'ownComics',
+                    select: '-comments -contentList'
+                });
+
+            await user
+                .populate({
+                    path: 'ownStories',
+                    select: '-comments -contentList'
+                });
+
             return res.status(200).send({
-                user: omit(user, ["password", "answers"]),
+                user: omit(user.toJSON(), ["password", "answers"]),
                 subcontent: subcontent
             })
         } catch (e) {
@@ -252,7 +266,7 @@ const UserController = {
                 }
                 console.log(user.answers);
                 const isValid = UserService.validateAnswers(user.answers, answers);
-                
+
                 if (!isValid) {
                     return res.status(400).send({
                         error: "The answers to the security questions are not correct"
@@ -265,6 +279,25 @@ const UserController = {
                     error: e.message
                 })
             }
+        }
+    },
+
+    changeDescription: async (req, res) => {
+        try {
+            const { description } = req.body;
+            const { userID } = req.locals;
+            const user = await UserService.changeUserDescription(userID, description);
+
+            await UserService.populateUser(user);
+
+            return res.status(200).send({
+                ...omit(user.toJSON(), ['password', 'answers']), isLoggedIn: true
+            })
+        } catch (e) {
+            console.log(e);
+            return res.status(500).send({
+                error: e.message
+            })
         }
     },
 

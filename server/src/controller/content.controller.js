@@ -16,8 +16,18 @@ const ContentController = {
             const { userID, name } = req.locals;
             const content = await ContentService.createContent(contentType, title, description, userID, name, tags);
             const user = await UserService.addUserContent(contentType, userID, content._id);
+            await user
+            .populate({
+                path: 'ownComics',
+                select: '-comments -contentList'
+            });
+            await user
+            .populate({
+                path: 'ownStories',
+                select: '-comments -contentList'
+            });
             return res.status(200).send({
-                user: { ...omit(user, ['password', 'answers']), isLoggedIn: true },
+                user: { ...omit(user.toJSON(), ['password', 'answers']), isLoggedIn: true },
                 content: content
             });
         } catch (e) {
@@ -290,6 +300,16 @@ const ContentController = {
             const subcontentIDs = content.contentList.map((e) => e.id);
             await SubcontentService.deleteManySubcontents(CONSTANT.CONTENT_TYPE.getSubcontentType(contentType), { _id: { $in: subcontentIDs } });
             const user = await UserService.deleteUserContent(contentType, contentID, userID);
+            await user
+            .populate({
+                path: 'ownComics',
+                select: '-comments -contentList'
+            })
+            await user
+            .populate({
+                path: 'ownStories',
+                select: '-comments -contentList'
+            })
             if (contentType === CONSTANT.CONTENT_TYPE.COMIC) {
                 await UserService.updateManyUser(
                     { followingComics: content._id },
