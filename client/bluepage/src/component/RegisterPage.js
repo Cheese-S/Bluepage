@@ -31,7 +31,7 @@ export const RegisterPage = () => {
             const answers = [answer1, answer2, answer3];
 
             const res = await registerUser(name, password, passwordConfirmation, email, answers);
-            state.setID(res.data._id);
+            state.setID(res.data.user._id);
             state.setUsername(name);
             state.setIsLoggedIn(true);
 
