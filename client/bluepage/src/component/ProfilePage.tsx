@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material/';
 import { ButtonAppBar } from './NavBar';
 import { ProfileContentCard } from '../subcomponents/ProfileContentCard';
 import { ProfileSubcontentCard } from '../subcomponents/ProfileSubcontentCard';
+import { getUserByID } from '../api/api';
 
 export default function ProfilePage(){
+    useEffect(() => {
+        // getUserByID();
+      });
+    let counter = 7;
+    let name = "Joeshimo";
+    let initla = "JS";
+
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <ButtonAppBar/>
@@ -13,13 +21,13 @@ export default function ProfilePage(){
                 <Box style={{ width: '20%'}}>
                     <Box style={{ display: 'flex', flexDirection: 'column', width: '80%', margin: 'auto' }}>
                         <Box style={{ width: '100%', height: '240px', backgroundColor: '#d25eb2' }}>
-                            <Typography style={{ fontWeight: 'bold', fontSize: '80px' }}>JS</Typography>
+                            <Typography style={{ fontWeight: 'bold', fontSize: '80px' }}>{initla}</Typography>
                         </Box>
                         <Box style={{ backgroundColor: '#ffffff' }}>
-                            <Typography style={{ fontSize: '18px', margin: '10px' }}>@joeyschmoey</Typography>
+                            <Typography style={{ fontSize: '18px', margin: '10px' }}>@{name}</Typography>
                             <Box style={{ display: 'flex', flexDirection: 'row', margin: '10px' }}>
                                 <Button variant='contained' style={{ fontSize: '10px', marginRight: '10px' }}>Follow</Button>
-                                <Typography>7 followers</Typography>
+                                {counter}<Typography> followers</Typography>
                             </Box>
                         </Box>
                     </Box>
@@ -45,3 +53,7 @@ export default function ProfilePage(){
         </Box>
     );
 }
+function componentDidMount() {
+    throw new Error('Function not implemented.');
+}
+

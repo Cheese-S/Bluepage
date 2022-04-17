@@ -6,12 +6,15 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
 import { userStore } from '../store/UserStore';
 import { logout } from '../api/api';
+import { useNavigate } from 'react-router-dom'; 
 
 export const ButtonAppBar: React.FC = () => {
+    const history = useNavigate();
     const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [sortanchorEl, setsortAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [notificationanchorEl, setnotificationAnchorEl] = React.useState<null | HTMLElement>(null);
     const id = userStore(state => state.id);
+    const state=userStore();
     const isLoggedIn = userStore(state => state.isLoggedIn);
     const resetUserStore = userStore(state => state.resetStore);
 
@@ -43,6 +46,12 @@ export const ButtonAppBar: React.FC = () => {
 
     const handleNotificationClose = () => {
         setnotificationAnchorEl(null);
+    }
+
+    const handlemyprofile = () =>{
+        console.log(state);
+        var his = `/profile/test/${id}`
+        history(his);
     }
 
     return (
@@ -109,7 +118,7 @@ export const ButtonAppBar: React.FC = () => {
                                 open={Boolean(useranchorEl)}
                                 onClose={handleuserClose}
                             >
-                                <MenuItem onClick={handleuserClose}>My Profile</MenuItem>
+                                <MenuItem onClick={handlemyprofile}>My Profile</MenuItem>
                                 <MenuItem onClick={handleuserClose}>My following</MenuItem>
                                 <MenuItem onClick={handleuserClose}>Contact Admin</MenuItem>
                                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
@@ -213,3 +222,5 @@ export const ButtonAppBar: React.FC = () => {
         </div>
   );
 }
+
+
