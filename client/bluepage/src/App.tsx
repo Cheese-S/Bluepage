@@ -15,6 +15,7 @@ import SearchPage from './component/SearchPage';
 import {HomePage} from './component/HomePage';
 import EditChapter from './component/EditChapter';
 import { ResetPasswordPage } from './component/ResetPassword';
+import {ChangePassword} from './component/ChangePassword';
 
 function App() { 
   return (
@@ -32,7 +33,8 @@ function App() {
       <Route path="/page/edit" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />
       <Route path="/home/test" element={<HomePage/>}/>
-      <Route path="/chapter/edit" element={<EditChapter/>} />
+      <Route path="/chapter/edit" element={<EditChapter/>}/>
+      <Route path="/changepassword" element={<ChangePassword/>}/>
     </Routes>
     </BrowserRouter>
   );

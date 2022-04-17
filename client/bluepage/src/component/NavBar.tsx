@@ -14,7 +14,6 @@ export const ButtonAppBar: React.FC = () => {
     const id = userStore(state => state.id);
     const isLoggedIn = userStore(state => state.isLoggedIn);
     const resetUserStore = userStore(state => state.resetStore);
-
     const handleLogout = async () => {
         handleuserClose();
         resetUserStore();
@@ -109,7 +108,7 @@ export const ButtonAppBar: React.FC = () => {
                                 open={Boolean(useranchorEl)}
                                 onClose={handleuserClose}
                             >
-                                <MenuItem onClick={handleuserClose}>My Profile</MenuItem>
+                                <MenuItem href = "/profile/test">My Profile</MenuItem>
                                 <MenuItem onClick={handleuserClose}>My following</MenuItem>
                                 <MenuItem onClick={handleuserClose}>Contact Admin</MenuItem>
                                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
