@@ -99,6 +99,9 @@ export default function ProfilePage(){
                             </Box>
                             {describe}
                         </Box>
+                        <Box style={{ backgroundColor: '#ffffff', marginTop: '10px'}} sx={{height: 50}}>
+                            <Button href='/changepassword' variant='contained' color="error" style={{ fontSize: '10px', marginLeft: '40px', marginTop: '10px' }}>Change Password</Button>
+                        </Box>
                     </Box>
                 </Box>
                 <Box style={{ width: '78%', backgroundColor: '#ffffff'}} sx={{ borderRadius: 4 }}>

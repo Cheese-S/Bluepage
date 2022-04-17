@@ -17,7 +17,6 @@ export const ButtonAppBar: React.FC = () => {
     const state=userStore();
     const isLoggedIn = userStore(state => state.isLoggedIn);
     const resetUserStore = userStore(state => state.resetStore);
-
     const handleLogout = async () => {
         handleuserClose();
         resetUserStore();
