@@ -32,7 +32,7 @@ export const LogInPage: React.FC = () => {
     }
 
     return (
-        <body>
+        <>
             <Box  width="100%" height="100%" sx={{  display: 'flex' }}>
                 <Box  width="40%" height="100%" sx={{ borderRight: 1,borderColor:"#3d63d4",overflow:'hidden' }}>
                     <Typography variant="h1" align='center' sx={{color:'white', variant:'body1',height: '100%', pt: '20%'}}>BLUE <br /> PAGE</Typography>
@@ -89,11 +89,11 @@ export const LogInPage: React.FC = () => {
                     >
                         Log In
                     </Button>
-                    <Link href="#" variant="body2" color="#ffffff">
+                    <Link href="/resetpassword" variant="body2" color="#ffffff">
                         Forgot Password? Click Here
                     </Link>
             </Box>
             </Box>
-        </body>
+        </>
     );
 }
