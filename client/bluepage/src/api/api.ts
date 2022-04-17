@@ -48,6 +48,12 @@ export const followUser = (followingUserID: string, action: FOLLOW_ACTION_TYPE) 
     });
 };
 
+export const changeUserDescription = (description: string) => {
+    return api.put('/users/description', {
+        description: description
+    })
+}
+
 export const createNewContent = (
     contentType: CONTENT_TYPE,
     title: string,

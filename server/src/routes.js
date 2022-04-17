@@ -23,6 +23,8 @@ function routes(app) {
     
     app.put("/api/users/password", validator('changeUserPwd'), UserController.changePassword);
 
+    app.put("/api/users/description", auth.verify, validator('changeUserDescription'), UserController.changeDescription); 
+
 
     app.put("/api/users/followUser", auth.verify, validator('followUser'), UserController.followUser);
 

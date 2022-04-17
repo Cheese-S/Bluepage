@@ -193,7 +193,7 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
     dislikedPages: [ObjectID]
     likedChapters: [ObjectID]
     dislikedChapters: [ObjectID]
-    ownComics: [ObjectID]
+    ownComics: [{omit(content, [contentList, comments])}]
     ownStories: [ObjectID]
     isLoggedIn: boolean
 
@@ -505,6 +505,31 @@ I was too far gone when I realized I probably shouldn't user content/subcontent.
             "password": "12345678",
             "passwordConfirmation": "12345678",
             "answers": ["aa", "bb", "cc"]
+        }
+### 💙 **PUT** 💙 /description
+    - When a user is logged in
+        ⚠️ JWT REQUIRED ⚠️
+        - Description
+          - Change a user's description
+        - Request Body
+          - description: String
+            - less than 150 chars long
+        - Response
+          - 200
+            - User
+          - 400
+            - error: String
+              - does not match schema
+              - failed to find user
+          - 401
+            - error: String
+              - Authorization Failed
+          - 500
+            - error: String
+              - Database / Server error
+        - Example 
+        {
+            "description": "aaaa"
         }
 ---
 ## Content Route
