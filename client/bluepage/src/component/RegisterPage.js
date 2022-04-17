@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Box, Typography, Button, TextField, Link, Modal } from '@mui/material/';
 import { registerUser } from '../api/api';
 import { userStore } from '../store/UserStore';
+import { useNavigate } from 'react-router-dom';
 
 export const RegisterPage = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [error, setError] = useState('');
     const state = userStore();
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -25,7 +27,10 @@ export const RegisterPage = () => {
             state.setID(res.data._id);
             state.setUsername(name);
             state.setIsLoggedIn(true);
+
+            navigate("/home/test");
         } catch (err) {
+            console.log(err);
             const error = String(err);
             const errMsg = error.includes('409') ? 'Someone already has that username or email.' : 'There was a problem on our end. Try again later.';
             setError(errMsg);
@@ -48,7 +53,7 @@ export const RegisterPage = () => {
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             {error}
                         </Typography>
-                        <Button type='close' fullwidth variant='contained' onClick={() => setModalVisible(false)} style={{ marginTop: 10 }}>
+                        <Button type='close' variant='contained' onClick={() => setModalVisible(false)} style={{ marginTop: 10 }}>
                             Okay
                         </Button>
                     </Box>
