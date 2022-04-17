@@ -5,7 +5,7 @@ export const userStore = create(set => ({
     setID: (id) => set({ id }),
     username: '',
     setUsername: (username) => set({ username }),
-    newComicNotifications: [],
+    comicNotifications: [],
     setComicNotifications: (comicNotifications) => set({ comicNotifications }),
     storyNotifications: [],
     setStoryNotifications: (storyNotifications) => set({ storyNotifications }),
@@ -27,4 +27,5 @@ export const userStore = create(set => ({
     setIsAdmin: (isAdmin) => set({ isAdmin }),
     siteIsComicMode: false,
     setIsComicMode: (isComicMode) => set({ isComicMode }),
+    resetStore: () => set({ id: '', username: '', comicNotifications: [], storyNotifications: [], followers: [], followingUsers: [], followingComics: [], followingStories: [], ownComics: [], ownStories: [], isLoggedIn: false, isAdmin: false }),
 }));

@@ -53,7 +53,7 @@ export const RegisterPage = () => {
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             {error}
                         </Typography>
-                        <Button type='close' variant='contained' onClick={() => setModalVisible(false)} style={{ marginTop: 10 }}>
+                        <Button id='close' variant='contained' onClick={() => setModalVisible(false)} style={{ marginTop: 10 }}>
                             Okay
                         </Button>
                     </Box>
