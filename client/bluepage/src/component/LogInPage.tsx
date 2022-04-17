@@ -19,8 +19,8 @@ export const LogInPage: React.FC = () => {
             const password = formData.get('Password');
 
             const res = await login(String(identifier), String(password));
-            state.setID(res.data._id);
-            state.setUsername(res.data.name);
+            state.setID(res.data.user._id);
+            state.setUsername(res.data.user.name);
             state.setIsLoggedIn(true);
 
             navigate("/home/test");
