@@ -14,6 +14,7 @@ import EditPage from './component/EditPage';
 import SearchPage from './component/SearchPage';
 import {HomePage} from './component/HomePage';
 import EditChapter from './component/EditChapter';
+import { ResetPasswordPage } from './component/ResetPassword';
 
 function App() { 
   return (
@@ -22,6 +23,7 @@ function App() {
       <Route path="/"  element={<SplashPage/>} />
       <Route path="/login"  element={<LogInPage/>} />
       <Route path="/signup"  element={<RegisterPage/>} />
+      <Route path="/resetpassword" element={<ResetPasswordPage/>} />
       <Route path="/nav/test" element={<ButtonAppBar/>} />
       <Route path="/list/test" element={<ListPage/>} />
       <Route path="/chapter/test" element={<ViewStoryChapter/>} />

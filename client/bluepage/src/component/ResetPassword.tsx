@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, TextField, Link, Modal } from '@mui/material/';
-import { registerUser } from '../api/api';
-import { userStore } from '../store/UserStore';
-import { useNavigate } from 'react-router-dom';
+import { changePasswordLoggedOut } from '../api/api';
 
-export const RegisterPage = () => {
+export const ResetPasswordPage: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [error, setError] = useState('');
-    const state = userStore();
-    const navigate = useNavigate();
+    const [success, setSuccess] = useState(false);
 
+    // @ts-ignore
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const formData = new FormData(event.currentTarget);
-            const name = formData.get('username');
-            const email = formData.get('email');
+            const identifier = formData.get('usernameOrEmail');
             const password = formData.get('password');
             const passwordConfirmation = formData.get('passwordConfirm');
 
@@ -30,17 +27,15 @@ export const RegisterPage = () => {
             const answer3 = formData.get('sec3');
             const answers = [answer1, answer2, answer3];
 
-            const res = await registerUser(name, password, passwordConfirmation, email, answers);
-            state.setID(res.data._id);
-            state.setUsername(name);
-            state.setIsLoggedIn(true);
-
-            navigate("/home/test");
+            // @ts-ignore
+            await changePasswordLoggedOut(password, answers, identifier);
+            setSuccess(true);
+            setError('Your password was successfully changed.')
+            setModalVisible(true);
         } catch (err) {
             console.log(err);
-            const error = String(err);
-            const errMsg = error.includes('409') ? 'Someone already has that username or email.' : 'There was a problem on our end. Try again later.';
-            setError(errMsg);
+            setSuccess(false);
+            setError('That user may not exist, or your security answers were wrong. Please try again.');
             setModalVisible(true);
         }
     }
@@ -55,26 +50,34 @@ export const RegisterPage = () => {
                 >
                     <Box sx={{ position: 'absolute', top: '50%', left: '50%', bgcolor: 'white', border: '2px solid #000', width: '30%', p: 4 }}>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
-                            There was a problem
+                            {success ? 'Success!' : 'There was a problem'}
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             {error}
                         </Typography>
+                        {success ?
+                        <Link href="/login" variant="body2" color="#ffffff">
+                            <Button id='close' variant='contained' onClick={() => setModalVisible(false)} style={{ marginTop: 10 }}>
+                                Back to login
+                            </Button>
+                        </Link>
+                        :
                         <Button id='close' variant='contained' onClick={() => setModalVisible(false)} style={{ marginTop: 10 }}>
                             Okay
                         </Button>
+                        }
                     </Box>
                 </Modal>
                 <Box component="form" onSubmit={handleSubmit} width="40%" height="100%" sx={{ml:"10%",mr:"10%" }}>
-                    <Typography variant="h6" align='left' sx={{color:'white', variant:'body1', pt: '20%'}}>Register</Typography>
+                    <Typography variant="h6" align='left' sx={{color:'white', variant:'body1', pt: '20%'}}>Reset Your Password</Typography>
                     <TextField
                         margin="normal"
                         required
                         fullWidth
-                        id="username"
-                        label="Username"
-                        name="username"
-                        autoComplete="username"
+                        id="usernameOrEmail"
+                        label="Username or email"
+                        name="usernameOrEmail"
+                        autoComplete="usernameOrEmail"
                         autoFocus
                         InputLabelProps={{style : {color : 'white'} }}
                         sx={{ color:'white',input: { color: 'white' } }}
@@ -83,20 +86,8 @@ export const RegisterPage = () => {
                         margin="normal"
                         required
                         fullWidth
-                        name="email"
-                        label="Email"
-                        type="email"
-                        id="email"
-                        autoComplete="email"
-                        InputLabelProps={{style : {color : 'white'} }}
-                        sx={{ color:'white',input: { color: 'white' } }}
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
                         name="password"
-                        label="Password"
+                        label="New password"
                         type="password"
                         id="password"
                         autoComplete="password"

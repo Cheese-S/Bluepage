@@ -5,6 +5,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
 import { userStore } from '../store/UserStore';
+import { logout } from '../api/api';
 
 export const ButtonAppBar: React.FC = () => {
     const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
@@ -12,6 +13,14 @@ export const ButtonAppBar: React.FC = () => {
     const [notificationanchorEl, setnotificationAnchorEl] = React.useState<null | HTMLElement>(null);
     const id = userStore(state => state.id);
     const isLoggedIn = userStore(state => state.isLoggedIn);
+    const resetUserStore = userStore(state => state.resetStore);
+
+    const handleLogout = async () => {
+        handleuserClose();
+        resetUserStore();
+        await logout();
+        window.location.reload();
+    }
 
     const handleuserMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setuserAnchorEl(event.currentTarget);
@@ -103,7 +112,7 @@ export const ButtonAppBar: React.FC = () => {
                                 <MenuItem onClick={handleuserClose}>My Profile</MenuItem>
                                 <MenuItem onClick={handleuserClose}>My following</MenuItem>
                                 <MenuItem onClick={handleuserClose}>Contact Admin</MenuItem>
-                                <MenuItem onClick={handleuserClose}>Log out</MenuItem>
+                                <MenuItem onClick={handleLogout}>Log out</MenuItem>
                             </Menu>
                     :
                             <Menu
