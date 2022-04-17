@@ -18,6 +18,13 @@ export const RegisterPage = () => {
             const email = formData.get('email');
             const password = formData.get('password');
             const passwordConfirmation = formData.get('passwordConfirm');
+
+            if (password !== passwordConfirmation) {
+                setError('Your passwords do not match.');
+                setModalVisible(true);
+                return;
+            }
+
             const answer1 = formData.get('sec1');
             const answer2 = formData.get('sec2');
             const answer3 = formData.get('sec3');
