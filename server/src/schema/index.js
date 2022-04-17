@@ -6,7 +6,8 @@ const {
     followContentSchema,
     voteOnContentSchema,
     voteOnSubcontentSchema,
-    getUserByIDSchema
+    getUserByIDSchema,
+    changeUserDescriptionSchema
 } = require('./user.schema')
 
 const {
@@ -38,6 +39,7 @@ module.exports = {
     changeUserPwd: changePwdSchema,
     followUser: followUserSchema,
     loginUser: loginSchema,
+    changeUserDescription: changeUserDescriptionSchema,
     followContent: followContentSchema,
     voteOnContent: voteOnContentSchema,
     voteOnSubcontent: voteOnSubcontentSchema,

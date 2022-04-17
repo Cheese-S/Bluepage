@@ -1,6 +1,5 @@
 import Axios from "axios";
 import { BP_TAGS, COMMENT_ACTION_TYPE, CONTENT_TYPE, FOLLOW_ACTION_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from "../constant";
-import { userStore } from '../store/UserStore';
 
 Axios.defaults.withCredentials = true;
 let url: string;
@@ -47,6 +46,12 @@ export const followUser = (followingUserID: string, action: FOLLOW_ACTION_TYPE) 
         action: action
     });
 };
+
+export const changeUserDescription = (description: string) => {
+    return api.put('/users/description', {
+        description: description
+    })
+}
 
 export const createNewContent = (
     contentType: CONTENT_TYPE,

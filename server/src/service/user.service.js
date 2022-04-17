@@ -89,12 +89,14 @@ const UserService = {
         if (contentType === CONSTANT.CONTENT_TYPE.COMIC) {
             return UserService.updateUser(
                 { _id: userID },
-                { $pull: { ownComics: contentID } }
+                { $pull: { ownComics: contentID } },
+                { lean: false, new: true }
             )
         } else {
             return UserService.updateUser(
                 { _id: userID },
-                { $pull: { ownStories: contentID } }
+                { $pull: { ownStories: contentID } },
+                { lean: false, new: true }
             )
         }
     },
@@ -105,12 +107,12 @@ const UserService = {
         )
         .populate({
             path: 'ownComics',
-            select: '-comments -contentList -published',
+            select: '-comments -contentList',
             match: { published: published }
         })
         .populate({
             path: 'ownStories',
-            select: '-comments -contentList -published',
+            select: '-comments -contentList',
             match: { published: published },
         })
         
@@ -122,11 +124,10 @@ const UserService = {
             update = { $pull: { followers: selfID } };
         }
         return UserService.updateUser(
-            { _id: userID },
+            { _id: selfID },
             update,
-            { lean: true, new: true }
+            { lean: false, new: true }
         )
-
     },
 
     /**
@@ -136,7 +137,10 @@ const UserService = {
      */
     loginUser: async (nameOrEmail, pwd) => {
         try {
-            const user = await UserService.findUser({ $or: [{ name: nameOrEmail }, { email: nameOrEmail }] });
+            const user = await UserService.findUser(
+                { $or: [{ name: nameOrEmail }, { email: nameOrEmail }] },
+                { lean: false }
+            )
             if (!user) {
                 throw new Error("The user with this email or name does not exist");
             }
@@ -144,7 +148,7 @@ const UserService = {
             if (!isValid) {
                 throw new Error("The username / email or your password is not correct");
             }
-            return omit(user, ['password', 'answers']);
+            return user; 
         } catch (e) {
             throw e;
         }
@@ -181,7 +185,7 @@ const UserService = {
         return UserService.updateUser(
             { _id: userID },
             updateAction,
-            { lean: true, new: true }
+            { lean: false, new: true }
         )
     },
 
@@ -190,7 +194,7 @@ const UserService = {
         return UserService.updateUser(
             { _id: userID },
             updateAction,
-            { lean: true, new: true }
+            { lean: false, new: true }
         )
     },
 
@@ -306,14 +310,40 @@ const UserService = {
         if (contentType === CONSTANT.CONTENT_TYPE.COMIC) {
             return UserService.updateUser(
                 { _id: userID },
-                { $addToSet: { ownComics: contentID } }
+                { $addToSet: { ownComics: contentID } },
+                { lean: false, new: true }
             )
         } else {
             return UserService.updateUser(
                 { _id: userID },
-                { $addToSet: { ownStories: contentID } }
+                { $addToSet: { ownStories: contentID } }, 
+                { lean: false, new: true }
             )
         }
+    },
+
+    changeUserDescription: async (userID, description) => {
+        return UserModel.findOneAndUpdate(
+            { _id: userID },
+            { description: description },
+            { lean: false, new: true }
+        )
+    },
+
+    populateUser: async (user) => {
+        await user
+        .populate({
+            path: 'ownComics',
+            select: '-comments -contentList'
+        });
+
+        await user
+        .populate({
+            path: 'ownStories',
+            select: '-comments -contentList'
+        });
+
+        return user;
     }
 
 
