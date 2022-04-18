@@ -126,13 +126,12 @@ export default function ProfilePage(){
                 <Box style={{ width: '20%'}}>
                     <Box style={{ display: 'flex', flexDirection: 'column', width: '80%', margin: 'auto' }}>
                         <Box style={{ width: '100%', height: '240px', backgroundColor: '#d25eb2' }}>
-                            <Typography style={{ fontWeight: 'bold', fontSize: '80px' }}>{name}</Typography>
+                            <Typography style={{ fontWeight: 'bold', fontSize: '24px', padding: 8 }}>{name}</Typography>
                         </Box>
                         <Box style={{ backgroundColor: '#ffffff' }}>
-                            <Typography style={{ fontSize: '18px', margin: '10px' }}>{email}</Typography>
                             <Box style={{ display: 'flex', flexDirection: 'row', margin: '10px' }}>
                                 <Button variant='contained' style={{ fontSize: '10px', marginRight: '10px' }}>Follow</Button>
-                                {counter}<Typography> followers</Typography>
+                                <Typography>{counter} followers</Typography>
                             </Box>
                             {describe}
                             <Button variant="text" onClick={handledescribe}>Edit</Button>

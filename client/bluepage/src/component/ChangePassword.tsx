@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, TextField, Link, Modal } from '@mui/material/';
 import { changePassword } from '../api/api';
+import { userStore } from '../store/UserStore';
 
 export const ChangePassword: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const id = userStore(state => state.id);
+    const route = `/profile/test/${id}`;
 
     // @ts-ignore
     const handleSubmit = async (event) => {
@@ -50,7 +53,7 @@ export const ChangePassword: React.FC = () => {
                             {error}
                         </Typography>
                         {success ?
-                        <Link href="/profile/test" variant="body2" color="#ffffff">
+                        <Link href={route} variant="body2" color="#ffffff">
                             <Button id='close' variant='contained' onClick={() => setModalVisible(false)} style={{ marginTop: 10 }}>
                                 Back to profile
                             </Button>
@@ -88,7 +91,7 @@ export const ChangePassword: React.FC = () => {
                         InputLabelProps={{style : {color : 'white'} }}
                         sx={{ color:'white',input: { color: 'white' } }}
                     />
-                    <Link href="/profile/test" variant="body2" color="#ffffff">
+                    <Link href={route} variant="body2" color="#ffffff">
                         Don't want to change your password anymore? Go back to profile.
                     </Link>
                     <Button
