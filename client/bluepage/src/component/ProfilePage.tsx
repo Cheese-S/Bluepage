@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button } from '@mui/material/';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, TextFieldProps } from '@mui/material/';
 import { ButtonAppBar } from './NavBar';
 import { ProfileContentCard } from '../subcomponents/ProfileContentCard';
 import { ProfileSubcontentCard } from '../subcomponents/ProfileSubcontentCard';
-import { getUserByID } from '../api/api';
+import { getUserByID,changeUserDescription } from '../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
 
@@ -11,6 +11,7 @@ export default function ProfilePage(){
     const { id } = useParams();
     const state = userStore(); 
     const history = useNavigate();
+    const valueRef = useRef<any | null>(null);;
     const [user,setuser] = React.useState<null | any>(null);
     useEffect(() => {
         const getuser = async () =>{
@@ -21,10 +22,15 @@ export default function ProfilePage(){
         }
         getuser();
     },[]);
-    const handleresetpasword = () =>{
-        var his = `/resetpassword`
-        history(his);
-    }
+    const [open, setOpen] = React.useState(false);
+
+    const handledescribe = () => {
+      setOpen(true);
+    };
+  
+    const handleCancel = () => {
+      setOpen(false);
+    };
 
     let counter="N/A";
     let name="N/A";
@@ -33,6 +39,16 @@ export default function ProfilePage(){
     let listpublished; 
     let listunpublished;
     let visb="hidden";
+
+    const handleSubmit = async () =>{
+        console.log("saved");
+        const val = valueRef.current.value;
+        console.log(val);
+        const res = await changeUserDescription(val as string);
+        describe = val as string;
+        window.location.reload();
+    }
+
     if(user != null){
         if(user._id==state.id){
             visb="visible";
@@ -82,6 +98,28 @@ export default function ProfilePage(){
 
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
+            <Dialog open={open} onClose={handleCancel} >
+                <DialogTitle>Subscribe</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                    Enter descrption and save
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    multiline={true}
+                    rows={3}
+                    inputRef={valueRef}
+                    margin="dense"
+                    id="desc"
+                    label="desc"
+                    type="desc"
+                    fullWidth
+                    variant="standard"
+                />
+                </DialogContent>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button onClick={handleSubmit}>Save</Button>
+            </Dialog>
             <ButtonAppBar/>
             <Box style={{ padding: '20px' }} />
             <Box style={{ display: 'flex', flexDirection: 'row' }}>
@@ -94,10 +132,10 @@ export default function ProfilePage(){
                             <Typography style={{ fontSize: '18px', margin: '10px' }}>{email}</Typography>
                             <Box style={{ display: 'flex', flexDirection: 'row', margin: '10px' }}>
                                 <Button variant='contained' style={{ fontSize: '10px', marginRight: '10px' }}>Follow</Button>
-                                <Button onClick={handleresetpasword} variant='contained' style={{ fontSize: '10px', marginRight: '10px' }} sx={{ visibility: {visb} }}>Reset Password</Button>
                                 {counter}<Typography> followers</Typography>
                             </Box>
                             {describe}
+                            <Button variant="text" onClick={handledescribe}>Edit</Button>
                         </Box>
                         <Box style={{ backgroundColor: '#ffffff', marginTop: '10px'}} sx={{height: 50}}>
                             <Button href='/changepassword' variant='contained' color="error" style={{ fontSize: '10px', marginLeft: '40px', marginTop: '10px' }}>Change Password</Button>
