@@ -121,9 +121,7 @@ const UserController = {
     logoutUser: (req, res) => {
         const token = auth.invalidToken();
         return res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none'
+            httpOnly: true
         }).status(200).send({
             user: CONSTANT.EMPTY_USER
         }).send();
