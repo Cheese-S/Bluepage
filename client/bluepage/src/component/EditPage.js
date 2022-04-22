@@ -54,15 +54,15 @@ export default function EditPage() {
           <Button variant='contained' style={{ marginRight: '10px' }}>Save</Button>
         </Box>
       </Box>
-      <Box style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
+      <Box style={{ display: 'flex', flexDirection: 'row', height: '89.5%' }}>
         <Box style={{ display: 'flex', flexDirection: 'column', width: '30%', height: '100%', backgroundColor: '#9dc3ff' }}>
           <TextField value='Enter description here' style={{ height: '50%', margin: '10px' }}></TextField>
         </Box>
         <Box style={{ width: '50%', height: '85%', marginTop: '10px' }}>
-          <Box style={{ width: '380px', height: '570px', backgroundColor: '#ffffff', margin: 'auto'}}>
+          <Box style={{ width: '418px', height: '627px', backgroundColor: '#ffffff', margin: 'auto'}}>
             <Stage
-              width={380}
-              height={570}
+              width={418}
+              height={627}
               onMouseDown={handleMouseDown}
               onMousemove={handleMouseMove}
               onMouseup={handleMouseUp}
