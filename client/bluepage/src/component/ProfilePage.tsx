@@ -12,17 +12,16 @@ export default function ProfilePage(){
     const state = userStore(); 
     const history = useNavigate();
     const valueRef = useRef<any | null>(null);;
-    const [user,setuser] = React.useState<null | any>(null);
+    const [user, setuser] = useState<null | any>(null);
+    const [open, setOpen] = useState(false);
+
     useEffect(() => {
         const getuser = async () =>{
             const res = await getUserByID(id as string);
             setuser(res.data.user);
-            console.log(res.data.user);
-            console.log(user);
         }
         getuser();
     },[]);
-    const [open, setOpen] = React.useState(false);
 
     const handledescribe = () => {
       setOpen(true);
@@ -34,30 +33,23 @@ export default function ProfilePage(){
 
     let counter="N/A";
     let name="N/A";
-    let email="N/A";  
     let describe="N/A";
     let listpublished; 
     let listunpublished;
-    let visb="hidden";
+    let sameUser = false;
 
     const handleSubmit = async () =>{
-        console.log("saved");
         const val = valueRef.current.value;
-        console.log(val);
         const res = await changeUserDescription(val as string);
         describe = val as string;
         window.location.reload();
     }
 
     if(user != null){
-        if(user._id==state.id){
-            visb="visible";
-        }
-        console.log("have user");
-        counter=user.followers.length; 
-        email=user.email;
-        name=user.name;
-        describe=user.description;
+        counter = user.followers.length;
+        name = user.name;
+        describe = user.description;
+        sameUser = name === state.username;
         listpublished=
         <Box style={{overflowX: "auto",display: 'flex', flexDirection: 'row', margin: '16px' }}>
             {
@@ -91,9 +83,6 @@ export default function ProfilePage(){
             ))
             }
         </Box>;
-    }
-    else{
-        console.log("no user");
     }
 
     return (
@@ -133,12 +122,18 @@ export default function ProfilePage(){
                                 <Button variant='contained' style={{ fontSize: '10px', marginRight: '10px' }}>Follow</Button>
                                 <Typography>{counter} followers</Typography>
                             </Box>
-                            {describe}
-                            <Button variant="text" onClick={handledescribe}>Edit</Button>
+                            <Box>
+                                <Typography style={{ padding: '10px', wordWrap: 'break-word' }} >{describe}</Typography>
+                            </Box>
+                            {sameUser && 
+                                <Button fullWidth variant='text' onClick={handledescribe} >
+                                    Edit
+                                </Button>
+                            }
                         </Box>
-                        <Box style={{ backgroundColor: '#ffffff', marginTop: '10px'}} sx={{height: 50}}>
-                            <Button href='/changepassword' variant='contained' color="error" style={{ fontSize: '10px', marginLeft: '40px', marginTop: '10px' }}>Change Password</Button>
-                        </Box>
+                        {sameUser && 
+                            <Button href='/changepassword' variant='contained' color="error" style={{ fontSize: '10px', margin: '10px' }}>Change Password</Button>
+                        }
                     </Box>
                 </Box>
                 <Box style={{ width: '78%', backgroundColor: '#ffffff'}} sx={{ borderRadius: 4 }}>
