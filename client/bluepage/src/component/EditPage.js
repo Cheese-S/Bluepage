@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Stage, Layer, Line } from 'react-konva';
+import { Stage, Layer, Line, Rect } from 'react-konva';
 import { ChromePicker } from 'react-color';
-import { Box, TextField, Button } from '@mui/material/';
+import { Box, TextField, Button, RadioGroup, Radio } from '@mui/material/';
 
 import PanToolIcon from '@mui/icons-material/PanToolOutlined';
 import ModeIcon from '@mui/icons-material/ModeOutlined';
@@ -10,11 +10,12 @@ import InterestsIcon from '@mui/icons-material/InterestsOutlined';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrowsOutlined';
 import GrainIcon from '@mui/icons-material/Grain';
 import ColorLensIcon from '@mui/icons-material/ColorLensOutlined';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 
 export default function EditPage() {
   const [lines, setLines] = useState([]);
+  const [shapes, setShapes] = useState([]);
+  const [title, setTitle] = useState('New Page');
+  const [description, setDescription] = useState('');
   
   const [tool, setTool] = useState('pen');
   const [color, setColor] = useState('#000000')
@@ -40,8 +41,8 @@ export default function EditPage() {
   }
 
   const handleStrokeChange = (width) => {
-    if (width <= 1) {
-      setStrokeWidth(1);
+    if (width <= 0) {
+      setStrokeWidth(0);
     } else if (width >= 64) {
       setStrokeWidth(64);
     } else {
@@ -52,7 +53,12 @@ export default function EditPage() {
   const handleMouseDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    setLines([...lines, { tool, points: [pos.x, pos.y] }]);
+
+    if (tool === 'pen' || tool === 'eraser') {
+      setLines([...lines, { tool, points: [pos.x, pos.y], color: color, strokeWidth: strokeWidth }]);
+    } else if (tool === 'shape') {
+      setShapes([...shapes, { start_x: pos.x, start_y: pos.y, end_x: pos.x, end_y: pos.y, strokeColor: color, strokeWidth: strokeWidth }])
+    }
   };
 
   const handleMouseMove = (e) => {
@@ -60,17 +66,29 @@ export default function EditPage() {
     if (!isDrawing.current) {
       return;
     }
+
     const stage = e.target.getStage();
     const point = stage.getPointerPosition();
-    let lastLine = lines[lines.length - 1];
-    // add point
-    lastLine.points = lastLine.points.concat([point.x, point.y]);
-    lastLine.color = color;
-    lastLine.strokeWidth = strokeWidth;
 
-    // replace last
-    lines.splice(lines.length - 1, 1, lastLine);
-    setLines(lines.concat());
+    if (tool === 'pen' || tool === 'eraser') {
+      let lastLine = lines[lines.length - 1];
+      // add point
+      lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+      // replace last
+      lines.splice(lines.length - 1, 1, lastLine);
+      setLines(lines.concat());
+    } else if (tool === 'shape') {
+      let lastShape = shapes[shapes.length - 1];
+      
+      // set new end position
+      lastShape.end_x = point.x;
+      lastShape.end_y = point.y;
+
+      // replace last
+      shapes.splice(shapes.length - 1, 1, lastShape);
+      setShapes(shapes.concat());
+    }
   };
 
   const handleMouseUp = () => {
@@ -78,17 +96,17 @@ export default function EditPage() {
   };
 
   return (
-    <>
+    <Box style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%'}}>
       <Box style={{ display: 'flex', flexDirection: 'row', height: '10%', alignItems: 'center', backgroundColor: '#9dc3ff' }} sx={{ borderBottom: 2 }}>
-        <TextField value='Unpublished Page Title' style={{ marginLeft: '10px', width: '30%' }}></TextField>
+        <TextField value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter title here...' style={{ marginLeft: '10px', width: '30%' }}></TextField>
         <Box style={{ alignItems: 'center', width: '70%', display: 'flex', flexDirection: 'row-reverse' }}>
           <Button variant='contained' style={{ marginRight: '10px' }}>Save and Exit</Button>
           <Button variant='contained' style={{ marginRight: '10px' }}>Save</Button>
         </Box>
       </Box>
-      <Box style={{ display: 'flex', flexDirection: 'row', height: '89.5%' }}>
+      <Box style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
         <Box style={{ display: 'flex', flexDirection: 'column', width: '30%', height: '100%', backgroundColor: '#9dc3ff' }}>
-          <TextField value='Enter description here' style={{ height: '50%', margin: '10px' }}></TextField>
+          <TextField value={description} placeholder='Enter description here...' onChange={(e) => setDescription(e.target.value)} style={{ height: '50%', margin: '10px' }}></TextField>
         </Box>
         <Box style={{ width: '50%', height: '85%', marginTop: '10px' }}>
           <Box style={{ width: '418px', height: '627px', backgroundColor: '#ffffff', margin: 'auto'}}>
@@ -102,7 +120,7 @@ export default function EditPage() {
               <Layer>
                 {lines.map((line, i) => (
                   <Line
-                    key={i}
+                    key={`line_${i}`}
                     points={line.points}
                     stroke={line.color}
                     strokeWidth={line.strokeWidth}
@@ -113,30 +131,48 @@ export default function EditPage() {
                     }
                   />
                 ))}
+                {shapes.map((shape, i) => (
+                  <Rect 
+                    key={`rect_${i}`}
+                    x={shape.start_x}
+                    y={shape.start_y}
+                    width={shape.end_x - shape.start_x}
+                    height={shape.end_y - shape.start_y}
+                    stroke={shape.strokeColor}
+                    strokeWidth={shape.strokeWidth}
+                  />
+                ))}
               </Layer>
             </Stage>
           </Box>
         </Box>
         <Box style={{ width: '15%', display: 'flex', flexDirection: 'column-reverse' }}>
-          {showColorPicker ?
-            <ChromePicker color={color} onChange={(color) => setColor(color.hex)} style={{ paddingBottom: '10px' }}/>
-            : null}
-          {showStrokeChooser ? 
-            <Box style={{ backgroundColor: 'white', borderRadius: '10px', display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '10px' }}>
-              <TextField label='minimum 1, maximum 64' type='number' fullWidth InputProps={{ inputProps: { min: 1, max: 64 } }} value={strokeWidth} onChange={(e) => handleStrokeChange(Number(e.target.value))} style={{ margin: '10px' }} />
+          {showColorPicker &&
+            <Box style={{ display: 'flex', marginRight: '10px' }}>
+              <ChromePicker color={color} onChange={(color) => setColor(color.hex)} style={{ paddingBottom: '10px' }}/>
             </Box>
-          : null}
+          }
+          {showStrokeChooser &&
+            <Box style={{ backgroundColor: 'white', borderRadius: '10px', display: 'flex', flexDirection: 'row', marginRight: '10px' }}>
+              <TextField label='minimum 0, maximum 64' type='number' fullWidth InputProps={{ inputProps: { min: 0, max: 64 } }} value={strokeWidth} onChange={(e) => handleStrokeChange(Number(e.target.value))} style={{ margin: '10px' }} />
+            </Box>
+          }
+          {tool === 'shape' &&
+            <RadioGroup>
+
+            </RadioGroup>
+          }
         </Box>
         <Box style={{ display: 'flex', flexDirection: 'column', width: '5%', height: '100%', backgroundColor: '#9dc3ff', alignItems: 'center', justifyContent: 'space-around' }}>
           <PanToolIcon style={{ fontSize: '40px', color: tool === 'pan' ? '#000000' : '#777777' }}/>
           <ModeIcon onClick={() => setTool('pen')} style={{ fontSize: '40px', color: tool === 'pen' ? '#000000' : '#777777', cursor: 'pointer' }}/>
           <ClearIcon onClick={() => setTool('eraser')} style={{ fontSize: '40px', color: tool === 'eraser' ? '#000000' : '#777777', cursor: 'pointer' }}/>
-          <InterestsIcon style={{ fontSize: '40px', color: tool === 'shape' ? '#000000' : '#777777' }}/>
+          <InterestsIcon onClick={() => setTool('shape')} style={{ fontSize: '40px', color: tool === 'shape' ? '#000000' : '#777777', cursor: 'pointer' }}/>
           <CompareArrowsIcon style={{ fontSize: '40px', color: tool === 'line' ? '#000000' : '#777777' }}/>
           <GrainIcon onClick={() => selectStrokeChooser()} style={{ fontSize: '40px', cursor: 'pointer' }}/>
           <ColorLensIcon onClick={() => selectColorPicker()} style={{ fontSize: '40px', color: showColorPicker ? color : '#000000', cursor: 'pointer' }}/>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 }
