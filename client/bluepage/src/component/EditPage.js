@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Stage, Layer, Line, Rect } from 'react-konva';
+import { Stage, Layer, Line, Rect, Arrow } from 'react-konva';
 import { ChromePicker } from 'react-color';
-import { Box, TextField, Button, RadioGroup, Radio } from '@mui/material/';
+import { Box, TextField, Button } from '@mui/material/';
 
 import PanToolIcon from '@mui/icons-material/PanToolOutlined';
 import ModeIcon from '@mui/icons-material/ModeOutlined';
@@ -14,6 +14,7 @@ import ColorLensIcon from '@mui/icons-material/ColorLensOutlined';
 export default function EditPage() {
   const [lines, setLines] = useState([]);
   const [shapes, setShapes] = useState([]);
+  const [arrows, setArrows] = useState([]);
   const [title, setTitle] = useState('New Page');
   const [description, setDescription] = useState('');
   
@@ -58,6 +59,8 @@ export default function EditPage() {
       setLines([...lines, { tool, points: [pos.x, pos.y], color: color, strokeWidth: strokeWidth }]);
     } else if (tool === 'shape') {
       setShapes([...shapes, { start_x: pos.x, start_y: pos.y, end_x: pos.x, end_y: pos.y, strokeColor: color, strokeWidth: strokeWidth }])
+    } else if (tool === 'arrow') {
+      setArrows([...arrows, { points: [pos.x, pos.y], color: color, strokeWidth: strokeWidth }]);
     }
   };
 
@@ -88,6 +91,14 @@ export default function EditPage() {
       // replace last
       shapes.splice(shapes.length - 1, 1, lastShape);
       setShapes(shapes.concat());
+    } else if (tool === 'arrow') {
+      let lastArrow = arrows[arrows.length - 1];
+      // change end position
+      lastArrow.points = [lastArrow.points[0], lastArrow.points[1], point.x, point.y];
+
+      // replace last
+      arrows.splice(arrows.length - 1, 1, lastArrow);
+      setArrows(arrows.concat());
     }
   };
 
@@ -118,19 +129,6 @@ export default function EditPage() {
               onMouseup={handleMouseUp}
             >
               <Layer>
-                {lines.map((line, i) => (
-                  <Line
-                    key={`line_${i}`}
-                    points={line.points}
-                    stroke={line.color}
-                    strokeWidth={line.strokeWidth}
-                    tension={0.5}
-                    lineCap="square"
-                    globalCompositeOperation={
-                      line.tool === 'eraser' ? 'destination-out' : 'source-over'
-                    }
-                  />
-                ))}
                 {shapes.map((shape, i) => (
                   <Rect 
                     key={`rect_${i}`}
@@ -140,6 +138,33 @@ export default function EditPage() {
                     height={shape.end_y - shape.start_y}
                     stroke={shape.strokeColor}
                     strokeWidth={shape.strokeWidth}
+                  />
+                ))}
+                
+              </Layer>
+              <Layer>
+              {arrows.map((arrow, i) => (
+                  <Arrow
+                    key={`arrow_${i}`}
+                    points={arrow.points}
+                    stroke={arrow.color}
+                    strokeWidth={arrow.strokeWidth}
+                    tension={1}
+                  />
+                ))}
+              </Layer>
+              <Layer>
+              {lines.map((line, i) => (
+                  <Line
+                    key={`line_${i}`}
+                    points={line.points}
+                    stroke={line.color}
+                    strokeWidth={line.strokeWidth}
+                    tension={0.5}
+                    lineCap='round'
+                    globalCompositeOperation={
+                      line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                    }
                   />
                 ))}
               </Layer>
@@ -157,18 +182,13 @@ export default function EditPage() {
               <TextField label='minimum 0, maximum 64' type='number' fullWidth InputProps={{ inputProps: { min: 0, max: 64 } }} value={strokeWidth} onChange={(e) => handleStrokeChange(Number(e.target.value))} style={{ margin: '10px' }} />
             </Box>
           }
-          {tool === 'shape' &&
-            <RadioGroup>
-
-            </RadioGroup>
-          }
         </Box>
         <Box style={{ display: 'flex', flexDirection: 'column', width: '5%', height: '100%', backgroundColor: '#9dc3ff', alignItems: 'center', justifyContent: 'space-around' }}>
           <PanToolIcon style={{ fontSize: '40px', color: tool === 'pan' ? '#000000' : '#777777' }}/>
           <ModeIcon onClick={() => setTool('pen')} style={{ fontSize: '40px', color: tool === 'pen' ? '#000000' : '#777777', cursor: 'pointer' }}/>
           <ClearIcon onClick={() => setTool('eraser')} style={{ fontSize: '40px', color: tool === 'eraser' ? '#000000' : '#777777', cursor: 'pointer' }}/>
           <InterestsIcon onClick={() => setTool('shape')} style={{ fontSize: '40px', color: tool === 'shape' ? '#000000' : '#777777', cursor: 'pointer' }}/>
-          <CompareArrowsIcon style={{ fontSize: '40px', color: tool === 'line' ? '#000000' : '#777777' }}/>
+          <CompareArrowsIcon onClick={() => setTool('arrow')} style={{ fontSize: '40px', color: tool === 'arrow' ? '#000000' : '#777777', cursor: 'pointer' }}/>
           <GrainIcon onClick={() => selectStrokeChooser()} style={{ fontSize: '40px', cursor: 'pointer' }}/>
           <ColorLensIcon onClick={() => selectColorPicker()} style={{ fontSize: '40px', color: showColorPicker ? color : '#000000', cursor: 'pointer' }}/>
         </Box>
