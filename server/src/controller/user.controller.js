@@ -27,9 +27,7 @@ const UserController = {
             })
             const token = auth.signToken(user);
             return res.cookie("token", token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none'
+                httpOnly: true
             }).status(200).send({
                 user: omit({ ...user.toJSON(), isLoggedIn: true }, ['password', 'answers'])
             }).send();
@@ -109,9 +107,7 @@ const UserController = {
             await UserService.populateUser(user);
             const token = auth.signToken(user);
             return res.cookie("token", token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none'
+                httpOnly: true
             }).status(200).send({
                 user: { ...omit(user.toJSON(), ['password', 'answers']), isLoggedIn: true }
             }).send();
@@ -125,9 +121,7 @@ const UserController = {
     logoutUser: (req, res) => {
         const token = auth.invalidToken();
         return res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none'
+            httpOnly: true
         }).status(200).send({
             user: CONSTANT.EMPTY_USER
         }).send();
