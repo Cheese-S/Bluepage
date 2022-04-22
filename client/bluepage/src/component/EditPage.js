@@ -3,20 +3,51 @@ import { Stage, Layer, Line } from 'react-konva';
 import { ChromePicker } from 'react-color';
 import { Box, TextField, Button } from '@mui/material/';
 
-import PanToolOutlinedIcon from '@mui/icons-material/PanToolOutlined';
-import ModeOutlinedIcon from '@mui/icons-material/ModeOutlined';
+import PanToolIcon from '@mui/icons-material/PanToolOutlined';
+import ModeIcon from '@mui/icons-material/ModeOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
-import InterestsOutlinedIcon from '@mui/icons-material/InterestsOutlined';
-import CompareArrowsOutlinedIcon from '@mui/icons-material/CompareArrowsOutlined';
-import TextIncreaseOutlinedIcon from '@mui/icons-material/TextIncreaseOutlined';
-import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
+import InterestsIcon from '@mui/icons-material/InterestsOutlined';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrowsOutlined';
+import GrainIcon from '@mui/icons-material/Grain';
+import ColorLensIcon from '@mui/icons-material/ColorLensOutlined';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 export default function EditPage() {
-  const [tool, setTool] = useState('pen');
   const [lines, setLines] = useState([]);
+  
+  const [tool, setTool] = useState('pen');
   const [color, setColor] = useState('#000000')
+  const [strokeWidth, setStrokeWidth] = useState(5);
+
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showStrokeChooser, setShowStrokeChooser] = useState(false);
   const isDrawing = useRef(false);
+
+  const hideAllPopups = () => {
+    setShowColorPicker(false);
+    setShowStrokeChooser(false);
+  }
+
+  const selectColorPicker = () => {
+    hideAllPopups();
+    setShowColorPicker(!showColorPicker);
+  }
+
+  const selectStrokeChooser = () => {
+    hideAllPopups();
+    setShowStrokeChooser(!showStrokeChooser);
+  }
+
+  const handleStrokeChange = (width) => {
+    if (width <= 1) {
+      setStrokeWidth(1);
+    } else if (width >= 64) {
+      setStrokeWidth(64);
+    } else {
+      setStrokeWidth(width);
+    }
+  }
 
   const handleMouseDown = (e) => {
     isDrawing.current = true;
@@ -35,6 +66,7 @@ export default function EditPage() {
     // add point
     lastLine.points = lastLine.points.concat([point.x, point.y]);
     lastLine.color = color;
+    lastLine.strokeWidth = strokeWidth;
 
     // replace last
     lines.splice(lines.length - 1, 1, lastLine);
@@ -73,9 +105,9 @@ export default function EditPage() {
                     key={i}
                     points={line.points}
                     stroke={line.color}
-                    strokeWidth={5}
+                    strokeWidth={line.strokeWidth}
                     tension={0.5}
-                    lineCap="round"
+                    lineCap="square"
                     globalCompositeOperation={
                       line.tool === 'eraser' ? 'destination-out' : 'source-over'
                     }
@@ -89,15 +121,20 @@ export default function EditPage() {
           {showColorPicker ?
             <ChromePicker color={color} onChange={(color) => setColor(color.hex)} style={{ paddingBottom: '10px' }}/>
             : null}
+          {showStrokeChooser ? 
+            <Box style={{ backgroundColor: 'white', borderRadius: '10px', display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '10px' }}>
+              <TextField label='minimum 1, maximum 64' type='number' fullWidth InputProps={{ inputProps: { min: 1, max: 64 } }} value={strokeWidth} onChange={(e) => handleStrokeChange(Number(e.target.value))} style={{ margin: '10px' }} />
+            </Box>
+          : null}
         </Box>
         <Box style={{ display: 'flex', flexDirection: 'column', width: '5%', height: '100%', backgroundColor: '#9dc3ff', alignItems: 'center', justifyContent: 'space-around' }}>
-          <PanToolOutlinedIcon style={{ fontSize: '40px' }}/>
-          <ModeOutlinedIcon style={{ fontSize: '40px' }}/>
-          <ClearIcon style={{ fontSize: '40px' }}/>
-          <InterestsOutlinedIcon style={{ fontSize: '40px' }}/>
-          <CompareArrowsOutlinedIcon style={{ fontSize: '40px' }}/>
-          <TextIncreaseOutlinedIcon style={{ fontSize: '40px' }}/>
-          <ColorLensOutlinedIcon onMouseDown={() => setShowColorPicker(!showColorPicker)} style={{ fontSize: '40px', color: showColorPicker ? color : '#000000', cursor: 'pointer' }}/>
+          <PanToolIcon style={{ fontSize: '40px', color: tool === 'pan' ? '#000000' : '#777777' }}/>
+          <ModeIcon onClick={() => setTool('pen')} style={{ fontSize: '40px', color: tool === 'pen' ? '#000000' : '#777777', cursor: 'pointer' }}/>
+          <ClearIcon onClick={() => setTool('eraser')} style={{ fontSize: '40px', color: tool === 'eraser' ? '#000000' : '#777777', cursor: 'pointer' }}/>
+          <InterestsIcon style={{ fontSize: '40px', color: tool === 'shape' ? '#000000' : '#777777' }}/>
+          <CompareArrowsIcon style={{ fontSize: '40px', color: tool === 'line' ? '#000000' : '#777777' }}/>
+          <GrainIcon onClick={() => selectStrokeChooser()} style={{ fontSize: '40px', cursor: 'pointer' }}/>
+          <ColorLensIcon onClick={() => selectColorPicker()} style={{ fontSize: '40px', color: showColorPicker ? color : '#000000', cursor: 'pointer' }}/>
         </Box>
       </Box>
     </>
