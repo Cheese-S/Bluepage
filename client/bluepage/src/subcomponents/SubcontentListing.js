@@ -18,10 +18,13 @@ export default function SubcontentListing(props){
         const getcontent = async () => {
             try{
                 const res = await getSubcontentByID(id, type);
-                settitle(res.data.subcontent.title);
+                const isPublished = res.data.subcontent.published;
+                setpublished(isPublished);
+
+                const realTitle = res.data.subcontent.title;
+                settitle(!isPublished ? `${realTitle} (Unpublished)` : realTitle);
                 setviews(res.data.subcontent.views);
                 setsubid(res.data.subcontent._id);
-                setpublished(res.data.subcontent.published);
             } 
             catch(err){
                 console.log(err);

@@ -31,7 +31,9 @@ export default function ListPage() {
                 setlist(res.data.content.contentList);
             } 
             catch(err){
+                // Probably unauthorized - kick out
                 console.log(err);
+                navigate('/home/test')
             }
         }
         getcontent();
