@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography } from '@mui/material/';
 import kTPS, { AddItem_Transaction } from '../kTPS/kTPS';
 import { userStore } from '../store/UserStore';
-import { getContentById, getSubcontentByID, updateSubContent, publishContent, publishSubContent } from '../api/api';
+import { getContentById, getSubcontentByID, updateSubContent, updateContent, publishContent, publishSubContent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
 
 import PanToolIcon from '@mui/icons-material/PanToolOutlined';
@@ -243,8 +243,11 @@ export default function EditPage() {
       // First, save this current page
       await savePage();
 
-      // Next, publish comic
-      await publishSubContent(SUBCONTENT_TYPE.PAGE, [id], parentID);
+      if (parent.published) {
+        await publishSubContent(SUBCONTENT_TYPE.PAGE, [id], parentID);
+      } else {
+        await updateContent(CONTENT_TYPE.COMIC, parent.title, parent.description, parent._id, [id], true, parent.tags); 
+      }
       
       // Last, navigate back to the list page
       navigate(`/list/${parentID}/comic`);

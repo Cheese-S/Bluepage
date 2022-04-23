@@ -75,7 +75,8 @@ const ContentService = {
     deleteContentSubcontent: async (contentType, contentID, subcontentID) => {
         return ContentService.updateContent(contentType,
             { _id: contentID },
-            { $pull: { contentList: { id: subcontentID } } }
+            { $pull: { contentList: { subcontent: subcontentID } } },
+            { lean: true, new: true }
         )
     },
 
@@ -83,7 +84,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID },
             { $addToSet: { contentList: { subcontent: subcontentID } } },
-            { lean: false, new: true, timestamps: false}
+            { lean: false, new: true, timestamps: false }
         )
     },
 
@@ -101,7 +102,7 @@ const ContentService = {
                     },
                 }
             },
-            { lean: false, new: true, timestamps: false}
+            { lean: false, new: true, timestamps: false }
         )
     },
 
@@ -153,7 +154,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             { $inc: { followers: 1 } },
-            { lean: false, new: true, timestamps: false}
+            { lean: false, new: true, timestamps: false }
         )
     },
 
@@ -162,7 +163,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             updateAction,
-            { lean: false, new: true, timestamps: false}
+            { lean: false, new: true, timestamps: false }
         );
     },
 
@@ -170,7 +171,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             { $inc: { views: 1 } },
-            { lean: false, new: true, timestamps: false}
+            { lean: false, new: true, timestamps: false }
         )
     },
 
@@ -178,7 +179,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             { published: false },
-            { lean: false, new: true, timestamps: false}
+            { lean: false, new: true, timestamps: false }
         )
     },
 

@@ -11,8 +11,8 @@ const ObjectId = Schema.Types.ObjectId;
 const ChapterSchema = new Schema({
     parentID: { type: ObjectId, ref: 'Story', required: true },
     title: { type: String, required: true },
-    editorContent: { type: Object, default: {} },
-    body: { type: Object, default: {} },
+    editorContent: { type: Schema.Types.Mixed, default: {} },
+    body: { type: Schema.Types.Mixed, default: {} },
     author: { type: UserDataSchema, required: true },
     views: { type: Number, default: 0 },
     likes: { type: Number, default: 0 },

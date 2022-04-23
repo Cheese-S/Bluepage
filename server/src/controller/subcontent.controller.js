@@ -217,14 +217,16 @@ const SubcontentController = {
                     error: `Unauthorized User`
                 })
             }
-            const subcontent = await SubcontentService.deleteSubcontent(subcontentType, subcontentID);
+            const subcontent = await SubcontentService.deleteSubcontent(subcontentType, {_id: subcontentID});
             if (!subcontent) {
                 return res.status(400).send({
                     error: `The ${subcontentType} does not exist`
                 })
             }
+            console.log(subcontent); 
             const contentType = CONSTANT.SUBCONTENT_TYPE.getContentType(subcontentType);
             const content = await ContentService.deleteContentSubcontent(contentType, subcontent.parentID, subcontent.id);
+            console.log(content);
             return res.status(200).send({
                 content: content,
                 subcontent: subcontent
@@ -245,6 +247,7 @@ const SubcontentController = {
                 { _id: parentID },
                 { lean: false }
             )
+            console.log(content); 
             if (!content.published) {
                 return res.status(400).send({
                     error: `You cannot publish ${subcontentType} for a unpublished ${contentType}`
