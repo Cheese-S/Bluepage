@@ -46,7 +46,7 @@ export default function ViewComicPage(){
                     <Typography align='center' style={{ fontWeight: 'bold', fontSize: '20px' }}>{title}</Typography>
                 </Box>
             </Box>
-            <Box style={{ width: '418px', height: '627px', backgroundColor: '#ffffff', margin: 'auto'}}>
+            <Box style={{ width: '418px', height: '627px', backgroundColor: '#ffffff', margin: 'auto', marginTop: '10px'}}>
             <Stage
               width={418}
               height={627}
