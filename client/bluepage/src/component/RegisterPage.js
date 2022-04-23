@@ -23,6 +23,10 @@ export const RegisterPage = () => {
                 setError('Your passwords do not match.');
                 setModalVisible(true);
                 return;
+            } else if (password.length < 8) {
+                setError('Your password is too short! For security, use a password of at least 8 characters.');
+                setModalVisible(true);
+                return;
             }
 
             const answer1 = formData.get('sec1');
