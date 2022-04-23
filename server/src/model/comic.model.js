@@ -38,7 +38,9 @@ const ComicSchema = new Schema({
     }],
     comments: [{ type: CommentSchema, default: [] }],
     thumbnail: { type: Buffer }
-})
+},
+    { timestamps: true }
+)
 
 ComicSchema.plugin(mongoosePaginate);
 

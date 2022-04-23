@@ -33,13 +33,15 @@ const StorySchema = new Schema({
     likes: { type: Number, default: 0 },
     dislikes: { type: Number, default: 0 },
     contentList: [{
-        subcontent: {type: ObjectId, ref: 'Chapter'},
+        subcontent: { type: ObjectId, ref: 'Chapter' },
         _id: false
     }],
     comments: [{ type: CommentSchema, default: [] }],
     thumbnail: { type: Buffer }
-})
+},
+    { timestamps: true }
+)
 
-StorySchema.plugin(mongoosePaginate); 
+StorySchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Story', StorySchema); 
