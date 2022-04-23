@@ -242,7 +242,8 @@ const SubcontentController = {
             const { userID, user } = req.locals;
             const contentType = CONSTANT.SUBCONTENT_TYPE.getContentType(subcontentType);
             const content = await ContentService.findContent(contentType,
-                { _id: parentID }
+                { _id: parentID },
+                { lean: false }
             )
             if (!content.published) {
                 return res.status(400).send({
@@ -255,6 +256,7 @@ const SubcontentController = {
                 await UserService.addNotificationToFollowers(subcontentType, content._id, user.followers,
                     { text: `New ${subcontentType} has been published for the ${contentType} "${content.title}".` }
                 )
+                await content.save(); 
                 return res.sendStatus(200);
             } else {
                 return res.status(400).send({

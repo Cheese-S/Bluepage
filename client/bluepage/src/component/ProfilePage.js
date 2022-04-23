@@ -70,7 +70,6 @@ export default function ProfilePage(){
     let name="N/A";
     let describe="N/A";
     let listpublished; 
-    let listunpublished;
     let sameUser = false;
 
     const handleSubmit = async () =>{
@@ -109,22 +108,6 @@ export default function ProfilePage(){
             user.ownStories.filter(function (story ) {return story.published === true;}).map((story) => (
                 <ProfileContentCard
                     id={story._id}  type={CONTENT_TYPE.STORY} key={story.id}
-                />
-            ))
-            }
-        </Box>;
-        listunpublished=<Box style={{ display: 'flex', flexDirection: 'row', margin: '16px' }}>
-        {
-            user.ownComics.filter(function (comic ) {return comic.published === false;}).map((comic ) => (
-                <ProfileContentCard
-                    id={comic._id} type={CONTENT_TYPE.COMIC} key={comic.id}
-                />
-            ))
-            }
-            {
-            user.ownStories.filter(function (story) {return story.published === false;}).map((story) => (
-                <ProfileContentCard
-                    id={story._id} type={CONTENT_TYPE.STORY} key={story.id}
                 />
             ))
             }
@@ -239,8 +222,6 @@ export default function ProfilePage(){
                                 </DialogActions>
                         </Dialog>
                         {listpublished}
-                        <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Unpublished Subcontent</Typography>
-                        {listunpublished}
                         <Box style={{ padding: '16px' }}/>
                     </Box>
                 </Box>
