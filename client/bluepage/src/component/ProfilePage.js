@@ -6,18 +6,19 @@ import { ProfileSubcontentCard } from '../subcomponents/ProfileSubcontentCard';
 import { getUserByID,changeUserDescription } from '../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
+import { CONTENT_TYPE} from "../constant";
 
 export default function ProfilePage(){
     const { id } = useParams();
     const state = userStore(); 
     const history = useNavigate();
-    const valueRef = useRef<any | null>(null);;
-    const [user, setuser] = useState<null | any>(null);
+    const valueRef = useRef(null);;
+    const [user, setuser] = useState(null);
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const getuser = async () =>{
-            const res = await getUserByID(id as string);
+            const res = await getUserByID(id);
             setuser(res.data.user);
         }
         getuser();
@@ -40,8 +41,8 @@ export default function ProfilePage(){
 
     const handleSubmit = async () =>{
         const val = valueRef.current.value;
-        const res = await changeUserDescription(val as string);
-        describe = val as string;
+        const res = await changeUserDescription(val);
+        describe = val;
         window.location.reload();
     }
 
@@ -53,32 +54,32 @@ export default function ProfilePage(){
         listpublished=
         <Box style={{overflowX: "auto",display: 'flex', flexDirection: 'row', margin: '16px' }}>
             {
-            user.ownComics.filter(function (comic : any) {return comic.published === true;}).map((comic : any) => (
+            user.ownComics.filter(function (comic ) {return comic.published === true;}).map((comic) => (
                 <ProfileContentCard
-                    key={comic._id}
+                    id={comic._id}  type={CONTENT_TYPE.COMIC} key={comic.id}
                 />
             ))
             }
             {
-            user.ownStories.filter(function (story : any) {return story.published === true;}).map((story : any) => (
+            user.ownStories.filter(function (story ) {return story.published === true;}).map((story) => (
                 <ProfileContentCard
-                    key={story._id}
+                    id={story._id}  type={CONTENT_TYPE.STORY} key={story.id}
                 />
             ))
             }
         </Box>;
         listunpublished=<Box style={{ display: 'flex', flexDirection: 'row', margin: '16px' }}>
         {
-            user.ownComics.filter(function (comic : any) {return comic.published === false;}).map((comic : any) => (
+            user.ownComics.filter(function (comic ) {return comic.published === false;}).map((comic ) => (
                 <ProfileContentCard
-                    key={comic._id}
+                    id={comic._id} type={CONTENT_TYPE.COMIC} key={comic.id}
                 />
             ))
             }
             {
-            user.ownStories.filter(function (story : any) {return story.published === false;}).map((story : any) => (
+            user.ownStories.filter(function (story) {return story.published === false;}).map((story) => (
                 <ProfileContentCard
-                    key={story._id}
+                    id={story._id} type={CONTENT_TYPE.STORY} key={story.id}
                 />
             ))
             }
@@ -88,7 +89,7 @@ export default function ProfilePage(){
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Dialog open={open} onClose={handleCancel} >
-                <DialogTitle>Subscribe</DialogTitle>
+                <DialogTitle>Edit description</DialogTitle>
                 <DialogContent>
                 <DialogContentText>
                     Enter descrption and save
