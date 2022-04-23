@@ -21,7 +21,7 @@ export default function SubcontentListing(props) {
         const getcontent = async () => {
             try {
                 const res = await getSubcontentByID(id, type);
-                console.log(res);
+
                 setUserID(res.data.subcontent.author.id);
                 settitle(res.data.subcontent.title);
                 const isPublished = res.data.subcontent.published;
@@ -45,7 +45,6 @@ export default function SubcontentListing(props) {
     }
     const handleDelete = () => {
         setDelete(true);
-        console.log(deleteModal);
     }
 
     const handleClose = () => {
@@ -54,13 +53,8 @@ export default function SubcontentListing(props) {
     const handleRemove = async () => {
         handleClose();
         try {
-            console.log(subid);
-            console.log(props.type);
-            const res = await deleteSubcontent(props.type, subid);
-            console.log(res);
-            console.log(res.data.content.contentList[0].subcontent);
-
-            console.log(res.data.content.contentList);
+            await deleteSubcontent(props.type, subid);
+            window.location.reload();
         }
         catch (err) {
             console.log(err);
