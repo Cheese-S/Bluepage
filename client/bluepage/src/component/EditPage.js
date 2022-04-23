@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Stage, Layer, Line, Rect, Arrow } from 'react-konva';
 import { ChromePicker } from 'react-color';
 import { Box, TextField, Button } from '@mui/material/';
+import kTPS, { AddItem_Transaction } from '../kTPS/kTPS';
 
 import PanToolIcon from '@mui/icons-material/PanToolOutlined';
 import ModeIcon from '@mui/icons-material/ModeOutlined';
@@ -10,11 +11,20 @@ import InterestsIcon from '@mui/icons-material/InterestsOutlined';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrowsOutlined';
 import GrainIcon from '@mui/icons-material/Grain';
 import ColorLensIcon from '@mui/icons-material/ColorLensOutlined';
+import UndoIcon from '@mui/icons-material/Undo';
+import RedoIcon from '@mui/icons-material/Redo';
+
+const tps = new kTPS();
 
 export default function EditPage() {
   const [lines, setLines] = useState([]);
   const [shapes, setShapes] = useState([]);
   const [arrows, setArrows] = useState([]);
+
+  const [newObject, setNewObject] = useState({});
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
+
   const [title, setTitle] = useState('New Page');
   const [description, setDescription] = useState('');
   
@@ -51,6 +61,21 @@ export default function EditPage() {
     }
   }
 
+  const updateUndoRedo = () => {
+    setCanUndo(tps.hasTransactionToUndo());
+    setCanRedo(tps.hasTransactionToRedo());
+  }
+
+  const handleUndo = () => {
+    tps.undoTransaction();
+    updateUndoRedo();
+  }
+
+  const handleRedo = () => {
+    tps.doTransaction();
+    updateUndoRedo();
+  }
+
   const handleMouseDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
@@ -77,12 +102,18 @@ export default function EditPage() {
       let lastLine = lines[lines.length - 1];
       // add point
       lastLine.points = lastLine.points.concat([point.x, point.y]);
+      
+      // set object to add to kTPS
+      setNewObject(lastLine);
 
       // replace last
       lines.splice(lines.length - 1, 1, lastLine);
       setLines(lines.concat());
     } else if (tool === 'shape') {
       let lastShape = shapes[shapes.length - 1];
+
+      // set object to add to kTPS
+      setNewObject(lastShape);
       
       // set new end position
       lastShape.end_x = point.x;
@@ -96,6 +127,9 @@ export default function EditPage() {
       // change end position
       lastArrow.points = [lastArrow.points[0], lastArrow.points[1], point.x, point.y];
 
+      // set object to add to kTPS
+      setNewObject(lastArrow);
+
       // replace last
       arrows.splice(arrows.length - 1, 1, lastArrow);
       setArrows(arrows.concat());
@@ -104,13 +138,58 @@ export default function EditPage() {
 
   const handleMouseUp = () => {
     isDrawing.current = false;
+
+    /**
+     * Process of adding a transaction:
+     * 1) Remove the new object from its respective array. This preserves the illusion
+     * of it being drawn 'live', but now we need it to be added as a transaction.
+     * 2) Create a new AddItem_Transaction for that item for add events. Clear the newObject hook.
+     * 3) Add the transaction to kTPS.
+     * 4) Do the transaction.
+     */
+    if (tool === 'pen' || tool === 'eraser') {
+      lines.pop();
+      setLines(lines.concat());
+
+      const transaction = new AddItem_Transaction(lines, setLines, newObject);
+      setNewObject({});
+
+      tps.addTransaction(transaction);
+    } else if (tool === 'shape') {
+      shapes.pop();
+      setShapes(shapes.concat());
+
+      const transaction = new AddItem_Transaction(shapes, setShapes, newObject);
+      setNewObject({});
+
+      tps.addTransaction(transaction);
+    } else if (tool === 'arrow') {
+      arrows.pop();
+      setArrows(arrows.concat());
+
+      const transaction = new AddItem_Transaction(arrows, setArrows, newObject);
+      setNewObject({});
+
+      tps.addTransaction(transaction);
+    }
+
+    updateUndoRedo();
+    
   };
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%'}}>
       <Box style={{ display: 'flex', flexDirection: 'row', height: '10%', alignItems: 'center', backgroundColor: '#9dc3ff' }} sx={{ borderBottom: 2 }}>
         <TextField value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter title here...' style={{ marginLeft: '10px', width: '30%' }}></TextField>
-        <Box style={{ alignItems: 'center', width: '70%', display: 'flex', flexDirection: 'row-reverse' }}>
+        <Box style={{ alignItems: 'center', width: '40%', display: 'flex', flexDirection: 'row-reverse', padding: '10px' }}>
+          <Button disabled={!canRedo} onClick={handleRedo} >
+            <RedoIcon style={{ fontSize: '40px' }} />
+          </Button>
+          <Button disabled={!canUndo} onClick={handleUndo} >
+            <UndoIcon style={{ fontSize: '40px', marginRight: '20px' }} />
+          </Button>
+        </Box>
+        <Box style={{ alignItems: 'cx enter', width: '30%', display: 'flex', flexDirection: 'row-reverse' }}>
           <Button variant='contained' style={{ marginRight: '10px' }}>Save and Exit</Button>
           <Button variant='contained' style={{ marginRight: '10px' }}>Save</Button>
         </Box>
@@ -183,14 +262,13 @@ export default function EditPage() {
             </Box>
           }
         </Box>
-        <Box style={{ display: 'flex', flexDirection: 'column', width: '5%', height: '100%', backgroundColor: '#9dc3ff', alignItems: 'center', justifyContent: 'space-around' }}>
-          <PanToolIcon style={{ fontSize: '40px', color: tool === 'pan' ? '#000000' : '#777777' }}/>
+        <Box style={{ display: 'flex', flexDirection: 'column', width: '5%', height: '100%', backgroundColor: '#9dc3ff', alignItems: 'center', justifyContent: 'space-around' }}> 
           <ModeIcon onClick={() => setTool('pen')} style={{ fontSize: '40px', color: tool === 'pen' ? '#000000' : '#777777', cursor: 'pointer' }}/>
           <ClearIcon onClick={() => setTool('eraser')} style={{ fontSize: '40px', color: tool === 'eraser' ? '#000000' : '#777777', cursor: 'pointer' }}/>
           <InterestsIcon onClick={() => setTool('shape')} style={{ fontSize: '40px', color: tool === 'shape' ? '#000000' : '#777777', cursor: 'pointer' }}/>
           <CompareArrowsIcon onClick={() => setTool('arrow')} style={{ fontSize: '40px', color: tool === 'arrow' ? '#000000' : '#777777', cursor: 'pointer' }}/>
           <GrainIcon onClick={() => selectStrokeChooser()} style={{ fontSize: '40px', cursor: 'pointer' }}/>
-          <ColorLensIcon onClick={() => selectColorPicker()} style={{ fontSize: '40px', color: showColorPicker ? color : '#000000', cursor: 'pointer' }}/>
+          <ColorLensIcon onClick={() => selectColorPicker()} style={{ fontSize: '40px', color: color, cursor: 'pointer' }}/>
         </Box>
       </Box>
     </Box>
