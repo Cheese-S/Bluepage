@@ -248,7 +248,7 @@ export default function EditPage() {
       </Box>
       <Box style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
         <Box style={{ display: 'flex', flexDirection: 'column', width: '30%', height: '100%', backgroundColor: '#9dc3ff' }} >
-          <Typography>{messageToUser}</Typography>
+          <Typography style={{ margin: '10px', fontSize: '18px', fontWeight: 'bold' }}>{messageToUser}</Typography>
         </Box>
         <Box style={{ width: '50%', height: '85%', marginTop: '10px' }}>
           <Box style={{ width: '418px', height: '627px', backgroundColor: '#ffffff', margin: 'auto'}}>
