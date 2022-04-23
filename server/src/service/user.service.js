@@ -102,19 +102,33 @@ const UserService = {
     },
 
     getUser: async (userID, published) => {
-        return UserModel.findOne(
-            {_id: userID}
-        )
-        .populate({
-            path: 'ownComics',
-            select: '-comments -contentList',
-            match: { published: published }
-        })
-        .populate({
-            path: 'ownStories',
-            select: '-comments -contentList',
-            match: { published: published },
-        })
+        if (published) {
+            return UserModel.findOne(
+                {_id: userID}
+            )
+            .populate({
+                path: 'ownComics',
+                select: '-comments -contentList',
+                match: { published: published }
+            })
+            .populate({
+                path: 'ownStories',
+                select: '-comments -contentList',
+                match: { published: published },
+            })
+        } else {
+            return UserModel.findOne(
+                {_id: userID}
+            )
+            .populate({
+                path: 'ownComics',
+                select: '-comments -contentList',
+            })
+            .populate({
+                path: 'ownStories',
+                select: '-comments -contentList'
+            })
+        }
         
     },
 
