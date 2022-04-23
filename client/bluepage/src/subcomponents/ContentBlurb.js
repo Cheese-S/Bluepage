@@ -2,15 +2,13 @@ import React, { useEffect ,useState} from 'react';
 import { Typography, Button, Link, Box , Chip} from '@mui/material/';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { useParams } from 'react-router-dom';
 import { getContentById, getSubcontentByID } from '../api/api';
-import { CONTENT_TYPE} from "../constant";
 import { useNavigate } from 'react-router-dom'; 
 
 
-export default function ContentBlurb() {
+export default function ContentBlurb(props) {
     const history = useNavigate();
-    const { id,type,subtype } = useParams();
+    const { id, type, subtype } = props;
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
     const [followers, setfollowers] = useState(0);
@@ -43,29 +41,11 @@ export default function ContentBlurb() {
                 console.log(err);
             }
         }
-        const getsubcontent = async () =>{
-            try{
-                const res = await getSubcontentByID(id,subtype);
-                settitle(res.data.subcontent.title);
-                setviews(res.data.subcontent.views);
-                setauthor(res.data.subcontent.author.name);
-                setauthorid(res.data.subcontent.author.id);
-                settag(res.data.subcontent.tags);
-                setdescription(res.data.subcontent.description);
-                setlike(res.data.subcontent.likes);
-                setdislike(res.data.subcontent.dislikes);
-            } 
-            catch(err){
-                console.log(err);
-            }
+        if (id) {
+            getcontent();
         }
-        if(type){
-        getcontent();
-        }
-        else{
-            getsubcontent();
-        }
-    },[]);
+    }, [id]);
+
     let tags=""
     let followtest=""
     if(followers){

@@ -15,7 +15,7 @@ const ComicSchema = new Schema({
     author: { type: UserDataSchema, required: true },
     views: { type: Number, default: 0 },
     followers: { type: Number, default: 0 },
-    published: { type: Boolean, default: true },
+    published: { type: Boolean, default: false },
     tags: {
         type: [String],
         enum: [

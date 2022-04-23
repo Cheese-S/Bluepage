@@ -20,8 +20,12 @@ export default function ListPage() {
     
     const [list, setlist] = useState([]);
     let sublist = "";
-    if(list){
-        sublist= list.map((list) => <SubcontentListing id={list.subcontent._id} type={subtype}/>);
+    if (list) {
+        if (sameUser) {
+            sublist = list.map((list) => <SubcontentListing id={list.subcontent._id} type={subtype}/>);
+        } else {
+            sublist = list.filter(function(subcontent) {return subcontent.subcontent.published;} ).map((list) => <SubcontentListing id={list.subcontent._id} type={subtype}/>);
+        }
     }
 
     useEffect(() => {
@@ -29,6 +33,7 @@ export default function ListPage() {
             try{
                 const res = await getContentById(type, id);
                 setlist(res.data.content.contentList);
+                setSameUser(res.data.content.author.id === selfID);
             } 
             catch(err){
                 // Probably unauthorized - kick out
@@ -54,7 +59,7 @@ export default function ListPage() {
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
-                <ContentBlurb />
+                <ContentBlurb id={id} type={type} subtype={subtype} />
             </Box>
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
                 <Box style={{ display: 'flex', flexDirection: 'row' }}>

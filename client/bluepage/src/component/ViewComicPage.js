@@ -6,11 +6,13 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { useParams } from 'react-router-dom';
 import {getSubcontentByID } from '../api/api';
+import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
 import { Stage, Layer, Line, Rect, Arrow } from 'react-konva';
 
 
 export default function ViewComicPage(){
     const { id } = useParams();
+    const [parentID, setParentID] = useState('');
     const [title, settitle] = useState(null);
     const [lines, setLines] = useState([]);
     const [shapes, setShapes] = useState([]);
@@ -20,6 +22,8 @@ export default function ViewComicPage(){
             try{
                 const res = await getSubcontentByID(id,"page");
                 settitle(res.data.subcontent.title);
+                setParentID(res.data.subcontent.parentID);
+
                 if(res.data.subcontent.body.lines){
                 setLines(res.data.subcontent.body.lines);
                 }
@@ -39,7 +43,7 @@ export default function ViewComicPage(){
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
-                <ContentBlurb />
+                <ContentBlurb id={parentID} type={CONTENT_TYPE.COMIC} subtype={SUBCONTENT_TYPE.PAGE} />
             </Box>
             <Box style={{ width: '90%', margin: 'auto' }}>
                 <Box style={{ backgroundColor: '#ffffff', padding: '10px' }}>

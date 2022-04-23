@@ -66,10 +66,15 @@ export default function SubcontentListing(props) {
     return (
         <>
             <Box style={{ backgroundColor: '#eeeeee', alignItems: 'center', display: 'flex', flexDirection: 'row', padding: '10px', justifyContent: 'space-between' }} sx={{ border: 1.5 }}>
-                <Link onClick={handlecontent} underline='hover' style={{ fontWeight: 'bold', fontSize: '18px' }}>{title}</Link>
-                {sameUser && <IconButton onClick={handleDelete} aria-label="delete" color="primary" style={{ marginLeft: '1020px' }}>
-                    <DeleteIcon />
-                </IconButton>}
+                <Link onClick={handlecontent} underline='hover' style={{ fontWeight: 'bold', fontSize: '18px', width: '60%' }}>{title}</Link>
+                <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
+                    {sameUser &&
+                        <IconButton onClick={handleDelete} aria-label="delete" color="primary" style={{ marginLeft: '5px', marginRight: '5px' }}>
+                            <DeleteIcon style={{ fontSize: '30px' }} />
+                        </IconButton>
+                    }
+                    <Typography style={{ fontWeight: 'bold' }}>{views} views</Typography>
+                </Box>
 
                 <Dialog open={deleteModal} onClose={handleClose} >
                     <DialogTitle>Edit description</DialogTitle>
@@ -81,7 +86,6 @@ export default function SubcontentListing(props) {
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleRemove} >Delete</Button>
                 </Dialog>
-                <Typography style={{ fontWeight: 'bold' }}>{views} views</Typography>
             </Box>
             <Box style={{ paddingBottom: '8px' }} />
         </>
