@@ -36,7 +36,6 @@ export default function ProfilePage(){
     let name="N/A";
     let describe="N/A";
     let listpublished; 
-    let listunpublished;
     let sameUser = false;
 
     const handleSubmit = async () =>{

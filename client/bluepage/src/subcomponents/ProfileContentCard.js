@@ -25,6 +25,8 @@ const getFormattedNum = (num) => {
 }
 
 
+
+
 export const ProfileContentCard = (props) => {
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
@@ -33,7 +35,8 @@ export const ProfileContentCard = (props) => {
     const [authorid, setauthorid] = useState(null);
     const [tag, settag] = useState(['Romance', 'Sci-Fi']);
     const [description, setdescription] = useState(null);
-    const [thumb, setthumb] = useState(null);
+    const [thumb, setthumb] = useState("https://wallpaperaccess.com/full/629055.jpg");
+    const [time, settime] = useState(null);
 
     const history = useNavigate();
     const handlecontent = () =>{
@@ -52,8 +55,15 @@ export const ProfileContentCard = (props) => {
                 setauthorid(res.data.content.author.id);
                 settag(res.data.content.tags);
                 setdescription(res.data.content.description);
-                //setthumb(res.data.content.??????);
-            }
+                settime(res.data.content.updatedAt);
+                console.log(res);
+                if(res.data.content.thumbnail){
+                        setthumb('data:image/jpeg;base64,' + btoa(
+                            res.data.content.thumbnail.data.reduce((data, byte) => data + String.fromCharCode(byte), '')
+                         ));
+                    }
+                    console.log(thumb);
+                }
             catch(err){
                 console.log(err);
             }
@@ -95,7 +105,7 @@ export const ProfileContentCard = (props) => {
                                 size="small"
                             />)}
                         <Typography sx={{ marginTop: '1em' }} variant="body2" color="text.secondary" component="div">
-                            ---
+                            Last updated:{time}
                         </Typography>
                     </CardContent>
                 </Box>

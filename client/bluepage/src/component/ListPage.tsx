@@ -3,8 +3,10 @@ import { Box, Typography, Button, TextField } from '@mui/material/';
 import ContentBlurb from '../subcomponents/ContentBlurb';
 import SubcontentListing from '../subcomponents/SubcontentListing';
 import Comment from '../subcomponents/Comment';
+import { useParams } from 'react-router-dom';
 
 export default function ListPage(){
+    const { id } = useParams();
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
