@@ -13,10 +13,10 @@ export const ButtonAppBar: React.FC = () => {
     const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [sortanchorEl, setsortAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [notificationanchorEl, setnotificationAnchorEl] = React.useState<null | HTMLElement>(null);
-    const id = userStore(state => state.id);
+    const id = userStore((state: { id: any; }) => state.id);
     const state=userStore();
-    const isLoggedIn = userStore(state => state.isLoggedIn);
-    const resetUserStore = userStore(state => state.resetStore);
+    const isLoggedIn = userStore((state: { isLoggedIn: any; }) => state.isLoggedIn);
+    const resetUserStore = userStore((state: { resetStore: any; }) => state.resetStore);
     const handleLogout = async () => {
         handleuserClose();
         resetUserStore();

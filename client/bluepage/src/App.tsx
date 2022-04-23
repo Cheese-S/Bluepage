@@ -27,8 +27,11 @@ function App() {
       <Route path="/resetpassword" element={<ResetPasswordPage/>} />
       <Route path="/nav/test" element={<ButtonAppBar/>} />
       <Route path="/list/test" element={<ListPage/>} />
+      <Route path="/list/:id" element={<ListPage/>} />
       <Route path="/chapter/test" element={<ViewStoryChapter/>} />
+      <Route path="/chapter/:id" element={<ViewStoryChapter/>} />
       <Route path="/page/test" element={<ViewComicPage/>} />
+      <Route path="/page/:id" element={<ViewComicPage/>} />
       <Route path="/profile/test/:id" element={<ProfilePage/>} />
       <Route path="/page/edit" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />

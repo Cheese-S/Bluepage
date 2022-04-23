@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField, Link, Modal } from '@mui/material/';
 import { changePassword } from '../api/api';
 import { userStore } from '../store/UserStore';
+import { useNavigate } from 'react-router-dom';
 
 export const ChangePassword: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
+
     const id = userStore(state => state.id);
     const route = `/profile/test/${id}`;
+
+    useEffect(() => {
+        // if user isn't logged in, redirect them home
+        if (!id) {
+            navigate('/home/test');
+        }
+    }, [])
 
     // @ts-ignore
     const handleSubmit = async (event) => {
