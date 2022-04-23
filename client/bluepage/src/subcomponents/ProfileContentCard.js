@@ -37,12 +37,7 @@ export const ProfileContentCard = (props) => {
 
     const history = useNavigate();
     const handlecontent = () =>{
-        if(props.type==CONTENT_TYPE.COMIC){
-            var his = `/page/${props.id}`
-        }
-        else{
-            var his = `/chapter/${props.id}`
-        }
+        var his = `/list/${props.id}`
         history(his);
     }
 
@@ -90,7 +85,7 @@ export const ProfileContentCard = (props) => {
                         </Typography>
 
                         <Typography variant="body1" color="text.secondary" component="div" >
-                            {author}
+                            By {author}
                         </Typography>
                         {tag.map((tag) =>
                             <Chip

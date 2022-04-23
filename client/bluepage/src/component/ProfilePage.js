@@ -68,22 +68,6 @@ export default function ProfilePage(){
             ))
             }
         </Box>;
-        listunpublished=<Box style={{ display: 'flex', flexDirection: 'row', margin: '16px' }}>
-        {
-            user.ownComics.filter(function (comic ) {return comic.published === false;}).map((comic ) => (
-                <ProfileContentCard
-                    id={comic._id} type={CONTENT_TYPE.COMIC} key={comic.id}
-                />
-            ))
-            }
-            {
-            user.ownStories.filter(function (story) {return story.published === false;}).map((story) => (
-                <ProfileContentCard
-                    id={story._id} type={CONTENT_TYPE.STORY} key={story.id}
-                />
-            ))
-            }
-        </Box>;
     }
 
     return (
@@ -141,8 +125,6 @@ export default function ProfilePage(){
                     <Box style={{ display: 'flex', flexDirection: 'column' }}>
                         <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Published Content</Typography>
                         {listpublished}
-                        <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Unpublished Subcontent</Typography>
-                        {listunpublished}
                         <Box style={{ padding: '16px' }}/>
                     </Box>
                 </Box>
