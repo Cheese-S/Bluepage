@@ -29,9 +29,9 @@ function App() {
       <Route path="/list/test" element={<ListPage/>} />
       <Route path="/list/:id/:type" element={<ListPage/>} />
       <Route path="/chapter/test" element={<ViewStoryChapter/>} />
-      <Route path="/chapter/:id" element={<ViewStoryChapter/>} />
+      <Route path="/chapter/:id/:subtype" element={<ViewStoryChapter/>} />
       <Route path="/page/test" element={<ViewComicPage/>} />
-      <Route path="/page/:id" element={<ViewComicPage/>} />
+      <Route path="/page/:id/:subtype" element={<ViewComicPage/>} />
       <Route path="/profile/test/:id" element={<ProfilePage/>} />
       <Route path="/page/edit" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />
