@@ -40,7 +40,7 @@ export const ProfileContentCard = (props) => {
 
     const history = useNavigate();
     const handlecontent = () =>{
-        var his = `/list/${props.id}`
+        var his = `/list/${props.id}/${props.type}`
         history(his);
     }
 

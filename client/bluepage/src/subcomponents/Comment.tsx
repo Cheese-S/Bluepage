@@ -8,7 +8,7 @@ export default function SubcontentListing(){
             <Box style={{ paddingRight: '20px' }}/>
             <Box style={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography style={{ fontWeight: 'bold', fontSize: '14px'}}>exampleCommenterUsername</Typography>
-                <Typography style={{ color: '#68717a' }}>I hate this so much that I'm doing it on a Saturday night.</Typography>
+                <Typography style={{ color: '#68717a' }}>I hate this so much that I'm doing it on a Friday and Saturday night. Who need sleep, all you need is coffe and redbull</Typography>
             </Box>
         </Box>
     );

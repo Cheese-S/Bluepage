@@ -1,12 +1,39 @@
-import React from 'react';
+import React, { useEffect ,useState} from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material/';
 import ContentBlurb from '../subcomponents/ContentBlurb';
 import SubcontentListing from '../subcomponents/SubcontentListing';
 import Comment from '../subcomponents/Comment';
 import { useParams } from 'react-router-dom';
+import { getContentById } from '../api/api';
+import { SUBCONTENT_TYPE} from "../constant";
+
 
 export default function ListPage(){
-    const { id } = useParams();
+    const { id,type } = useParams();
+    let typee="";
+    if(type=="story"){
+        typee=SUBCONTENT_TYPE.CHAPTER;
+    }
+    else{
+        typee=SUBCONTENT_TYPE.PAGE;
+    }
+    const [list, setlist] = useState(null);
+    let sublist = "";
+    if(list){
+        sublist= list.map((list) => <SubcontentListing id={list.subcontent._id} type={typee}/>);
+    }
+    useEffect(() => {
+        const getcontent = async () =>{
+            try{
+                const res = await getContentById(type,id);
+                setlist(res.data.content.contentList);
+            } 
+            catch(err){
+                console.log(err);
+            }
+        }
+        getcontent();
+    },[]);
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
@@ -14,9 +41,7 @@ export default function ListPage(){
             </Box>
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
                 <Box style={{ width: '98%', margin: 'auto'}}>
-                    <SubcontentListing/>
-                    <SubcontentListing/>
-                    <SubcontentListing/>
+                {sublist}
                     <hr style={{ color: 'black', backgroundColor: 'black', height: 1}} />
                     <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
                     <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
