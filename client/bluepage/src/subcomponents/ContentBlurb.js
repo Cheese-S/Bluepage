@@ -24,7 +24,7 @@ export default function ContentBlurb() {
         var his = `/profile/test/${authoridlink}`
         history(his);
     }
-    console.log(subtype);
+
     useEffect(() => {
         const getcontent = async () =>{
             try{

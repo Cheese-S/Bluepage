@@ -312,7 +312,7 @@ export const updateSubContent = (
     subcontentType: SUBCONTENT_TYPE, 
     subcontentID: string, 
     title: string, 
-    body: string, 
+    body: Object, 
     publshed: boolean, 
     parentID: string) => {
     return api.put(`/subcontent`, {

@@ -1,8 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Stage, Layer, Line, Rect, Arrow } from 'react-konva';
 import { ChromePicker } from 'react-color';
-import { Box, TextField, Button } from '@mui/material/';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, TextField, Button, Typography } from '@mui/material/';
 import kTPS, { AddItem_Transaction } from '../kTPS/kTPS';
+import { userStore } from '../store/UserStore';
+import { getSubcontentByID, updateSubContent } from '../api/api';
+import { SUBCONTENT_TYPE } from '../constant';
 
 import PanToolIcon from '@mui/icons-material/PanToolOutlined';
 import ModeIcon from '@mui/icons-material/ModeOutlined';
@@ -17,6 +21,11 @@ import RedoIcon from '@mui/icons-material/Redo';
 const tps = new kTPS();
 
 export default function EditPage() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [parentID, setParentID] = useState(''); 
+  const selfID = userStore(state => state.id);
+
   const [lines, setLines] = useState([]);
   const [shapes, setShapes] = useState([]);
   const [arrows, setArrows] = useState([]);
@@ -26,7 +35,7 @@ export default function EditPage() {
   const [canRedo, setCanRedo] = useState(false);
 
   const [title, setTitle] = useState('New Page');
-  const [description, setDescription] = useState('');
+  const [messageToUser, setMessageToUser] = useState('');
   
   const [tool, setTool] = useState('pen');
   const [color, setColor] = useState('#000000')
@@ -35,6 +44,31 @@ export default function EditPage() {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showStrokeChooser, setShowStrokeChooser] = useState(false);
   const isDrawing = useRef(false);
+
+  useEffect(() => {
+    const getPage = async() => {
+      try {
+        const res = await getSubcontentByID(id, SUBCONTENT_TYPE.PAGE);
+        const ownerID = res.data.subcontent.author.id;
+
+        // if you're not the owner of this page, no editing it - kicked out
+        if (ownerID !== selfID) {
+          navigate(`/profile/${ownerID}`);
+        }
+
+        // else, load in data from the body
+        setTitle(res.data.subcontent.title);
+        setLines(res.data.subcontent.body.lines);
+        setShapes(res.data.subcontent.body.shapes);
+        setArrows(res.data.subcontent.body.arrows);
+        setParentID(res.data.subcontent.parentID);
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getPage();
+  }, []);
 
   const hideAllPopups = () => {
     setShowColorPicker(false);
@@ -177,6 +211,24 @@ export default function EditPage() {
     
   };
 
+  const savePage = async () => {
+    const newBody = {
+      lines,
+      shapes,
+      arrows
+    };
+    await updateSubContent(SUBCONTENT_TYPE.PAGE, id, title, newBody, false, parentID);
+
+    const rightNow = new Date();
+    setMessageToUser(`Saved! at ${rightNow.toLocaleTimeString()}`);
+  }
+  
+  const saveAndExit = async () => {
+    await savePage();
+    
+    navigate(`/list/${parentID}/comic`);
+  }
+
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%'}}>
       <Box style={{ display: 'flex', flexDirection: 'row', height: '10%', alignItems: 'center', backgroundColor: '#9dc3ff' }} sx={{ borderBottom: 2 }}>
@@ -190,13 +242,13 @@ export default function EditPage() {
           </Button>
         </Box>
         <Box style={{ alignItems: 'cx enter', width: '30%', display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button variant='contained' style={{ marginRight: '10px' }}>Save and Exit</Button>
-          <Button variant='contained' style={{ marginRight: '10px' }}>Save</Button>
+          <Button onClick={() => saveAndExit()} variant='contained' style={{ marginRight: '10px' }}>Save and Exit</Button>
+          <Button onClick={() => savePage()} variant='contained' style={{ marginRight: '10px' }}>Save</Button>
         </Box>
       </Box>
       <Box style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
-        <Box style={{ display: 'flex', flexDirection: 'column', width: '30%', height: '100%', backgroundColor: '#9dc3ff' }}>
-          <TextField value={description} placeholder='Enter description here...' onChange={(e) => setDescription(e.target.value)} style={{ height: '50%', margin: '10px' }}></TextField>
+        <Box style={{ display: 'flex', flexDirection: 'column', width: '30%', height: '100%', backgroundColor: '#9dc3ff' }} >
+          <Typography>{messageToUser}</Typography>
         </Box>
         <Box style={{ width: '50%', height: '85%', marginTop: '10px' }}>
           <Box style={{ width: '418px', height: '627px', backgroundColor: '#ffffff', margin: 'auto'}}>
