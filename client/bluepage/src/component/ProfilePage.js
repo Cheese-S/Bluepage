@@ -40,7 +40,6 @@ export default function ProfilePage(){
             
             const res = sameUser ? await getUser() : await getUserByID(id);
             setuser(res.data.user);
-            console.log(res);
         }
         getuser();
     },[]);
