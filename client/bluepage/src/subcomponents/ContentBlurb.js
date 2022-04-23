@@ -69,7 +69,7 @@ export default function ContentBlurb() {
     let tags=""
     let followtest=""
     if(followers){
-        followtest={followers}+ "following"
+        followtest=followers+ "following"
     }
     if (tag){
         tags= tag.map((tag) =>
