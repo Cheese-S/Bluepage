@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, FormControl, OutlinedInput, InputLabel, TextField, DialogActions, MenuItem, TextFieldProps, Select } from '@mui/material/';
 import { ButtonAppBar } from './NavBar';
 import { ProfileContentCard } from '../subcomponents/ProfileContentCard';
-import { ProfileSubcontentCard } from '../subcomponents/ProfileSubcontentCard';
-import { getUserByID,changeUserDescription, createNewContent } from '../api/api';
+import { getUserByID,changeUserDescription, createNewContent, getUser } from '../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
 import { CONTENT_TYPE} from "../constant";
@@ -22,20 +21,26 @@ const tags = [
   ];
 export default function ProfilePage(){
     const { id } = useParams();
-    const state = userStore(); 
+    const selfID = userStore(state => state.id); 
+    const sameUser = selfID === id;
     const history = useNavigate();
+
     const valueRef = useRef(null);
     const comicTitle = useRef(null);
     const comicDesc = useRef(null);
     const comicTags = useRef(null);
+
     const [user, setuser] = useState(null);
     const [open, setOpen] = useState(false);
     const [comicOpen, setComicOpen] = useState(false);
     const [tag, setTags] = useState([]);
+
     useEffect(() => {
         const getuser = async () =>{
-            const res = await getUserByID(id);
+            
+            const res = sameUser ? await getUser() : await getUserByID(id);
             setuser(res.data.user);
+            console.log(res);
         }
         getuser();
     },[]);
@@ -62,15 +67,14 @@ export default function ProfilePage(){
         );
       };
     
-    //  "contentType": "comic",
-        //"title": "BAD",
-        //"description": "DO NOT WATCH",
-       // "tags": ["Action"]
+    // "contentType": "comic",
+    // "title": "BAD",
+    // "description": "DO NOT WATCH",
+    // "tags": ["Action"]
     let counter="N/A";
     let name="N/A";
     let describe="N/A";
     let listpublished; 
-    let sameUser = false;
 
     const handleSubmit = async () =>{
         const val = valueRef.current.value;
@@ -83,7 +87,7 @@ export default function ProfilePage(){
         const desc = comicDesc.current.value;
         const tags = comicTags.current.value;
         try {   
-            const response = await createNewContent("comic", title, desc, tags);
+            await createNewContent("comic", title, desc, tags);
         }
         catch(err) {
             console.log(err);
@@ -94,18 +98,17 @@ export default function ProfilePage(){
         counter = user.followers.length;
         name = user.name;
         describe = user.description;
-        sameUser = name === state.username;
         listpublished=
         <Box style={{overflowX: "auto",display: 'flex', flexDirection: 'row', margin: '16px' }}>
             {
-            user.ownComics.filter(function (comic ) {return comic.published === true;}).map((comic) => (
-                <ProfileContentCard
-                    id={comic._id}  type={CONTENT_TYPE.COMIC} key={comic.id}
-                />
-            ))
+                user.ownComics.map((comic) => (
+                    <ProfileContentCard
+                        id={comic._id}  type={CONTENT_TYPE.COMIC} key={comic.id}
+                    />
+                ))
             }
             {
-            user.ownStories.filter(function (story ) {return story.published === true;}).map((story) => (
+            user.ownStories.map((story) => (
                 <ProfileContentCard
                     id={story._id}  type={CONTENT_TYPE.STORY} key={story.id}
                 />
