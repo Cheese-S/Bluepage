@@ -1,21 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, TextFieldProps } from '@mui/material/';
+import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, FormControl, OutlinedInput, InputLabel, TextField, DialogActions, MenuItem, TextFieldProps, Select } from '@mui/material/';
 import { ButtonAppBar } from './NavBar';
 import { ProfileContentCard } from '../subcomponents/ProfileContentCard';
 import { ProfileSubcontentCard } from '../subcomponents/ProfileSubcontentCard';
-import { getUserByID,changeUserDescription } from '../api/api';
+import { getUserByID,changeUserDescription, createNewContent } from '../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
 import { CONTENT_TYPE} from "../constant";
 
+const tags = [
+    'Action',
+    'Comedy',
+    'Fantasy',
+    'Fanwork',
+    'Historical',
+    'Mystery',
+    'Psychological',
+    'Romance',
+    'Sci-Fi',
+    'Thriller',
+  ];
 export default function ProfilePage(){
     const { id } = useParams();
     const state = userStore(); 
     const history = useNavigate();
-    const valueRef = useRef(null);;
+    const valueRef = useRef(null);
+    const comicTitle = useRef(null);
+    const comicDesc = useRef(null);
+    const comicTags = useRef(null);
     const [user, setuser] = useState(null);
     const [open, setOpen] = useState(false);
-
+    const [comicOpen, setComicOpen] = useState(false);
+    const [tag, setTags] = useState([]);
     useEffect(() => {
         const getuser = async () =>{
             const res = await getUserByID(id);
@@ -31,7 +47,25 @@ export default function ProfilePage(){
     const handleCancel = () => {
       setOpen(false);
     };
-
+    const handleClose = () => {
+        setTags([]);
+        setComicOpen(false);
+    }
+    const handleCreateComic = () => {
+        setComicOpen(true);
+    }
+    const handleChange = (event) => {
+        const {target: { value }} = event;
+        console.log(value);
+        setTags(
+          typeof value === 'string' ? value.split(',') : value,
+        );
+      };
+    
+    //  "contentType": "comic",
+        //"title": "BAD",
+        //"description": "DO NOT WATCH",
+       // "tags": ["Action"]
     let counter="N/A";
     let name="N/A";
     let describe="N/A";
@@ -44,7 +78,18 @@ export default function ProfilePage(){
         describe = val;
         window.location.reload();
     }
-
+    const handleCreate = async() => {
+        const title = comicTitle.current.value;
+        const desc = comicDesc.current.value;
+        const tags = comicTags.current.value;
+        try {   
+            const response = await createNewContent("comic", title, desc, tags);
+        }
+        catch(err) {
+            console.log(err);
+        }
+        window.location.reload();
+    }
     if(user != null){
         counter = user.followers.length;
         name = user.name;
@@ -122,7 +167,60 @@ export default function ProfilePage(){
                 </Box>
                 <Box style={{ width: '78%', backgroundColor: '#ffffff'}} sx={{ borderRadius: 4 }}>
                     <Box style={{ display: 'flex', flexDirection: 'column' }}>
-                        <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Published Content</Typography>
+                        <div style = {{display: 'flex', justifyContent: 'space-between'}}>
+                        <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Published Content</Typography> 
+                        <Button onClick = {handleCreateComic} variant = 'contained' size = 'small' style = {{width: '13%', margin: '10px', height: '90%', backgroundColor: '#9932CC'}}>Create Comic</Button>
+                        </div>
+                        <Dialog open={comicOpen} onClose={handleClose}>
+                            <DialogTitle>Create Comic</DialogTitle>
+                            <DialogContent>
+                            <DialogContentText>
+                            Enter a title, description, and tags for the new comic
+                            </DialogContentText>
+                            <TextField
+                            autoFocus
+                            margin="dense"
+                            id="title"
+                            inputRef={comicTitle}
+                            label="Title"
+                            fullWidth
+                            variant="standard"
+                            />
+                            <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Desciption"
+                            fullWidth
+                            inputRef={comicDesc}
+                            variant="standard"
+                            />
+                            <FormControl sx={{marginTop: '15px', width: 300 }}>
+                            <InputLabel id="tags-label">Tags</InputLabel>
+                            <Select
+                            labelId="Tags"  
+                            input={<OutlinedInput label="Tag" />}
+                            value={tag}
+                            inputRef={comicTags}
+                            label="Age"
+                            multiple
+                            onChange={handleChange}
+                            >
+                            {tags.map((tag) => (
+                            <MenuItem
+                            key={tag}
+                            value={tag}
+                            >
+                            {tag}
+                             </MenuItem>
+                            ))}
+                            </Select>
+                            </FormControl>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose}>Cancel</Button>
+                                <Button onClick={handleCreate}>Create</Button>
+                                </DialogActions>
+                        </Dialog>
                         {listpublished}
                         <Box style={{ padding: '16px' }}/>
                     </Box>
