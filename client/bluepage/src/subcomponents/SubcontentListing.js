@@ -31,7 +31,7 @@ export default function SubcontentListing(props){
     },[]);
 
     const handlecontent = () => {
-        var his = published ? `/${props.type}/${subid}/` : `/${props.type}/edit/${subid}/`;
+        var his = published ? `/${props.type}/${subid}/${props.type}` : `/${props.type}/edit/${subid}/`;
         history(his);
     }
     return (

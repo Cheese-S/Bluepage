@@ -3,20 +3,28 @@ import { Typography, Button, Link, Box , Chip} from '@mui/material/';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { useParams } from 'react-router-dom';
-import { getContentById } from '../api/api';
+import { getContentById, getSubcontentByID } from '../api/api';
 import { CONTENT_TYPE} from "../constant";
+import { useNavigate } from 'react-router-dom'; 
+
 
 export default function ContentBlurb() {
-    const { id,type } = useParams();
+    const history = useNavigate();
+    const { id,type,subtype } = useParams();
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
     const [followers, setfollowers] = useState(0);
     const [author, setauthor] = useState(null);
     const [authoridlink, setauthorid] = useState(null);
-    const [tag, settag] = useState(['Romance', 'Sci-Fi']);
+    const [tag, settag] = useState(null);
     const [like, setlike] = useState(0);
     const [dislike, setdislike] = useState(0);
     const [description, setdescription] = useState(null);
+    const handletoauthor= () =>{
+        var his = `/profile/test/${authoridlink}`
+        history(his);
+    }
+    console.log(subtype);
     useEffect(() => {
         const getcontent = async () =>{
             try{
@@ -28,34 +36,63 @@ export default function ContentBlurb() {
                 setauthorid(res.data.content.author.id);
                 settag(res.data.content.tags);
                 setdescription(res.data.content.description);
-                setlike(res.data.content.like);
-                setdislike(res.data.content.dislike);
+                setlike(res.data.content.likes);
+                setdislike(res.data.content.dislikes);
             } 
             catch(err){
                 console.log(err);
             }
         }
+        const getsubcontent = async () =>{
+            try{
+                const res = await getSubcontentByID(id,subtype);
+                settitle(res.data.subcontent.title);
+                setviews(res.data.subcontent.views);
+                setauthor(res.data.subcontent.author.name);
+                setauthorid(res.data.subcontent.author.id);
+                settag(res.data.subcontent.tags);
+                setdescription(res.data.subcontent.description);
+                setlike(res.data.subcontent.likes);
+                setdislike(res.data.subcontent.dislikes);
+            } 
+            catch(err){
+                console.log(err);
+            }
+        }
+        if(type){
         getcontent();
+        }
+        else{
+            getsubcontent();
+        }
     },[]);
+    let tags=""
+    let followtest=""
+    if(followers){
+        followtest={followers}+ "following"
+    }
+    if (tag){
+        tags= tag.map((tag) =>
+            <Chip
+                key={tag}
+                label={tag}
+                color="primary"
+                size="small"
+            />)
+    }
     return (
         <Box style={{ backgroundColor: 'white', padding: '10px' }}>
             <Typography style={{ fontWeight: 'bold' }}>{title}</Typography>
-            <Link href={{authoridlink}} underline="hover">by {author}</Link>
+            <Link onClick={handletoauthor} underline="hover">by {author}</Link>
             <Typography style={{ paddingTop: '20px' }}>{description}</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems:'center', paddingTop: '10px' }}>
                 <Typography style={{ fontWeight: 'bold', paddingRight: '5px' }}>Tags:</Typography>
-                {tag.map((tag) =>
-                            <Chip
-                                key={tag}
-                                label={tag}
-                                color="primary"
-                                size="small"
-                            />)}
+                {tags}
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems:'center'}}>
                 <Typography style={{ fontWeight: 'bold', width: '20%' }}>{views} views</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', width: '50%' }}>
-                    <Typography style={{ fontWeight: 'bold', paddingRight:'10px' }}>{followers} following</Typography>
+                    <Typography style={{ fontWeight: 'bold', paddingRight:'10px' }}>{followtest}</Typography>
                     <Button variant='contained'>Follow</Button>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
