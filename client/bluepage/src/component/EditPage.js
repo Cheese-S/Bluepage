@@ -5,8 +5,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography } from '@mui/material/';
 import kTPS, { AddItem_Transaction } from '../kTPS/kTPS';
 import { userStore } from '../store/UserStore';
-import { getSubcontentByID, updateSubContent } from '../api/api';
-import { SUBCONTENT_TYPE } from '../constant';
+import { getContentById, getSubcontentByID, updateSubContent, publishContent, publishSubContent } from '../api/api';
+import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
 
 import PanToolIcon from '@mui/icons-material/PanToolOutlined';
 import ModeIcon from '@mui/icons-material/ModeOutlined';
@@ -51,11 +51,6 @@ export default function EditPage() {
         const res = await getSubcontentByID(id, SUBCONTENT_TYPE.PAGE);
         const ownerID = res.data.subcontent.author.id;
 
-        // if you're not the owner of this page, no editing it - kicked out
-        if (ownerID !== selfID) {
-          navigate(`/profile/${ownerID}`);
-        }
-
         // else, load in data from the body
         setTitle(res.data.subcontent.title);
         setLines(res.data.subcontent.body.lines);
@@ -64,7 +59,9 @@ export default function EditPage() {
         setParentID(res.data.subcontent.parentID);
 
       } catch (err) {
+        // Probably unauthorized - kick out
         console.log(err);
+        navigate(`/home/test`);
       }
     }
     getPage();
@@ -217,16 +214,44 @@ export default function EditPage() {
       shapes,
       arrows
     };
-    await updateSubContent(SUBCONTENT_TYPE.PAGE, id, title, newBody, false, parentID);
-
-    const rightNow = new Date();
-    setMessageToUser(`Saved! at ${rightNow.toLocaleTimeString()}`);
+    try {
+      await updateSubContent(SUBCONTENT_TYPE.PAGE, id, title, newBody, false, parentID);
+      const rightNow = new Date();
+      setMessageToUser(`Saved! at ${rightNow.toLocaleTimeString()}`);
+    } catch (err) {
+      // Could be connection issues - don't immediately kick out, wouldn't want to lose important data
+      setMessageToUser('Something went wrong - please try again.');
+    }
   }
   
   const saveAndExit = async () => {
-    await savePage();
-    
-    navigate(`/list/${parentID}/comic`);
+    try {
+      await savePage();
+      navigate(`/list/${parentID}/comic`);
+    } catch (err) {
+      // Could be connection issues - don't immediately kick out, wouldn't want to lose important data
+      setMessageToUser('Something went wrong - please try again.');
+    }
+  }
+
+  const publish = async () => {
+    try {
+      // Might have to publish the parent comic too - retrieve it
+      const parentRes = await getContentById(CONTENT_TYPE.COMIC, parentID);
+      const parent = parentRes.data.content;
+
+      // First, save this current page
+      await savePage();
+
+      // Next, publish comic
+      await publishSubContent(SUBCONTENT_TYPE.PAGE, [id], parentID);
+      
+      // Last, navigate back to the list page
+      navigate(`/list/${parentID}/comic`);
+    } catch (err) { 
+      // Could be connection issues - don't immediately kick out, wouldn't want to lose important data
+      setMessageToUser('Something went wrong - please try again.');
+    }
   }
 
   return (
@@ -242,13 +267,14 @@ export default function EditPage() {
           </Button>
         </Box>
         <Box style={{ alignItems: 'cx enter', width: '30%', display: 'flex', flexDirection: 'row-reverse' }}>
+          <Button onClick={() => publish()} variant='contained' style={{ marginRight: '10px' }}>Publish</Button>
           <Button onClick={() => saveAndExit()} variant='contained' style={{ marginRight: '10px' }}>Save and Exit</Button>
           <Button onClick={() => savePage()} variant='contained' style={{ marginRight: '10px' }}>Save</Button>
         </Box>
       </Box>
       <Box style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
         <Box style={{ display: 'flex', flexDirection: 'column', width: '30%', height: '100%', backgroundColor: '#9dc3ff' }} >
-          <Typography>{messageToUser}</Typography>
+          <Typography style={{ margin: '10px', fontSize: '18px', fontWeight: 'bold' }}>{messageToUser}</Typography>
         </Box>
         <Box style={{ width: '50%', height: '85%', marginTop: '10px' }}>
           <Box style={{ width: '418px', height: '627px', backgroundColor: '#ffffff', margin: 'auto'}}>

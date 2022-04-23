@@ -24,9 +24,13 @@ export default function SubcontentListing(props){
                 console.log(res);
                 setUserID(res.data.subcontent.author.id);
                 settitle(res.data.subcontent.title);
+                const isPublished = res.data.subcontent.published;
+                setpublished(isPublished);
+
+                const realTitle = res.data.subcontent.title;
+                settitle(!isPublished ? `${realTitle} (Unpublished)` : realTitle);
                 setviews(res.data.subcontent.views);
                 setsubid(res.data.subcontent._id);
-                setpublished(res.data.subcontent.published);
             } 
             catch(err){
                 console.log(err);
