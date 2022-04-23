@@ -62,7 +62,7 @@ const ContentService = {
         return model.find(query, null, option);
     },
 
-    updateContent: async (contentType, query, update, option = { lean: true, new: true }) => {
+    updateContent: async (contentType, query, update, option = { lean: true, new: true, timestamps: false }) => {
         const model = ContentService.getModel(contentType);
         return model.findOneAndUpdate(query, update, option);
     },
@@ -83,7 +83,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID },
             { $addToSet: { contentList: { subcontent: subcontentID } } },
-            { lean: false, new: true }
+            { lean: false, new: true, timestamps: false}
         )
     },
 
@@ -101,7 +101,7 @@ const ContentService = {
                     },
                 }
             },
-            { lean: false, new: true }
+            { lean: false, new: true, timestamps: false}
         )
     },
 
@@ -153,7 +153,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             { $inc: { followers: 1 } },
-            { lean: false, new: true }
+            { lean: false, new: true, timestamps: false}
         )
     },
 
@@ -162,7 +162,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             updateAction,
-            { lean: false, new: true }
+            { lean: false, new: true, timestamps: false}
         );
     },
 
@@ -170,7 +170,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             { $inc: { views: 1 } },
-            { lean: false, new: true }
+            { lean: false, new: true, timestamps: false}
         )
     },
 
@@ -178,7 +178,7 @@ const ContentService = {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
             { published: false },
-            { lean: false, new: true }
+            { lean: false, new: true, timestamps: false}
         )
     },
 

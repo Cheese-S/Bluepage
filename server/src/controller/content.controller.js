@@ -190,7 +190,8 @@ const ContentController = {
                 if (!result.modifiedCount) {
                     await ContentService.updateContent(contentType,
                         { _id: contentID },
-                        { published: false }
+                        { published: false },
+                        { lean: true, new: true, timestamps: true }
                     );
                     return res.status(400).send({
                         error: `These subcontentIDs are not valid ids because one of the following reasons:
