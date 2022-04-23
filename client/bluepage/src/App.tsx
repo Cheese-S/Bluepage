@@ -33,7 +33,7 @@ function App() {
       <Route path="/page/test" element={<ViewComicPage/>} />
       <Route path="/page/:id" element={<ViewComicPage/>} />
       <Route path="/profile/test/:id" element={<ProfilePage/>} />
-      <Route path="/page/edit" element={<EditPage/>} />
+      <Route path="/page/edit/:id" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />
       <Route path="/home/test" element={<HomePage/>}/>
       <Route path="/chapter/edit" element={<EditChapter/>}/>

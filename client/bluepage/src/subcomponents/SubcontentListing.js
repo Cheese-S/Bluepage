@@ -7,17 +7,21 @@ import { useNavigate } from 'react-router-dom';
 
 export default function SubcontentListing(props){
     const history = useNavigate();
-    const [title, settitle] = useState(null);
+    const { id, type } = props;
+
+    const [title, settitle] = useState('');
     const [views, setviews] = useState(0);
-    const [subid, setsubid] = useState("");
+    const [subid, setsubid] = useState('');
+    const [published, setpublished] = useState(true);
+
     useEffect(() => {
-        const getcontent = async () =>{
+        const getcontent = async () => {
             try{
-                const res = await getSubcontentByID(props.id,props.type);
+                const res = await getSubcontentByID(id, type);
                 settitle(res.data.subcontent.title);
                 setviews(res.data.subcontent.views);
                 setsubid(res.data.subcontent._id);
-                console.log(res)
+                setpublished(res.data.subcontent.published);
             } 
             catch(err){
                 console.log(err);
@@ -26,8 +30,8 @@ export default function SubcontentListing(props){
         getcontent();
     },[]);
 
-    const handlecontent = () =>{
-        var his = `/${props.type}/${subid}/`
+    const handlecontent = () => {
+        var his = published ? `/${props.type}/${subid}/` : `/${props.type}/edit/${subid}/`;
         history(his);
     }
     return (

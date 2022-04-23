@@ -3,29 +3,31 @@ import { Box, Typography, Button, TextField } from '@mui/material/';
 import ContentBlurb from '../subcomponents/ContentBlurb';
 import SubcontentListing from '../subcomponents/SubcontentListing';
 import Comment from '../subcomponents/Comment';
-import { useParams } from 'react-router-dom';
-import { getContentById } from '../api/api';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getContentById, createNewSubcontent } from '../api/api';
+import { userStore } from '../store/UserStore';
 import { SUBCONTENT_TYPE} from "../constant";
 
 
-export default function ListPage(){
-    const { id,type } = useParams();
-    let typee="";
-    if(type=="story"){
-        typee=SUBCONTENT_TYPE.CHAPTER;
-    }
-    else{
-        typee=SUBCONTENT_TYPE.PAGE;
-    }
-    const [list, setlist] = useState(null);
+export default function ListPage() {
+    const navigate = useNavigate();
+
+    const { id, type } = useParams();
+    const subtype = (type == 'story') ? SUBCONTENT_TYPE.CHAPTER : SUBCONTENT_TYPE.PAGE;
+
+    const selfID = userStore(state => state.id);
+    const [sameUser, setSameUser] = useState(false);
+    
+    const [list, setlist] = useState([]);
     let sublist = "";
     if(list){
-        sublist= list.map((list) => <SubcontentListing id={list.subcontent._id} type={typee}/>);
+        sublist= list.map((list) => <SubcontentListing id={list.subcontent._id} type={subtype}/>);
     }
+
     useEffect(() => {
         const getcontent = async () =>{
             try{
-                const res = await getContentById(type,id);
+                const res = await getContentById(type, id);
                 setlist(res.data.content.contentList);
             } 
             catch(err){
@@ -33,15 +35,31 @@ export default function ListPage(){
             }
         }
         getcontent();
-    },[]);
+    }, []);
+
+    const createNewPage = async () => {
+        const emptyBody = {
+            lines: [],
+            shapes: [],
+            arrows: []
+        };
+        const res = await createNewSubcontent(id, subtype, 'Untitled Page', emptyBody);
+        const pageID = res.data.subcontent._id;
+
+        navigate(`/${subtype}/edit/${pageID}`);
+    }
+
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
                 <ContentBlurb />
             </Box>
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
+                <Box style={{ display: 'flex', flexDirection: 'row' }}>
+                    <Button onClick={() => createNewPage()} variant='contained' style={{ margin: '10px' }}>Create New Page</Button>
+                </Box>
                 <Box style={{ width: '98%', margin: 'auto'}}>
-                {sublist}
+                    {sublist}
                     <hr style={{ color: 'black', backgroundColor: 'black', height: 1}} />
                     <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
                     <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>

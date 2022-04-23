@@ -171,7 +171,7 @@ export default function ProfilePage(){
                 <Box style={{ width: '78%', backgroundColor: '#ffffff'}} sx={{ borderRadius: 4 }}>
                     <Box style={{ display: 'flex', flexDirection: 'column' }}>
                         <div style = {{display: 'flex', justifyContent: 'space-between'}}>
-                        <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Published Content</Typography> 
+                        <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>{sameUser ? 'Your Content' : 'Published Content'}</Typography> 
                         <Button onClick = {handleCreateComic} variant = 'contained' size = 'small' style = {{width: '13%', margin: '10px', height: '90%', backgroundColor: '#9932CC'}}>Create Comic</Button>
                         </div>
                         <Dialog open={comicOpen} onClose={handleClose}>
