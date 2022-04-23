@@ -33,10 +33,10 @@ export const ProfileContentCard = (props) => {
     const [authorid, setauthorid] = useState(null);
     const [tag, settag] = useState(['Romance', 'Sci-Fi']);
     const [description, setdescription] = useState(null);
+    const [thumb, setthumb] = useState(null);
 
     const history = useNavigate();
     const handlecontent = () =>{
-        console.log("Reseeee");
         if(props.type==CONTENT_TYPE.COMIC){
             var his = `/page/${props.id}`
         }
@@ -50,7 +50,6 @@ export const ProfileContentCard = (props) => {
         const getcontent = async () =>{
             try{
                 const res = await getContentById(props.type,props.id);
-                console.log(res);
                 settitle(res.data.content.title);
                 setviews(res.data.content.views);
                 setfollowers(res.data.content.followers);
@@ -58,6 +57,7 @@ export const ProfileContentCard = (props) => {
                 setauthorid(res.data.content.author.id);
                 settag(res.data.content.tags);
                 setdescription(res.data.content.description);
+                //setthumb(res.data.content.??????);
             }
             catch(err){
                 console.log(err);
@@ -73,8 +73,8 @@ export const ProfileContentCard = (props) => {
                 <CardMedia
                     component="img"
                     sx={{ width: 300 }}
-                    image="https://manga.guya.moe/media/manga/Oshi-no-Ko/chapters/0061_brku3103/5/04_w.png"
-                    alt="Live from space album cover"
+                    image={thumb}
+                    alt="Loading...."
                 />
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <CardContent sx={{ flex: "1 0 auto" }}>
@@ -90,10 +90,9 @@ export const ProfileContentCard = (props) => {
                         </Typography>
 
                         <Typography variant="body1" color="text.secondary" component="div" >
-                        
                             {author}
                         </Typography>
-                        {tag.forEach((tag) =>
+                        {tag.map((tag) =>
                             <Chip
                                 key={tag}
                                 label={tag}
