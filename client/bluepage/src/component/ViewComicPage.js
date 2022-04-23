@@ -6,16 +6,29 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { useParams } from 'react-router-dom';
 import {getSubcontentByID } from '../api/api';
+import { Stage, Layer, Line, Rect, Arrow } from 'react-konva';
 
 
 export default function ViewComicPage(){
     const { id } = useParams();
     const [title, settitle] = useState(null);
+    const [lines, setLines] = useState([]);
+    const [shapes, setShapes] = useState([]);
+    const [arrows, setArrows] = useState([]);
     useEffect(() => {
         const getcontent = async () =>{
             try{
                 const res = await getSubcontentByID(id,"page");
                 settitle(res.data.subcontent.title);
+                if(res.data.subcontent.body.lines){
+                setLines(res.data.subcontent.body.lines);
+                }
+                if(res.data.subcontent.body.shapes){
+                setShapes(res.data.subcontent.body.shapes);
+                }
+                if(res.data.subcontent.body.arrows){
+                setArrows(res.data.subcontent.body.arrows);
+                }
             } 
             catch(err){
                 console.log(err);
@@ -33,9 +46,53 @@ export default function ViewComicPage(){
                     <Typography align='center' style={{ fontWeight: 'bold', fontSize: '20px' }}>{title}</Typography>
                 </Box>
             </Box>
-            <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px' }}>
-                <img src='https://manga.guya.moe/media/manga/Kaguya-Wants-To-Be-Confessed-To/chapters/0111-1_x1oc9802/3/01.png' style={{ width: '50%', height: '50%', display: 'block', marginLeft: 'auto', marginRight: 'auto', }}/>
-            </Box>
+            <Box style={{ width: '418px', height: '627px', backgroundColor: '#ffffff', margin: 'auto'}}>
+            <Stage
+              width={418}
+              height={627}
+            >
+              <Layer>
+                {shapes.map((shape, i) => (
+                  <Rect 
+                    key={`rect_${i}`}
+                    x={shape.start_x}
+                    y={shape.start_y}
+                    width={shape.end_x - shape.start_x}
+                    height={shape.end_y - shape.start_y}
+                    stroke={shape.strokeColor}
+                    strokeWidth={shape.strokeWidth}
+                  />
+                ))}
+                
+              </Layer>
+              <Layer>
+              {arrows.map((arrow, i) => (
+                  <Arrow
+                    key={`arrow_${i}`}
+                    points={arrow.points}
+                    stroke={arrow.color}
+                    strokeWidth={arrow.strokeWidth}
+                    tension={1}
+                  />
+                ))}
+              </Layer>
+              <Layer>
+              {lines.map((line, i) => (
+                  <Line
+                    key={`line_${i}`}
+                    points={line.points}
+                    stroke={line.color}
+                    strokeWidth={line.strokeWidth}
+                    tension={0.5}
+                    lineCap='round'
+                    globalCompositeOperation={
+                      line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                    }
+                  />
+                ))}
+              </Layer>
+            </Stage>
+          </Box>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px'}}/>
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
                 <Box style={{ width: '98%', margin: 'auto'}}>
