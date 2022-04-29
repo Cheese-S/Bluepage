@@ -19,7 +19,7 @@ export default function ContentBlurb(props) {
     const [dislike, setdislike] = useState(0);
     const [description, setdescription] = useState(null);
     const handletoauthor= () =>{
-        var his = `/profile/test/${authoridlink}`
+        var his = `/profile/${authoridlink}`
         history(his);
     }
 

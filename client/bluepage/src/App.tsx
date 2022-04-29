@@ -32,7 +32,7 @@ function App() {
       <Route path="/chapter/:id/:subtype" element={<ViewStoryChapter/>} />
       <Route path="/page/test" element={<ViewComicPage/>} />
       <Route path="/page/:id/:subtype" element={<ViewComicPage/>} />
-      <Route path="/profile/test/:id" element={<ProfilePage/>} />
+      <Route path="/profile/:id" element={<ProfilePage/>} />
       <Route path="/page/edit/:id" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />
       <Route path="/home/test" element={<HomePage/>}/>

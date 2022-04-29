@@ -48,7 +48,7 @@ export const ButtonAppBar: React.FC = () => {
     }
 
     const handlemyprofile = () =>{
-        var his = `/profile/test/${id}`
+        var his = `/profile/${id}`
         history(his);
     }
 

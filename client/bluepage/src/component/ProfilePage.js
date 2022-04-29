@@ -3,7 +3,7 @@ import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogCont
 import { ButtonAppBar } from './NavBar';
 import { ProfileContentCard } from '../subcomponents/ProfileContentCard';
 import { getUserByID,changeUserDescription, createNewContent, getUser } from '../api/api';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
 import { CONTENT_TYPE} from "../constant";
 
@@ -188,7 +188,6 @@ export default function ProfilePage(){
                             variant="standard"
                             />
                             <TextField
-                            autoFocus
                             margin="dense"
                             label="Desciption"
                             fullWidth

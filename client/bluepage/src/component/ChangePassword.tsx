@@ -11,7 +11,7 @@ export const ChangePassword: React.FC = () => {
     const navigate = useNavigate();
 
     const id = userStore(state => state.id);
-    const route = `/profile/test/${id}`;
+    const route = `/profile/${id}`;
 
     useEffect(() => {
         // if user isn't logged in, redirect them home

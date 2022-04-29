@@ -4,11 +4,9 @@ import { ChromePicker } from 'react-color';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography } from '@mui/material/';
 import kTPS, { AddItem_Transaction } from '../kTPS/kTPS';
-import { userStore } from '../store/UserStore';
-import { getContentById, getSubcontentByID, updateSubContent, updateContent, publishContent, publishSubContent } from '../api/api';
+import { getContentById, getSubcontentByID, updateSubContent, updateContent, publishSubContent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
 
-import PanToolIcon from '@mui/icons-material/PanToolOutlined';
 import ModeIcon from '@mui/icons-material/ModeOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import InterestsIcon from '@mui/icons-material/InterestsOutlined';
@@ -48,7 +46,7 @@ export default function EditPage() {
       try {
         const res = await getSubcontentByID(id, SUBCONTENT_TYPE.PAGE);
 
-        // else, load in data from the body
+        // load in data from the body
         setTitle(res.data.subcontent.title);
         setLines(res.data.subcontent.body.lines);
         setShapes(res.data.subcontent.body.shapes);
