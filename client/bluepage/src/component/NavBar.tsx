@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { AppBar, Box, Badge, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Divider, Switch, TextField, Link } from '@mui/material/';
-import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
@@ -10,23 +9,26 @@ import { useNavigate } from 'react-router-dom';
 
 export const ButtonAppBar: React.FC = () => {
     const history = useNavigate();
+
     const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [sortanchorEl, setsortAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [notificationanchorEl, setnotificationAnchorEl] = React.useState<null | HTMLElement>(null);
+
     const id = userStore((state: { id: any; }) => state.id);
-    const state=userStore();
     const isLoggedIn = userStore((state: { isLoggedIn: any; }) => state.isLoggedIn);
     const resetUserStore = userStore((state: { resetStore: any; }) => state.resetStore);
+
     const handleLogout = async () => {
         handleuserClose();
         resetUserStore();
         await logout();
         window.location.reload();
-    }
+    };
 
     const handleuserMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setuserAnchorEl(event.currentTarget);
     };
+
     const handleuserClose = () => {
         setuserAnchorEl(null);
     };
