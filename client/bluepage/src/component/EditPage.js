@@ -24,13 +24,11 @@ export default function EditPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [parentID, setParentID] = useState(''); 
-  const selfID = userStore(state => state.id);
 
   const [lines, setLines] = useState([]);
   const [shapes, setShapes] = useState([]);
   const [arrows, setArrows] = useState([]);
 
-  const [newObject, setNewObject] = useState({});
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
 
@@ -49,7 +47,6 @@ export default function EditPage() {
     const getPage = async() => {
       try {
         const res = await getSubcontentByID(id, SUBCONTENT_TYPE.PAGE);
-        const ownerID = res.data.subcontent.author.id;
 
         // else, load in data from the body
         setTitle(res.data.subcontent.title);
@@ -133,18 +130,12 @@ export default function EditPage() {
       let lastLine = lines[lines.length - 1];
       // add point
       lastLine.points = lastLine.points.concat([point.x, point.y]);
-      
-      // set object to add to kTPS
-      setNewObject(lastLine);
 
       // replace last
       lines.splice(lines.length - 1, 1, lastLine);
       setLines(lines.concat());
     } else if (tool === 'shape') {
       let lastShape = shapes[shapes.length - 1];
-
-      // set object to add to kTPS
-      setNewObject(lastShape);
       
       // set new end position
       lastShape.end_x = point.x;
@@ -157,9 +148,6 @@ export default function EditPage() {
       let lastArrow = arrows[arrows.length - 1];
       // change end position
       lastArrow.points = [lastArrow.points[0], lastArrow.points[1], point.x, point.y];
-
-      // set object to add to kTPS
-      setNewObject(lastArrow);
 
       // replace last
       arrows.splice(arrows.length - 1, 1, lastArrow);
@@ -179,27 +167,24 @@ export default function EditPage() {
      * 4) Do the transaction.
      */
     if (tool === 'pen' || tool === 'eraser') {
-      lines.pop();
+      const newObject = lines.pop();
       setLines(lines.concat());
 
       const transaction = new AddItem_Transaction(lines, setLines, newObject);
-      setNewObject({});
 
       tps.addTransaction(transaction);
     } else if (tool === 'shape') {
-      shapes.pop();
+      const newObject = shapes.pop();
       setShapes(shapes.concat());
 
       const transaction = new AddItem_Transaction(shapes, setShapes, newObject);
-      setNewObject({});
 
       tps.addTransaction(transaction);
     } else if (tool === 'arrow') {
-      arrows.pop();
+      const newObject = arrows.pop();
       setArrows(arrows.concat());
 
       const transaction = new AddItem_Transaction(arrows, setArrows, newObject);
-      setNewObject({});
 
       tps.addTransaction(transaction);
     }
