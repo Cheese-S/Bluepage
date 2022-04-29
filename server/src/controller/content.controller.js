@@ -283,7 +283,7 @@ const ContentController = {
                     error: `No ${contentType} with this ID is owned by you`
                 })
             }
-            const content = await ContentService.deleteContent(contentType, contentID);
+            const content = await ContentService.deleteContent(contentType, {_id: contentID});
             if (!content) {
                 return res.status(400).send({
                     error: `The ${contentType} does not exist`
