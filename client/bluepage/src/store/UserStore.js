@@ -1,5 +1,6 @@
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
+import { CONTENT_TYPE } from '../constant';
 
 export const userStore = create(persist(
     set => ({
@@ -23,8 +24,8 @@ export const userStore = create(persist(
         setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
         isAdmin: false,
         setIsAdmin: (isAdmin) => set({ isAdmin }),
-        siteMode: 'comic',
-        setIsComicMode: (siteMode) => set({ siteMode }),
+        siteMode: CONTENT_TYPE.COMIC,
+        setSiteMode: (siteMode) => set({ siteMode }),
         login: (id, username) => set({ id, username, isLoggedIn: true }),
         resetStore: () => set({ id: '', username: '', comicNotifications: [], storyNotifications: [], followers: [], followingUsers: [], followingComics: [], followingStories: [], ownComics: [], ownStories: [], isLoggedIn: false, isAdmin: false }),
     }),

@@ -5,7 +5,7 @@ import { ProfileContentCard } from '../subcomponents/ProfileContentCard';
 import { getUserByID, changeUserDescription, createNewContent, getUser } from '../api/api';
 import { useParams } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
-import { CONTENT_TYPE} from "../constant";
+import { CONTENT_TYPE } from "../constant";
 
 const tags = [
     'Action',
@@ -23,11 +23,13 @@ export default function ProfilePage(){
     const { id } = useParams();
     const selfID = userStore(state => state.id); 
     const sameUser = selfID === id;
+    const siteMode = userStore(state => state.siteMode);
+    const formatSiteMode = siteMode === CONTENT_TYPE.COMIC ? ['Comic', 'Comics'] : ['Story', 'Stories'];
 
     const valueRef = useRef(null);
-    const comicTitle = useRef(null);
-    const comicDesc = useRef(null);
-    const comicTags = useRef(null);
+    const contentTitle = useRef(null);
+    const contentDesc = useRef(null);
+    const contentTags = useRef(null);
 
     const [name, setName] = useState('N/A');
     const [followers, setFollowers] = useState(0);
@@ -48,14 +50,13 @@ export default function ProfilePage(){
 
             const listOfContent =
                 <Box style={{ overflowX: "auto", display: 'flex', flexDirection: 'row', margin: '16px' }}>
-                    {
+                    {siteMode === CONTENT_TYPE.COMIC ? 
                         res.data.user.ownComics.map((comic) => (
                             <ProfileContentCard
                                 id={comic._id} type={CONTENT_TYPE.COMIC} key={comic.id}
                             />
                         ))
-                    }
-                    {
+                    :
                         res.data.user.ownStories.map((story) => (
                             <ProfileContentCard
                                 id={story._id} type={CONTENT_TYPE.STORY} key={story.id}
@@ -96,12 +97,12 @@ export default function ProfilePage(){
     };
 
     const handleCreate = async() => {
-        const title = comicTitle.current.value;
-        const desc = comicDesc.current.value;
-        const tags = comicTags.current.value;
+        const title = contentTitle.current.value;
+        const desc = contentDesc.current.value;
+        const tags = contentTags.current.value;
         
         try {   
-            await createNewContent("comic", title, desc, tags);
+            await createNewContent(siteMode, title, desc, tags);
         } catch(err) {
             console.log(err);
         }
@@ -163,20 +164,24 @@ export default function ProfilePage(){
                 <Box style={{ width: '78%', backgroundColor: '#ffffff'}} sx={{ borderRadius: 4 }}>
                     <Box style={{ display: 'flex', flexDirection: 'column' }}>
                         <div style = {{display: 'flex', justifyContent: 'space-between'}}>
-                            <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>{sameUser ? 'Your Content' : 'Published Content'}</Typography> 
-                            <Button onClick = {() => setOpenCreateModal(true)} variant = 'contained' size = 'small' style = {{width: '13%', margin: '10px', height: '90%', backgroundColor: '#9932CC'}}>Create Comic</Button>
+                            <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>{sameUser ? `Your ${formatSiteMode[1]}` : `Published ${formatSiteMode[1]}`}</Typography> 
+                            {sameUser && 
+                                <Button onClick = {() => setOpenCreateModal(true)} variant = 'contained' size = 'small' style = {{width: '13%', margin: '10px', height: '90%', backgroundColor: '#9932CC'}}>
+                                    {`Create ${formatSiteMode[0]}`}
+                                </Button>
+                            }
                         </div>
                         <Dialog open={openCreateModal} onClose={handleCreateClose}>
-                            <DialogTitle>Create Comic</DialogTitle>
+                            <DialogTitle>{`Create a ${formatSiteMode[0]}`}</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>
-                                        Enter a title, description, and tags for the new comic
+                                        {`Enter a title, description, and tags for the new ${siteMode}`}
                                     </DialogContentText>
                                     <TextField
                                         autoFocus
                                         margin="dense"
                                         id="title"
-                                        inputRef={comicTitle}
+                                        inputRef={contentTitle}
                                         label="Title"
                                         fullWidth
                                         variant="standard"
@@ -185,7 +190,7 @@ export default function ProfilePage(){
                                         margin="dense"
                                         label="Desciption"
                                         fullWidth
-                                        inputRef={comicDesc}
+                                        inputRef={contentDesc}
                                         variant="standard"
                                     />
                                     <FormControl sx={{marginTop: '15px', width: 300 }}>
@@ -194,7 +199,7 @@ export default function ProfilePage(){
                                             labelId="Tags"  
                                             input={<OutlinedInput label="Tag" />}
                                             value={tag}
-                                            inputRef={comicTags}
+                                            inputRef={contentTags}
                                             label="Age"
                                             multiple
                                             onChange={handleCreateChange}

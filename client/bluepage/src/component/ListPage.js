@@ -6,20 +6,21 @@ import Comment from '../subcomponents/Comment';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getContentById, createNewSubcontent } from '../api/api';
 import { userStore } from '../store/UserStore';
-import { SUBCONTENT_TYPE} from "../constant";
+import { CONTENT_TYPE, SUBCONTENT_TYPE} from "../constant";
 
 
 export default function ListPage() {
     const navigate = useNavigate();
 
     const { id, type } = useParams();
-    const subtype = (type == 'story') ? SUBCONTENT_TYPE.CHAPTER : SUBCONTENT_TYPE.PAGE;
+    const subtype = (type == CONTENT_TYPE.STORY) ? SUBCONTENT_TYPE.CHAPTER : SUBCONTENT_TYPE.PAGE;
 
     const selfID = userStore(state => state.id);
     const [sameUser, setSameUser] = useState(false);
     
     const [list, setlist] = useState([]);
     let sublist = "";
+    
     if (list) {
         if (sameUser) {
             sublist = list.map((list) => <SubcontentListing id={list.subcontent._id} type={subtype}/>);
@@ -54,7 +55,15 @@ export default function ListPage() {
         const pageID = res.data.subcontent._id;
 
         navigate(`/${subtype}/edit/${pageID}`);
-    }
+    };
+
+    const createNewSubcontent = async () => {
+        if (subtype === SUBCONTENT_TYPE.PAGE) {
+            await createNewPage();
+        } else {
+            console.log('TODO');
+        }
+    };
 
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
@@ -62,9 +71,13 @@ export default function ListPage() {
                 <ContentBlurb id={id} type={type} subtype={subtype} />
             </Box>
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
-                <Box style={{ display: 'flex', flexDirection: 'row' }}>
-                    <Button onClick={() => createNewPage()} variant='contained' style={{ margin: '10px' }}>Create New Page</Button>
-                </Box>
+                {sameUser &&
+                    <Box style={{ display: 'flex', flexDirection: 'row' }}>
+                        <Button onClick={() => createNewSubcontent()} variant='contained' style={{ margin: '10px' }}>
+                            {`Create New ${subtype}`}
+                        </Button>
+                    </Box>
+                }
                 <Box style={{ width: '98%', margin: 'auto'}}>
                     {sublist}
                     <hr style={{ color: 'black', backgroundColor: 'black', height: 1}} />

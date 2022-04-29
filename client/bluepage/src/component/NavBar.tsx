@@ -5,7 +5,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
 import { userStore } from '../store/UserStore';
 import { logout } from '../api/api';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
+import { CONTENT_TYPE } from '../constant';
 
 export const ButtonAppBar: React.FC = () => {
     const history = useNavigate();
@@ -16,6 +17,8 @@ export const ButtonAppBar: React.FC = () => {
 
     const id = userStore((state: { id: any; }) => state.id);
     const isLoggedIn = userStore((state: { isLoggedIn: any; }) => state.isLoggedIn);
+    const siteMode = userStore(state => state.siteMode);
+    const setSiteMode = userStore(state => state.setSiteMode);
     const resetUserStore = userStore((state: { resetStore: any; }) => state.resetStore);
 
     const handleLogout = async () => {
@@ -23,6 +26,13 @@ export const ButtonAppBar: React.FC = () => {
         resetUserStore();
         await logout();
         window.location.reload();
+    };
+
+    const handleChangeMode = (mode: String) => {
+        if (siteMode !== mode) {
+            setSiteMode(mode);
+            window.location.reload();
+        }
     };
 
     const handleuserMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -43,16 +53,16 @@ export const ButtonAppBar: React.FC = () => {
 
     const handleNotificationMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setnotificationAnchorEl(event.currentTarget);
-    }
+    };
 
     const handleNotificationClose = () => {
         setnotificationAnchorEl(null);
-    }
+    };
 
     const handlemyprofile = () =>{
         var his = `/profile/${id}`
         history(his);
-    }
+    };
 
     return (
         <div>
@@ -63,10 +73,10 @@ export const ButtonAppBar: React.FC = () => {
                             <Link href="/" underline="none" variant="h6" color="#000000" sx={{pl:"2%",pr:"2%"}}>
                                 BLUE PAGE
                             </Link>
-                            <Link href="/" underline="none" variant="body2" color="#5227cc">
+                            <Link underline="none" variant="body2" color="#5227cc" style={{ fontSize: 18, cursor: siteMode !== CONTENT_TYPE.COMIC ? 'pointer' : 'default', fontWeight: (siteMode === CONTENT_TYPE.COMIC) ? 'bold' : 'normal' }} onClick={() => handleChangeMode(CONTENT_TYPE.COMIC)}>
                                 COMIC
                             </Link>
-                            <Link href="/" underline="none"  variant="body2" color="#d52941" sx={{pl:"2%"}}>
+                            <Link underline="none"  variant="body2" color="#d52941" sx={{pl:"2%"}} style={{ fontSize: 18, cursor: siteMode !== CONTENT_TYPE.STORY ? 'pointer' : 'default', fontWeight: (siteMode === CONTENT_TYPE.STORY) ? 'bold' : 'normal' }} onClick={() => handleChangeMode(CONTENT_TYPE.STORY)}>
                                 STORY
                             </Link>
                         </Box>
