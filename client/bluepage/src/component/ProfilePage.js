@@ -23,7 +23,6 @@ export default function ProfilePage(){
     const { id } = useParams();
     const selfID = userStore(state => state.id); 
     const sameUser = selfID === id;
-    const history = useNavigate();
 
     const valueRef = useRef(null);
     const comicTitle = useRef(null);
@@ -158,7 +157,7 @@ export default function ProfilePage(){
                             </Box>
                             {sameUser && 
                                 <Button fullWidth variant='text' onClick={handledescribe} >
-                                    Edit
+                                    Edit Description
                                 </Button>
                             }
                         </Box>

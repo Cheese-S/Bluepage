@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 export const RegisterPage = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [error, setError] = useState('');
-    const state = userStore();
+    const storeLogin = userStore(state => state.login);
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -35,10 +35,8 @@ export const RegisterPage = () => {
             const answers = [answer1, answer2, answer3];
 
             const res = await registerUser(name, password, passwordConfirmation, email, answers);
-            state.setID(res.data.user._id);
-            state.setUsername(name);
-            state.setIsLoggedIn(true);
 
+            storeLogin(res.data.user._id, name);
             navigate("/home/test");
         } catch (err) {
             console.log(err);

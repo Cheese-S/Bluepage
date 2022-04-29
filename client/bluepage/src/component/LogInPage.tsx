@@ -7,7 +7,7 @@ import { login } from '../api/api';
 export const LogInPage: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [error, setError] = useState('');
-    const state = userStore();
+    const storeLogin = userStore(state => state.login);
     const navigate = useNavigate();
 
     // @ts-ignore
@@ -19,10 +19,8 @@ export const LogInPage: React.FC = () => {
             const password = formData.get('Password');
 
             const res = await login(String(identifier), String(password));
-            state.setID(res.data.user._id);
-            state.setUsername(res.data.user.name);
-            state.setIsLoggedIn(true);
 
+            storeLogin(res.data.user._id, res.data.user.name);
             navigate("/home/test");
         } catch (err) {
             console.log(err);
