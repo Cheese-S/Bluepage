@@ -13,7 +13,7 @@ export default function EditChapter() {
     const [editorState, setEditorState] = useState(
         () => EditorState.createEmpty(),
       );
-    const [title, setTitle] = useState('New Page');
+    const [title, setTitle] = useState('New Chapter');
     const [parentID, setParentID] = useState(''); 
 
 
@@ -96,6 +96,7 @@ export default function EditChapter() {
                         <Editor
                             editorState={editorState}
                             onEditorStateChange={setEditorState}
+                            editorStyle={{ margin: '10px' }}
                         />
                     </Box>
                 </Box>
