@@ -36,7 +36,7 @@ function App() {
       <Route path="/page/edit/:id" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />
       <Route path="/home/test" element={<HomePage/>}/>
-      <Route path="/chapter/edit" element={<EditChapter/>}/>
+      <Route path="/chapter/edit/:id" element={<EditChapter/>}/>
       <Route path="/changepassword" element={<ChangePassword/>}/>
     </Routes>
     </BrowserRouter>

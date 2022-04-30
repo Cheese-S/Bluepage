@@ -7,6 +7,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getContentById, createNewSubcontent } from '../api/api';
 import { userStore } from '../store/UserStore';
 import { CONTENT_TYPE, SUBCONTENT_TYPE} from "../constant";
+import { EditorState } from 'draft-js';
+
 
 
 export default function ListPage() {
@@ -57,11 +59,22 @@ export default function ListPage() {
         navigate(`/${subtype}/edit/${pageID}`);
     };
 
-    const createNewSubcontent = async () => {
+    const createNewChapter  = async () =>{
+        const emptyBody = {
+        };
+        const res = await createNewSubcontent(id, subtype, 'Untitled Page', emptyBody);
+        const pageID = res.data.subcontent._id;
+        navigate(`/${subtype}/edit/${pageID}`);
+    }
+
+    const createSubcontent = async () => {
         if (subtype === SUBCONTENT_TYPE.PAGE) {
             await createNewPage();
-        } else {
-            console.log('TODO');
+        } if (subtype === SUBCONTENT_TYPE.CHAPTER) {
+            await createNewChapter();
+        }
+        else{
+            console.log("missing/wrong subtype");
         }
     };
 
@@ -73,7 +86,7 @@ export default function ListPage() {
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
                 {sameUser &&
                     <Box style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Button onClick={() => createNewSubcontent()} variant='contained' style={{ margin: '10px' }}>
+                        <Button onClick={() => createSubcontent()} variant='contained' style={{ margin: '10px' }}>
                             {`Create New ${subtype}`}
                         </Button>
                     </Box>
