@@ -1,28 +1,54 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, TextField } from '@mui/material/';
 import ContentBlurb from '../subcomponents/ContentBlurb';
+import { getSubcontentByID,updateSubContent,publishSubContent,getContentById,updateContent } from '../api/api';
 import Comment from '../subcomponents/Comment';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
+import draftToHtml from 'draftjs-to-html';
+
 
 export default function ViewStoryChapter(){
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const [parentID, setParentID] = useState('');
+    const [title, settitle] = useState(null);
+    const [html,sethtml] = useState('');
+    useEffect(() => {
+        const getChapter = async() => {
+          try {
+            const res = await getSubcontentByID(id, SUBCONTENT_TYPE.CHAPTER);
+            setParentID(res.data.subcontent.parentID);
+            // load in data from the body
+            settitle(res.data.subcontent.title);
+            if(res.data.subcontent.body.v){
+                sethtml(draftToHtml(res.data.subcontent.body.v));
+            }
+
+          } catch (err) {
+            // Probably unauthorized - kick out
+            console.log(err);
+            navigate(`/home/test`);
+          }
+        }
+        getChapter();
+      }, []);
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
-                <ContentBlurb />
+                <ContentBlurb id={parentID} type={CONTENT_TYPE.STORY} subtype={SUBCONTENT_TYPE.CHAPTER}/>
             </Box>
             <Box style={{ width: '90%', margin: 'auto' }}>
                 <Box style={{ backgroundColor: '#ffffff', padding: '10px' }}>
-                    <Typography align='center' style={{ fontWeight: 'bold', fontSize: '20px' }}>Chapter 1: Example Chapter</Typography>
+                    <Typography align='center' style={{ fontWeight: 'bold', fontSize: '20px' }}>{title}</Typography>
                 </Box>
             </Box>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px'}}/>
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
                 <Box style={{ width: '98%', margin: 'auto' }}>
-                    <Typography style={{ paddingBottom: '10px'}}>But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system.</Typography>
-                    <Typography style={{ paddingBottom: '10px'}}>And expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful.</Typography>
-                    <Typography style={{ paddingBottom: '10px'}}>Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure.</Typography>
-                    <Typography style={{ paddingBottom: '10px'}}>To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?</Typography>
+                <div dangerouslySetInnerHTML={{ __html: html }} />
                 </Box>
                 
                 <Box style={{ width: '98%', margin: 'auto'}}>
