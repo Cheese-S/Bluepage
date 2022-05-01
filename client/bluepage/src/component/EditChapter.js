@@ -22,7 +22,7 @@ export default function EditChapter() {
           try {
             const res = await getSubcontentByID(id, SUBCONTENT_TYPE.CHAPTER);
             setParentID(res.data.subcontent.parentID);
-
+            setTitle(res.data.subcontent.title);
             // load in data from the body
             if(res.data.subcontent.body.v){
                 const blocksFromRaw = convertFromRaw(res.data.subcontent.body.v);
@@ -91,12 +91,14 @@ export default function EditChapter() {
                 </Box>
             </Box>
             <Box style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
-                <Box style={{ width: '100%', height: '85%', marginTop: '10px', marginLeft: '16px'}}>
-                    <Box style={{ width: '1450px', height: '690px', backgroundColor: '#ffffff', margin: 'auto' }}>
+                <Box style={{ width: '100%', height: '85%', marginTop: '10px', marginLeft: '10px'}}>
+                    <Box style={{ width: '1400px', height: '650px', backgroundColor: '#ffffff', margin: 'auto'}}>
                         <Editor
                             editorState={editorState}
                             onEditorStateChange={setEditorState}
-                            editorStyle={{ margin: '10px' }}
+                            editorStyle={{marginLeft: '10px', height: '600px', padding: '5px', marginTop: '0px'}}
+                            toolbarStyle = {{width: '98%', marginBottom: '0px'}}
+                            placeholder = "Type here..."
                         />
                     </Box>
                 </Box>

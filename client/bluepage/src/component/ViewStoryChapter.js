@@ -47,8 +47,8 @@ export default function ViewStoryChapter(){
             </Box>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px'}}/>
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
-                <Box style={{ width: '98%', margin: 'auto' }}>
-                <div dangerouslySetInnerHTML={{ __html: html }} />
+                <Box style={{ width: '98%', margin: 'auto'}} sx={{ whiteSpace: 'normal', overflow: 'auto' }}>
+                   <div dangerouslySetInnerHTML={{ __html: html }} /> 
                 </Box>
                 
                 <Box style={{ width: '98%', margin: 'auto'}}>
