@@ -7,7 +7,7 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { useParams } from 'react-router-dom';
 import {getSubcontentByID } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
-import { Stage, Layer, Line, Rect, Arrow } from 'react-konva';
+import { Stage, Layer, Line, Rect, Arrow, Circle } from 'react-konva';
 
 
 export default function ViewComicPage(){
@@ -57,20 +57,40 @@ export default function ViewComicPage(){
             >
               <Layer>
                 {shapes.map((shape, i) => (
-                  <Rect 
-                    key={`rect_${i}`}
-                    x={shape.start_x}
-                    y={shape.start_y}
-                    width={shape.end_x - shape.start_x}
-                    height={shape.end_y - shape.start_y}
-                    stroke={shape.strokeColor}
-                    strokeWidth={shape.strokeWidth}
-                  />
+                  <>
+                    {!('shapeType' in shape) || shape.shapeType === 'square' ?
+                      <Rect
+                        key={`rect_${i}`}
+                        x={shape.start_x}
+                        y={shape.start_y}
+                        width={shape.end_x - shape.start_x}
+                        height={shape.end_y - shape.start_y}
+                        stroke={shape.strokeColor}
+                        strokeWidth={shape.strokeWidth}
+                      />
+                    : shape.shapeType === 'circle' ?
+                      <Circle
+                        key={`circle_${i}`}
+                        x={shape.start_x}
+                        y={shape.start_y}
+                        radius={Math.sqrt(Math.pow(shape.end_x - shape.start_x, 2) + Math.pow(shape.end_y - shape.start_y, 2))}
+                        stroke={shape.strokeColor}
+                        strokeWidth={shape.strokeWidth}
+                      />
+                    :
+                      <Rect
+                        key={`rect_${i}`}
+                        x={shape.start_x}
+                        y={shape.start_y}
+                        width={shape.end_x - shape.start_x}
+                        height={shape.end_y - shape.start_y}
+                        stroke={shape.strokeColor}
+                        strokeWidth={shape.strokeWidth}
+                      />
+                    } 
+                  </>
                 ))}
-                
-              </Layer>
-              <Layer>
-              {arrows.map((arrow, i) => (
+                {arrows.map((arrow, i) => (
                   <Arrow
                     key={`arrow_${i}`}
                     points={arrow.points}
@@ -79,9 +99,7 @@ export default function ViewComicPage(){
                     tension={1}
                   />
                 ))}
-              </Layer>
-              <Layer>
-              {lines.map((line, i) => (
+                {lines.map((line, i) => (
                   <Line
                     key={`line_${i}`}
                     points={line.points}

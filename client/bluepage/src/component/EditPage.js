@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Stage, Layer, Line, Rect, Arrow } from 'react-konva';
+import { Stage, Layer, Line, Rect, Arrow, Circle } from 'react-konva';
 import { ChromePicker } from 'react-color';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, Typography } from '@mui/material/';
+import { Box, TextField, Button, Typography, FormControl, FormLabel, FormControlLabel, Radio, RadioGroup } from '@mui/material/';
 import kTPS, { AddItem_Transaction } from '../kTPS/kTPS';
 import { getContentById, getSubcontentByID, updateSubContent, updateContent, publishSubContent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
@@ -26,6 +26,7 @@ export default function EditPage() {
   const [lines, setLines] = useState([]);
   const [shapes, setShapes] = useState([]);
   const [arrows, setArrows] = useState([]);
+  const [shapeType, setShapeType] = useState('square');
 
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -65,17 +66,17 @@ export default function EditPage() {
   const hideAllPopups = () => {
     setShowColorPicker(false);
     setShowStrokeChooser(false);
-  }
+  };
 
   const selectColorPicker = () => {
     hideAllPopups();
     setShowColorPicker(!showColorPicker);
-  }
+  };
 
   const selectStrokeChooser = () => {
     hideAllPopups();
     setShowStrokeChooser(!showStrokeChooser);
-  }
+  };
 
   const handleStrokeChange = (width) => {
     if (width <= 0) {
@@ -109,7 +110,7 @@ export default function EditPage() {
     if (tool === 'pen' || tool === 'eraser') {
       setLines([...lines, { tool, points: [pos.x, pos.y], color: color, strokeWidth: strokeWidth }]);
     } else if (tool === 'shape') {
-      setShapes([...shapes, { start_x: pos.x, start_y: pos.y, end_x: pos.x, end_y: pos.y, strokeColor: color, strokeWidth: strokeWidth }])
+      setShapes([...shapes, { start_x: pos.x, start_y: pos.y, end_x: pos.x, end_y: pos.y, strokeColor: color, strokeWidth: strokeWidth, shapeType: shapeType }])
     } else if (tool === 'arrow') {
       setArrows([...arrows, { points: [pos.x, pos.y], color: color, strokeWidth: strokeWidth }]);
     }
@@ -273,20 +274,40 @@ export default function EditPage() {
             >
               <Layer>
                 {shapes.map((shape, i) => (
-                  <Rect 
-                    key={`rect_${i}`}
-                    x={shape.start_x}
-                    y={shape.start_y}
-                    width={shape.end_x - shape.start_x}
-                    height={shape.end_y - shape.start_y}
-                    stroke={shape.strokeColor}
-                    strokeWidth={shape.strokeWidth}
-                  />
+                  <>
+                    {!('shapeType' in shape) || shape.shapeType === 'square' ?
+                      <Rect
+                        key={`rect_${i}`}
+                        x={shape.start_x}
+                        y={shape.start_y}
+                        width={shape.end_x - shape.start_x}
+                        height={shape.end_y - shape.start_y}
+                        stroke={shape.strokeColor}
+                        strokeWidth={shape.strokeWidth}
+                      />
+                    : shape.shapeType === 'circle' ?
+                      <Circle
+                        key={`circle_${i}`}
+                        x={shape.start_x}
+                        y={shape.start_y}
+                        radius={Math.sqrt(Math.pow(shape.end_x - shape.start_x, 2) + Math.pow(shape.end_y - shape.start_y, 2))}
+                        stroke={shape.strokeColor}
+                        strokeWidth={shape.strokeWidth}
+                      />
+                    :
+                      <Rect
+                        key={`rect_${i}`}
+                        x={shape.start_x}
+                        y={shape.start_y}
+                        width={shape.end_x - shape.start_x}
+                        height={shape.end_y - shape.start_y}
+                        stroke={shape.strokeColor}
+                        strokeWidth={shape.strokeWidth}
+                      />
+                    } 
+                  </>
                 ))}
-                
-              </Layer>
-              <Layer>
-              {arrows.map((arrow, i) => (
+                {arrows.map((arrow, i) => (
                   <Arrow
                     key={`arrow_${i}`}
                     points={arrow.points}
@@ -295,9 +316,7 @@ export default function EditPage() {
                     tension={1}
                   />
                 ))}
-              </Layer>
-              <Layer>
-              {lines.map((line, i) => (
+                {lines.map((line, i) => (
                   <Line
                     key={`line_${i}`}
                     points={line.points}
@@ -316,13 +335,29 @@ export default function EditPage() {
         </Box>
         <Box style={{ width: '15%', display: 'flex', flexDirection: 'column-reverse' }}>
           {showColorPicker &&
-            <Box style={{ display: 'flex', marginRight: '10px' }}>
+            <Box style={{ display: 'flex', margin: '10px' }}>
               <ChromePicker color={color} onChange={(color) => setColor(color.hex)} style={{ paddingBottom: '10px' }}/>
             </Box>
           }
           {showStrokeChooser &&
-            <Box style={{ backgroundColor: 'white', borderRadius: '10px', display: 'flex', flexDirection: 'row', marginRight: '10px' }}>
+            <Box style={{ backgroundColor: 'white', borderRadius: '10px', display: 'flex', flexDirection: 'row', margin: '10px' }}>
               <TextField label='minimum 0, maximum 64' type='number' fullWidth InputProps={{ inputProps: { min: 0, max: 64 } }} value={strokeWidth} onChange={(e) => handleStrokeChange(Number(e.target.value))} style={{ margin: '10px' }} />
+            </Box>
+          }
+          {tool === 'shape' &&
+            <Box style={{ backgroundColor: 'white', borderRadius: '10px', display: 'flex', flexDirection: 'row', margin: '10px', padding: '10px' }}> 
+              <FormControl component="fieldset">
+                <FormLabel component="legend">Shape Type</FormLabel>
+                <RadioGroup
+                  aria-label="Shape Type"
+                  name="shape-type"
+                  value={shapeType}
+                  onChange={(event) => setShapeType(event.target.value)}
+                >
+                  <FormControlLabel value="square" control={<Radio />} label="Square" />
+                  <FormControlLabel value="circle" control={<Radio />} label="Circle" />
+                </RadioGroup>
+              </FormControl>
             </Box>
           }
         </Box>
