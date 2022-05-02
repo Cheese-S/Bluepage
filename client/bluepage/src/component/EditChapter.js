@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react';
-import { Box, TextField, Button } from '@mui/material/';
+import { Box, TextField, Button, Typography } from '@mui/material/';
 import { Editor } from "react-draft-wysiwyg";
 import { useParams, useNavigate } from 'react-router-dom';
 import { EditorState ,convertToRaw,convertFromHTML,ContentState,compositeDecorator,convertFromRaw} from 'draft-js';
@@ -15,7 +15,7 @@ export default function EditChapter() {
       );
     const [title, setTitle] = useState('New Chapter');
     const [parentID, setParentID] = useState(''); 
-
+    const [messageToUser, setMessageToUser] = useState('');
 
     useEffect(() => {
         const getChapter = async() => {
@@ -45,11 +45,16 @@ export default function EditChapter() {
     const Save  =  async() =>{
         const blocks = convertToRaw(editorState.getCurrentContent());
         let value={v: blocks};
+
         try{
-        const req= await updateSubContent(SUBCONTENT_TYPE.CHAPTER, id, title, value, false, parentID);
+          await updateSubContent(SUBCONTENT_TYPE.CHAPTER, id, title, value, false, parentID);
+          const rightNow = new Date();
+          
+          setMessageToUser(`Saved! at ${rightNow.toLocaleTimeString()}`);
         }
         catch (err){
-            console.log(err);
+          console.log(err);
+          setMessageToUser('Something went wrong - please try again.');
         }
     }
 
@@ -77,18 +82,22 @@ export default function EditChapter() {
           navigate(`/list/${parentID}/story`);
         } catch (err) { 
             console.log(err);
-            }
+            setMessageToUser('Something went wrong - please try again.');
+        }
       }
 
     return (
         <>
             <Box style={{ display: 'flex', flexDirection: 'row', height: '10%', alignItems: 'center', backgroundColor: '#9dc3ff' }} sx={{ borderBottom: 2 }}>
-            <TextField value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter title here...' style={{ marginLeft: '10px', width: '30%' }}></TextField>
-                <Box style={{ alignItems: 'center', width: '70%', display: 'flex', flexDirection: 'row-reverse' }}>
+              <TextField value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter title here...' style={{ marginLeft: '10px', width: '30%' }}></TextField>
+              <Box style={{ alignItems: 'center', justifyContent: 'center', width: '40%' }}>
+                <Typography style={{ margin: '10px', fontSize: '16px', fontWeight: 'bold' }}>{messageToUser}</Typography>
+              </Box>
+              <Box style={{ alignItems: 'center', width: '40%', display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button onClick={() => publish()} variant='contained' style={{ marginRight: '10px' }}>Publish</Button>
-                    <Button variant='contained' onClick={() => {Savee()}}style={{ marginRight: '10px' }}>Save and Exit</Button>
-                    <Button variant='contained' onClick={() => {Save()}} style={{ marginRight: '10px' }}>Save</Button>
-                </Box>
+                <Button variant='contained' onClick={() => {Savee()}}style={{ marginRight: '10px' }}>Save and Exit</Button>
+                <Button variant='contained' onClick={() => {Save()}} style={{ marginRight: '10px' }}>Save</Button>
+              </Box>
             </Box>
             <Box style={{ display: 'flex', flexDirection: 'row', height: '90%' }}>
                 <Box style={{ width: '100%', height: '85%', marginTop: '10px', marginLeft: '10px'}}>
