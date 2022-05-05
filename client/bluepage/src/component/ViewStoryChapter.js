@@ -2,7 +2,7 @@ import React,{useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, TextField } from '@mui/material/';
 import ContentBlurb from '../subcomponents/ContentBlurb';
-import { getSubcontentByID,updateSubContent,publishSubContent,getContentById,updateContent } from '../api/api';
+import { getSubcontentByID, updateSubContent, publishSubContent, getContentById, updateContent, viewSubcontent } from '../api/api';
 import Comment from '../subcomponents/Comment';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
@@ -15,26 +15,32 @@ export default function ViewStoryChapter(){
     const { id } = useParams();
     const [parentID, setParentID] = useState('');
     const [title, settitle] = useState(null);
+    const [views, setViews] = useState(0);
     const [html,sethtml] = useState('');
-    useEffect(() => {
-        const getChapter = async() => {
-          try {
-            const res = await getSubcontentByID(id, SUBCONTENT_TYPE.CHAPTER);
-            setParentID(res.data.subcontent.parentID);
-            // load in data from the body
-            settitle(res.data.subcontent.title);
-            if(res.data.subcontent.body.v){
-                sethtml(draftToHtml(res.data.subcontent.body.v));
-            }
 
-          } catch (err) {
-            // Probably unauthorized - kick out
-            console.log(err);
-            navigate(`/home/test`);
-          }
+    useEffect(() => {
+        const getChapter = async () => {
+            try {
+                const res = await getSubcontentByID(id, SUBCONTENT_TYPE.CHAPTER);
+                setParentID(res.data.subcontent.parentID);
+                // load in data from the body
+                settitle(res.data.subcontent.title);
+                setViews(res.data.subcontent.views);
+                if (res.data.subcontent.body.v) {
+                    sethtml(draftToHtml(res.data.subcontent.body.v));
+                }
+
+                // add a view to the subcontent
+                await viewSubcontent(SUBCONTENT_TYPE.CHAPTER, res.data.subcontent._id);
+            } catch (err) {
+                // Probably unauthorized - kick out
+                console.log(err);
+                navigate(`/home/test`);
+            }
         }
         getChapter();
-      }, []);
+    }, []);
+
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
@@ -54,7 +60,7 @@ export default function ViewStoryChapter(){
                 <Box style={{ width: '98%', margin: 'auto'}}>
                     <hr style={{ color: 'black', backgroundColor: 'black', height: 1}} />
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        <Typography style={{ fontWeight: 'bold', width: '70%' }}>1,234 views</Typography>
+                        <Typography style={{ fontWeight: 'bold', width: '70%' }}>{views} views</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
                             <Typography style={{ fontWeight: 'bold' }}>3</Typography>
                             <ThumbDownOffAltIcon sx={{ fontSize: '40px' }}></ThumbDownOffAltIcon>

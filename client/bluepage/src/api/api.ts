@@ -286,6 +286,13 @@ export const deleteContent = (contentType: CONTENT_TYPE, contentID: string) => {
     return api.delete(`/content`, { data: { contentType: contentType, contentID: contentID } });
 }
 
+export const viewSubcontent = (subcontentType: SUBCONTENT_TYPE, subcontentID: string) => {
+    return api.put(`/subcontent/view`, {
+        subcontentType: subcontentType,
+        subcontentID: subcontentID
+    })
+}
+
 export const getSubcontentByID = (
     subcontentID: string, 
     subcontentType: SUBCONTENT_TYPE) => {

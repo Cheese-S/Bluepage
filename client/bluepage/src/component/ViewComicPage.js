@@ -5,7 +5,7 @@ import Comment from '../subcomponents/Comment';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { useParams } from 'react-router-dom';
-import {getSubcontentByID } from '../api/api';
+import { getSubcontentByID, viewSubcontent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
 import { Stage, Layer, Line, Rect, Arrow, Circle } from 'react-konva';
 
@@ -14,32 +14,40 @@ export default function ViewComicPage(){
     const { id } = useParams();
     const [parentID, setParentID] = useState('');
     const [title, settitle] = useState(null);
+    const [views, setViews] = useState(0);
+
     const [lines, setLines] = useState([]);
     const [shapes, setShapes] = useState([]);
     const [arrows, setArrows] = useState([]);
+
     useEffect(() => {
         const getcontent = async () =>{
-            try{
-                const res = await getSubcontentByID(id,"page");
-                settitle(res.data.subcontent.title);
-                setParentID(res.data.subcontent.parentID);
+            try {
+              // Load in the page's data
+              const res = await getSubcontentByID(id, "page");
+              settitle(res.data.subcontent.title);
+              setViews(res.data.subcontent.views);
+              setParentID(res.data.subcontent.parentID);
 
-                if(res.data.subcontent.body.lines){
+              if (res.data.subcontent.body.lines) {
                 setLines(res.data.subcontent.body.lines);
-                }
-                if(res.data.subcontent.body.shapes){
+              }
+              if (res.data.subcontent.body.shapes) {
                 setShapes(res.data.subcontent.body.shapes);
-                }
-                if(res.data.subcontent.body.arrows){
+              }
+              if (res.data.subcontent.body.arrows) {
                 setArrows(res.data.subcontent.body.arrows);
-                }
-            } 
-            catch(err){
+              }
+
+              // Add a view to the page
+              await viewSubcontent(SUBCONTENT_TYPE.PAGE, res.data.subcontent._id);
+            } catch(err) {
                 console.log(err);
             }
         }
         getcontent();
     },[]);
+
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
@@ -117,6 +125,15 @@ export default function ViewComicPage(){
           </Box>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px'}}/>
             <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <Typography style={{ fontWeight: 'bold', width: '70%', marginLeft: '10px' }}>{views} views</Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
+                    <Typography style={{ fontWeight: 'bold' }}>3</Typography>
+                    <ThumbDownOffAltIcon sx={{ fontSize: '40px' }}></ThumbDownOffAltIcon>
+                    <Typography style={{ fontWeight: 'bold', marginRight: '20px' }}>112</Typography>
+                    <ThumbUpOffAltIcon sx={{ fontSize: '40px' }}></ThumbUpOffAltIcon>
+                  </Box>
+                </Box>
                 <Box style={{ width: '98%', margin: 'auto'}}>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                     </Box>
