@@ -1,15 +1,12 @@
-import React, { useEffect ,useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material/';
 import ContentBlurb from '../subcomponents/ContentBlurb';
 import SubcontentListing from '../subcomponents/SubcontentListing';
 import Comment from '../subcomponents/Comment';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getContentById, createNewSubcontent } from '../api/api';
+import { getContentById, createNewSubcontent, viewContent } from '../api/api';
 import { userStore } from '../store/UserStore';
 import { CONTENT_TYPE, SUBCONTENT_TYPE} from "../constant";
-import { EditorState } from 'draft-js';
-
-
 
 export default function ListPage() {
     const navigate = useNavigate();
@@ -33,12 +30,15 @@ export default function ListPage() {
 
     useEffect(() => {
         const getcontent = async () =>{
-            try{
+            try {
+                // Load in content
                 const res = await getContentById(type, id);
                 setlist(res.data.content.contentList);
                 setSameUser(res.data.content.author.id === selfID);
-            } 
-            catch(err){
+
+                // Add a view to that content
+                await viewContent(type, res.data.content._id);
+            }  catch(err){
                 // Probably unauthorized - kick out
                 console.log(err);
                 navigate('/home/test')
