@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material/';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getSubcontentByID, viewSubcontent, voteOnSubcontent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
 import { Stage, Layer, Line, Rect, Arrow, Circle } from 'react-konva';
@@ -13,7 +13,8 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 
 export default function ViewComicPage() {
-  const userID = userStore(state => state.id);
+  const navigate = useNavigate();
+
   const loggedIn = userStore(state => state.isLoggedIn);
   const likedPages = userStore(state => state.likedPages);
   const setLikedPages = userStore(state => state.setLikedPages);
@@ -123,7 +124,9 @@ export default function ViewComicPage() {
           }
         }
       } catch (err) {
+        // Probably unauthorized - kick out
         console.log(err);
+        navigate(`/home/test`);
       }
     }
     getcontent();

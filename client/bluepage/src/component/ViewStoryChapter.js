@@ -1,12 +1,15 @@
 import React,{useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, TextField } from '@mui/material/';
+import { getSubcontentByID, viewSubcontent, voteOnSubcontent } from '../api/api';
+import { CONTENT_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
+import { userStore } from '../store/UserStore';
 import ContentBlurb from '../subcomponents/ContentBlurb';
-import { getSubcontentByID, updateSubContent, publishSubContent, getContentById, updateContent, viewSubcontent } from '../api/api';
 import Comment from '../subcomponents/Comment';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
 import draftToHtml from 'draftjs-to-html';
 
 
@@ -14,9 +17,75 @@ export default function ViewStoryChapter(){
     const navigate = useNavigate();
     const { id } = useParams();
     const [parentID, setParentID] = useState('');
+
+    const loggedIn = userStore(state => state.isLoggedIn);
+    const likedChapters = userStore(state => state.likedChapters);
+    const setLikedChapters = userStore(state => state.setLikedChapters);
+    const dislikedChapters = userStore(state => state.dislikedChapters);
+    const setDislikedChapters = userStore(state => state.setDislikedChapters);
+
     const [title, settitle] = useState(null);
     const [views, setViews] = useState(0);
+    const [vote, setVote] = useState(VOTE_STATE_TYPE.NEUTRAL);
+    const [likes, setLikes] = useState(0);
+    const [dislikes, setDislikes] = useState(0);  
     const [html,sethtml] = useState('');
+
+    /**
+   * Handles changing the like/dislike front-end and then send corresponding request
+   * @param {Number} newVote from the imported VOTE_STATE_TYPE constant
+   */
+    const handleChangeVote = async (newVote) => {
+        if (!loggedIn) return;
+
+        // Update local store and displayed vote counts
+        const tempLiked = [...likedChapters];
+        const tempDisliked = [...dislikedChapters];
+        if (newVote === VOTE_STATE_TYPE.NEUTRAL) {
+            // Check old vote - will have to be removed
+            if (vote === VOTE_STATE_TYPE.LIKE) {
+                const removeIndex = tempLiked.indexOf(id);
+                tempLiked.splice(removeIndex, 1);
+                setLikedChapters(tempLiked);
+                setLikes(likes - 1);
+            } else {
+                const removeIndex = tempDisliked.indexOf(id);
+                tempDisliked.splice(removeIndex, 1);
+                setDislikedChapters(tempDisliked);
+                setDislikes(dislikes - 1);
+            }
+        } else if (newVote === VOTE_STATE_TYPE.LIKE) {
+            // Add to list of liked comics - remove from disliked if needed
+            tempLiked.push(id);
+            setLikedChapters(tempLiked);
+            setLikes(likes + 1);
+
+            if (vote === VOTE_STATE_TYPE.DISLIKE) {
+                const removeIndex = tempDisliked.indexOf(id);
+                if (removeIndex > -1) tempDisliked.splice(removeIndex, 1);
+                setDislikedChapters(tempDisliked);
+                setDislikes(dislikes - 1);
+            }
+        } else {
+            // Add to list of disliked comics - remove from liked if needed
+            tempDisliked.push(id);
+            setDislikedChapters(tempDisliked);
+            setDislikes(dislikes + 1);
+
+            if (vote === VOTE_STATE_TYPE.LIKE) {
+                const removeIndex = tempLiked.indexOf(id);
+                if (removeIndex > -1) tempLiked.splice(removeIndex, 1);
+                setLikedChapters(tempLiked);
+                setLikes(likes - 1);
+            }
+        }
+
+        // Update server
+        await voteOnSubcontent(id, SUBCONTENT_TYPE.CHAPTER, vote, newVote);
+
+        // Update front-end
+        setVote(newVote);
+    };
 
     useEffect(() => {
         const getChapter = async () => {
@@ -32,6 +101,19 @@ export default function ViewStoryChapter(){
 
                 // add a view to the subcontent
                 await viewSubcontent(SUBCONTENT_TYPE.CHAPTER, res.data.subcontent._id);
+
+                // Set vote counts
+                setLikes(res.data.subcontent.likes);
+                setDislikes(res.data.subcontent.dislikes);
+
+                if (loggedIn) {
+                    // Process the current user's vote, if any
+                    if (likedChapters.indexOf(id) > -1) {
+                        setVote(VOTE_STATE_TYPE.LIKE);
+                    } else if (dislikedChapters.indexOf(id) > -1) {
+                        setVote(VOTE_STATE_TYPE.DISLIKE);
+                    }
+                }
             } catch (err) {
                 // Probably unauthorized - kick out
                 console.log(err);
@@ -62,10 +144,17 @@ export default function ViewStoryChapter(){
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <Typography style={{ fontWeight: 'bold', width: '70%' }}>{views} views</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
-                            <Typography style={{ fontWeight: 'bold' }}>3</Typography>
-                            <ThumbDownOffAltIcon sx={{ fontSize: '40px' }}></ThumbDownOffAltIcon>
-                            <Typography style={{ fontWeight: 'bold', marginRight: '20px' }}>112</Typography>
-                            <ThumbUpOffAltIcon sx={{ fontSize: '40px' }}></ThumbUpOffAltIcon>
+                            <Typography style={{ fontWeight: 'bold' }}>{dislikes}</Typography>
+                            {vote === VOTE_STATE_TYPE.DISLIKE ?
+                                <ThumbDownIcon onClick={() => handleChangeVote(VOTE_STATE_TYPE.NEUTRAL)} sx={{ fontSize: '40px', cursor: 'pointer' }} />
+                                :
+                                <ThumbDownOffAltIcon onClick={() => handleChangeVote(VOTE_STATE_TYPE.DISLIKE)} sx={{ fontSize: '40px', cursor: 'pointer' }} />}
+                            <Typography style={{ fontWeight: 'bold', marginRight: '20px' }}>{likes}</Typography>
+                            {vote === VOTE_STATE_TYPE.LIKE ?
+                                <ThumbUpIcon onClick={() => handleChangeVote(VOTE_STATE_TYPE.NEUTRAL)} sx={{ fontSize: '40px', cursor: 'pointer' }} />
+                                :
+                                <ThumbUpOffAltIcon onClick={() => handleChangeVote(VOTE_STATE_TYPE.LIKE)} sx={{ fontSize: '40px', cursor: 'pointer' }} />
+                            }
                         </Box>
                     </Box>
                     <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>

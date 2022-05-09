@@ -65,7 +65,7 @@ function routes(app) {
 
     app.put("/api/subcontent/comment", auth.verify, validator('commentSubcontent'), SubcontentController.commentSubcontent)
 
-    app.put("/api/subcontent/view", auth.verify, validator('viewSubcontent'), SubcontentController.viewSubcontent)
+    app.put("/api/subcontent/view", validator('viewSubcontent'), SubcontentController.viewSubcontent)
 
     app.post("/api/subcontent/id", validator('getSubcontentByID'), SubcontentController.getSubcontentByID)
 
