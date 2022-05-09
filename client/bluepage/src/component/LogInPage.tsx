@@ -19,8 +19,9 @@ export const LogInPage: React.FC = () => {
             const password = formData.get('Password');
 
             const res = await login(String(identifier), String(password));
+            const { _id, name, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters } = res.data.user;
 
-            storeLogin(res.data.user._id, res.data.user.name);
+            storeLogin(_id, name, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters);
             navigate("/home/test");
         } catch (err) {
             console.log(err);

@@ -14,7 +14,7 @@ export const RegisterPage = () => {
         event.preventDefault();
         try {
             const formData = new FormData(event.currentTarget);
-            const name = formData.get('username');
+            const username = formData.get('username');
             const email = formData.get('email');
             const password = formData.get('password');
             const passwordConfirmation = formData.get('passwordConfirm');
@@ -34,9 +34,10 @@ export const RegisterPage = () => {
             const answer3 = formData.get('sec3');
             const answers = [answer1, answer2, answer3];
 
-            const res = await registerUser(name, password, passwordConfirmation, email, answers);
+            const res = await registerUser(username, password, passwordConfirmation, email, answers);
+            const { _id, name, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters } = res.data.user;
 
-            storeLogin(res.data.user._id, name);
+            storeLogin(_id, name, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters);
             navigate("/home/test");
         } catch (err) {
             console.log(err);
