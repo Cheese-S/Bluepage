@@ -52,6 +52,21 @@ export default function SearchPage(){
                     content = await getContentPage(siteMode, querry,{"sort[updatedAt]": 1,"limit":99} );
                 }
                 let list = content.data.result.docs;
+                if(searchstring=="-"){}
+                else{
+                    if(searchmode==0){
+                        console.log("filter");
+                        let key = 'title';
+                        list = list.filter(o => 
+                            o[key].toLowerCase().includes(searchstring.toLowerCase()));
+                    }
+                    else{
+                        console.log("filter");
+                        let key = 'author';
+                        list = list.filter(o => 
+                            o[key].toLowerCase().includes(searchstring.toLowerCase()));
+                    }
+                }
                 const listOfContentview =
                 <Box style={{ display: 'flex', flexDirection: 'column' }}>
                     {siteMode === CONTENT_TYPE.COMIC ? 
