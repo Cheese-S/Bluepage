@@ -95,7 +95,7 @@ export const ButtonAppBar: React.FC = () => {
     };
 
     const fakeSearch = async () => {
-        console.log(await getContentPage(CONTENT_TYPE.COMIC, {}, {"sort[createdAt]": -1}))
+        console.log(await getContentPage(CONTENT_TYPE.STORY, {published: true, 'author.name': 'jane'}, {"sort[createdAt]": -1}))
     } 
 
     return (
