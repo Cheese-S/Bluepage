@@ -55,10 +55,16 @@ export default function SearchPage(){
                 if(searchstring=="-"){}
                 else{
                     if(searchmode==0){
-                        //list.filter search with titlte
+                        console.log("filter");
+                        let key = 'title';
+                        list = list.filter(o => 
+                            o[key].toLowerCase().includes(searchstring.toLowerCase()));
                     }
                     else{
-                        //list.filter search with author
+                        console.log("filter");
+                        let key = 'author';
+                        list = list.filter(o => 
+                            o[key].toLowerCase().includes(searchstring.toLowerCase()));
                     }
                 }
                 const listOfContentview =

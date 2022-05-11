@@ -105,6 +105,7 @@ export const ButtonAppBar= () => {
         }
         var his = `/search/${sort}/${searchmode}/${re}`
         history(his);
+        window.location.reload();
     } 
 
     return (
