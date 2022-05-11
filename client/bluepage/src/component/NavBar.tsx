@@ -1,12 +1,15 @@
 import * as React from 'react';
+import {useState, useEffect} from 'react';
 import { AppBar, Box, Badge, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Divider, Switch, TextField, Link } from '@mui/material/';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Notifications from '../subcomponents/Notifications';
 import SortIcon from '@mui/icons-material/Sort';
 import { userStore } from '../store/UserStore';
-import { logout } from '../api/api';
+import { logout,  getUser} from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_TYPE } from '../constant';
+import { getContentPage } from '../api/api';
 
 export const ButtonAppBar: React.FC = () => {
     const history = useNavigate();
@@ -14,13 +17,38 @@ export const ButtonAppBar: React.FC = () => {
     const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [sortanchorEl, setsortAnchorEl] =  React.useState<null | HTMLElement>(null);
     const [notificationanchorEl, setnotificationAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [comicNotification, setComicNotification] = useState([]);
+    const [storyNotification, setStoryNotification] = useState([]);
 
     const id = userStore((state: { id: any; }) => state.id);
     const isLoggedIn = userStore((state: { isLoggedIn: any; }) => state.isLoggedIn);
     const siteMode = userStore(state => state.siteMode);
     const setSiteMode = userStore(state => state.setSiteMode);
     const resetUserStore = userStore((state: { resetStore: any; }) => state.resetStore);
-
+    
+    let sublist;
+    let notification = 0;
+    if (comicNotification.length > 0 && siteMode == CONTENT_TYPE.COMIC) {
+        sublist = comicNotification.map((comicNotification, i) => <Notifications notification = {comicNotification} type = {"comic"}/>);
+        notification = comicNotification.length;
+    } 
+    else if (storyNotification.length > 0 && siteMode == CONTENT_TYPE.STORY) {
+        sublist = storyNotification.map((storyNotification, i) => <Notifications notification = {storyNotification} type = {"story"}/>);
+        notification = storyNotification.length;
+    }
+    useEffect(() => {
+        const getUse = async () =>{
+            try {
+                // Load in content
+                const res = await getUser();
+                setComicNotification(res.data.user.comicNotifications);
+                setStoryNotification(res.data.user.storyNotifications);
+            }  catch(err){
+                console.log(err);
+            }
+        }
+        getUse();
+    }, []);
     const handleLogout = async () => {
         handleuserClose();
         resetUserStore();
@@ -52,7 +80,9 @@ export const ButtonAppBar: React.FC = () => {
     };
 
     const handleNotificationMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setnotificationAnchorEl(event.currentTarget);
+        if (notification > 0) {
+            setnotificationAnchorEl(event.currentTarget);
+        }
     };
 
     const handleNotificationClose = () => {
@@ -63,6 +93,10 @@ export const ButtonAppBar: React.FC = () => {
         var his = `/profile/${id}`
         history(his);
     };
+
+    const fakeSearch = async () => {
+        console.log(await getContentPage(CONTENT_TYPE.COMIC, {}, {"sort[createdAt]": -1}))
+    } 
 
     return (
         <div>
@@ -81,12 +115,12 @@ export const ButtonAppBar: React.FC = () => {
                             </Link>
                         </Box>
 
-                    <Badge badgeContent = {3} color = 'error'>
+                    <Badge badgeContent = {notification} color = 'error'> 
                         <IconButton size="small"  color="inherit" onClick = {handleNotificationMenu}>
                             <NotificationsIcon/>
                         </IconButton>
                     </Badge>
-                    <Menu 
+                    {isLoggedIn && <Menu 
                             id = "notification-appbar"
                             anchorEl={notificationanchorEl}
                             anchorOrigin={{
@@ -100,14 +134,10 @@ export const ButtonAppBar: React.FC = () => {
                             }}
                             open={Boolean(notificationanchorEl)}
                             onClose={handleNotificationClose}
-                            style={{ width: 370, maxHeight: 200}}
+                            style={{ width: "100%", maxHeight: 200}}
                         >
-                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>"author name" uploads "title of page/chapter" or page/chapter X (if no name is provided) of (title of comic/story)</MenuItem>
-                            <Divider light/>
-                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>George uploaded Page 10 of Test Data</MenuItem>
-                            <Divider light/>
-                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>The scrolling works!!!</MenuItem>
-                    </Menu>
+                            {sublist}
+                        </Menu> }
 
                     <IconButton size="large"  color="inherit" onClick={handleuserMenu}>
                         <AccountCircleIcon/>
@@ -200,6 +230,7 @@ export const ButtonAppBar: React.FC = () => {
                             type="submit"
                             variant="contained"
                             sx={{ mt: 3, mb: 2,backgroundColor:'#5227cc',ml:"2%" }}
+                            onClick={fakeSearch}
                         >
                             Search
                         </Button>

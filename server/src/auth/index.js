@@ -12,13 +12,14 @@ function authManager() {
     verify = async (req, res, next) => {
         try {
             const token = req.cookies.token;
+            console.log("GOT VERIFY");
             if (!token) {
                 return res.status(401).json({
                     user: CONSTANT.EMPTY_USER,
                     error: "unauthorized user"
                 })
             }
-            
+            console.log(token);
             const verified = jwt.verify(token, env.JWT_SECRET);
             console.log(verified);
             

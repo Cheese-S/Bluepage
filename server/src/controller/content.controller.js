@@ -203,7 +203,7 @@ const ContentController = {
                         `
                     })
                 } else {
-                    await UserService.addNotificationToFollowers(contentType, contentID, userID, user.followers,
+                    await UserService.addNotificationToFollowers(contentType, contentID, user.followers,
                         { text: `${name} has just published a new ${contentType}. Check it out!`, link: contentID }
                     )
                 }

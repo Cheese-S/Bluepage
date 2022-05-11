@@ -35,6 +35,7 @@ export default function ContentBlurb(props) {
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
     const [following, setFollowing] = useState(false);
+    const [published, setpublished] = useState(false);
 
     const handletoauthor= () =>{
         var his = `/profile/${authoridlink}`
@@ -101,6 +102,12 @@ export default function ContentBlurb(props) {
         const getcontent = async () =>{
             try{
                 const res = await getContentById(type,id);
+                if (res.data.content.published) {
+                    setpublished(true);
+                }
+                else {
+                    setpublished(false);
+                }
                 settitle(res.data.content.title);
                 setviews(res.data.content.views);
                 setfollowers(res.data.content.followers);
@@ -195,8 +202,8 @@ export default function ContentBlurb(props) {
                 <Typography style={{ fontWeight: 'bold', width: '20%' }}>{views} views</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', width: '50%' }}>
                     <Typography style={{ fontWeight: 'bold', paddingRight:'10px' }}>{followtest}</Typography>
-                    {!following && loggedIn &&  <Button variant='contained' onClick = {follow}>Follow</Button>}
-                    {following && loggedIn && <Button variant = 'contained' onClick = {unfollow}>Unfollow</Button>}
+                    {!following && loggedIn && published &&  <Button variant='contained' onClick = {follow}>Follow</Button>}
+                    {following && loggedIn && published && <Button variant = 'contained' onClick = {unfollow}>Unfollow</Button>}
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
                     <Typography style={{ fontWeight: 'bold' }}>{dislikes}</Typography>
