@@ -52,6 +52,15 @@ export default function SearchPage(){
                     content = await getContentPage(siteMode, querry,{"sort[updatedAt]": 1,"limit":99} );
                 }
                 let list = content.data.result.docs;
+                if(searchstring=="-"){}
+                else{
+                    if(searchmode==0){
+                        //list.filter search with titlte
+                    }
+                    else{
+                        //list.filter search with author
+                    }
+                }
                 const listOfContentview =
                 <Box style={{ display: 'flex', flexDirection: 'column' }}>
                     {siteMode === CONTENT_TYPE.COMIC ? 
