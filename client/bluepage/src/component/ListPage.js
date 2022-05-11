@@ -7,6 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getContentById, createNewSubcontent, viewContent, commentContent, subcommentContent } from '../api/api';
 import { userStore } from '../store/UserStore';
 import { CONTENT_TYPE, SUBCONTENT_TYPE} from "../constant";
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function ListPage() {
     const navigate = useNavigate();
@@ -131,7 +132,7 @@ export default function ListPage() {
                     <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
                     {loggedIn &&
                         <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
-                        <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }} />
+                        <PersonIcon style={{ width: '5%', height: '5%', color: '#aaaa00' }} />
                         <Box style={{ paddingRight: '20px' }}/>
                             <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
                                 <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>

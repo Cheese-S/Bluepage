@@ -11,6 +11,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function ViewComicPage() {
   const navigate = useNavigate();
@@ -262,7 +263,7 @@ export default function ViewComicPage() {
           <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
           {loggedIn &&
             <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
-              <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }} />
+              <PersonIcon style={{ width: '5%', height: '5%', color: '#aaaa00' }} />
               <Box style={{ paddingRight: '20px' }} />
               <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
                 <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px' }} />

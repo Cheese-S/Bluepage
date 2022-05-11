@@ -48,7 +48,7 @@ export default function Comment(props: Props) {
     return (
         <Box style={{ display: 'flex', flexDirection: 'column' }}>
             <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
-                <PersonIcon style={{ width: '7%', height: '7%', color: '#aa00aa' }} />
+                <PersonIcon style={{ width: '5%', height: '5%', color: '#aa00aa' }} />
                 <Box style={{ paddingRight: '20px' }}/>
                 <Box style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                     <Typography style={{ fontWeight: 'bold', fontSize: '16px'}}>{comment.user.name}</Typography>
