@@ -149,9 +149,7 @@ export default function ProfilePage(){
             setFollowingUser(false);
             const removeIndex = tempFollowing.indexOf(id);
             if (removeIndex > -1) {
-                console.log(tempFollowing.indexOf(id));
                 tempFollowing.splice(removeIndex, 1);
-                console.log(tempFollowing.indexOf(id));
             }
             setFollowing(tempFollowing);
             await followUser(id, "unfollow");
