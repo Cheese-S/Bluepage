@@ -1,6 +1,6 @@
 import React, { useEffect ,useState} from 'react';
 import { Typography, Button, Link, Box , Chip} from '@mui/material/';
-import { getContentById, voteOnContent } from '../api/api';
+import { getContentById, voteOnContent, followContent } from '../api/api';
 import { CONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
 import { useNavigate } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
@@ -19,6 +19,8 @@ export default function ContentBlurb(props) {
     const setLikedContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.setLikedComics) : userStore(state => state.setLikedStories);
     const dislikedContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.dislikedComics) : userStore(state => state.dislikedStories);
     const setDislikedContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.setDislikedComics) : userStore(state => state.setDislikedStories);
+    const followingContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.followingComics) : userStore(state => state.followingStories);
+    const setFollowingContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.setFollowingComics) : userStore(state => state.setFollowingStories);
 
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
@@ -32,7 +34,8 @@ export default function ContentBlurb(props) {
     const [vote, setVote] = useState(VOTE_STATE_TYPE.NEUTRAL);
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
-    
+    const [following, setFollowing] = useState(false);
+
     const handletoauthor= () =>{
         var his = `/profile/${authoridlink}`
         history(his);
@@ -115,6 +118,12 @@ export default function ContentBlurb(props) {
                     } else if (dislikedContent.indexOf(id) > -1) {
                         setVote(VOTE_STATE_TYPE.DISLIKE);
                     }
+                    if (followingContent.indexOf(id) > -1) {
+                        setFollowing(true);
+                    }
+                    else {
+                        setFollowing(false);
+                    }
                 } 
             } 
             catch(err){
@@ -129,7 +138,7 @@ export default function ContentBlurb(props) {
     let tags=""
     let followtest=""
     if(followers){
-        followtest=followers+ "following"
+        followtest=followers+ " following"
     }
     if (tag){
         tags= tag.map((tag) =>
@@ -139,6 +148,34 @@ export default function ContentBlurb(props) {
                 color="primary"
                 size="small"
             />)
+    }
+
+    const follow = async() => {
+    //    const tempFollowing = [...followingContent];
+    //    try{
+            setFollowing(true);
+    //        tempFollowing.push(id);
+    //        setFollowingContent(tempFollowing);
+    //        await followContent(id, type, "follow");
+    //    }
+    //    catch (err){
+    //        console.log(err);
+    //    }
+    }
+    const unfollow = async() => {
+    //    const tempFollowing = [...followingContent];
+    //    try {
+            setFollowing(false);
+    //        const removeIndex = tempFollowing.indexOf(id);
+    //        if (removeIndex > -1) {
+    //            tempFollowing.splice(removeIndex, 1);
+    //        }
+    //        setFollowingContent(tempFollowing);
+    //        await followContent(id, type, "unfollow");
+    //    }
+    //    catch (err) {
+    //        console.log(err);
+    //    }
     }
     return (
         <Box style={{ backgroundColor: 'white', padding: '10px' }}>
@@ -153,7 +190,8 @@ export default function ContentBlurb(props) {
                 <Typography style={{ fontWeight: 'bold', width: '20%' }}>{views} views</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', width: '50%' }}>
                     <Typography style={{ fontWeight: 'bold', paddingRight:'10px' }}>{followtest}</Typography>
-                    <Button variant='contained'>Follow</Button>
+                    {!following && loggedIn &&  <Button variant='contained' onClick = {follow}>Follow</Button>}
+                    {following && loggedIn && <Button variant = 'contained' onClick = {unfollow}>Unfollow</Button>}
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
                     <Typography style={{ fontWeight: 'bold' }}>{dislikes}</Typography>
@@ -171,4 +209,4 @@ export default function ContentBlurb(props) {
             </Box>
         </Box>
     );
-}
+    }

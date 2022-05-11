@@ -37,7 +37,9 @@ export default function ListPage() {
                 setSameUser(res.data.content.author.id === selfID);
 
                 // Add a view to that content
-                await viewContent(type, res.data.content._id);
+                if(res.data.content.published) {
+                    await viewContent(type, res.data.content._id);
+                }
             }  catch(err){
                 // Probably unauthorized - kick out
                 console.log(err);
