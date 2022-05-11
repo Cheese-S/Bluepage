@@ -24,7 +24,6 @@ export default function ListPage() {
     
     const [list, setlist] = useState([]);
     let sublist = "";
-    
     if (list) {
         if (sameUser) {
             sublist = list.map((list, i) => <SubcontentListing key={`subcontent_${i}`} id={list.subcontent._id} type={subtype}/>);
