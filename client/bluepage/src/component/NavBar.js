@@ -113,7 +113,7 @@ export const ButtonAppBar= () => {
                 <AppBar position="static">
                     <Toolbar>
                         <Box component="div" sx={{ flexGrow: 1 }}>
-                            <Link href="/" underline="none" variant="h6" color="#000000" sx={{pl:"2%",pr:"2%"}}>
+                            <Link href="/home" underline="none" variant="h6" color="#000000" sx={{pl:"2%",pr:"2%"}}>
                                 BLUE PAGE
                             </Link>
                             <Link underline="none" variant="body2" color="#5227cc" style={{ fontSize: 18, cursor: siteMode !== CONTENT_TYPE.COMIC ? 'pointer' : 'default', fontWeight: (siteMode === CONTENT_TYPE.COMIC) ? 'bold' : 'normal' }} onClick={() => handleChangeMode(CONTENT_TYPE.COMIC)}>
