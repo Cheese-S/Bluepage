@@ -4,7 +4,7 @@ import ContentBlurb from '../subcomponents/ContentBlurb';
 import SubcontentListing from '../subcomponents/SubcontentListing';
 import Comment from '../subcomponents/Comment';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getContentById, createNewSubcontent, viewContent } from '../api/api';
+import { getContentById, createNewSubcontent, viewContent, commentContent, subcommentContent } from '../api/api';
 import { userStore } from '../store/UserStore';
 import { CONTENT_TYPE, SUBCONTENT_TYPE} from "../constant";
 
@@ -12,10 +12,12 @@ export default function ListPage() {
     const navigate = useNavigate();
 
     const { id, type } = useParams();
-    const subtype = (type == CONTENT_TYPE.STORY) ? SUBCONTENT_TYPE.CHAPTER : SUBCONTENT_TYPE.PAGE;
+    const subtype = (type === CONTENT_TYPE.STORY) ? SUBCONTENT_TYPE.CHAPTER : SUBCONTENT_TYPE.PAGE;
 
     const selfID = userStore(state => state.id);
     const [sameUser, setSameUser] = useState(false);
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
     
     const [list, setlist] = useState([]);
     let sublist = "";
@@ -35,6 +37,7 @@ export default function ListPage() {
                 const res = await getContentById(type, id);
                 setlist(res.data.content.contentList);
                 setSameUser(res.data.content.author.id === selfID);
+                setComments(res.data.content.comments.reverse());
 
                 // Add a view to that content
                 await viewContent(type, res.data.content._id);
@@ -78,6 +81,21 @@ export default function ListPage() {
         }
     };
 
+    const submitComment = async () => {
+        try {
+            // Update server
+            const res = await commentContent(type, id, newComment);
+
+            // Update local with res
+            setComments(res.data.content.comments.reverse());
+        } catch (err) {
+            console.log(err);
+        }
+
+        // Clear comment field
+        setNewComment('');
+    };
+
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
@@ -99,14 +117,14 @@ export default function ListPage() {
                         <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }}></Box>
                         <Box style={{ paddingRight: '20px' }}/>
                         <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
-                            <TextField fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
-                            <Button variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>
+                            <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
+                            <Button disabled={newComment === ''} onClick={submitComment} variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>
                         </Box>
                     </Box>
-                    <Box style={{ display: 'flex', flexDirection: 'row-reverse', paddingBottom: '20px', width: '90%' }}>
-                        
-                    </Box>
-                    <Comment/>
+                    <Box style={{ display: 'flex', flexDirection: 'row-reverse', paddingBottom: '20px', width: '90%' }} />
+                    {comments.map((comment) =>
+                        <Comment comment={comment} />
+                    )}
                 </Box>
             </Box>
         </Box>
