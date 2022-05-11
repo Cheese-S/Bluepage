@@ -1,7 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, TextField } from '@mui/material/';
-import { getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent } from '../api/api';
+import { getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
 import { userStore } from '../store/UserStore';
 import ContentBlurb from '../subcomponents/ContentBlurb';
@@ -10,6 +10,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import PersonIcon from '@mui/icons-material/Person';
 import draftToHtml from 'draftjs-to-html';
 
 
@@ -142,6 +143,18 @@ export default function ViewStoryChapter(){
         setNewComment('');
     };
 
+    const submitSubcomment = async (commentID, text) => {
+        try {
+            // Update server
+            const res = await subcommentSubcontent(SUBCONTENT_TYPE.CHAPTER, id, commentID, text);
+
+            // Update local with res
+            setComments(res.data.subcontent.comments.reverse());
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
@@ -179,7 +192,7 @@ export default function ViewStoryChapter(){
                     <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
                     {loggedIn &&
                         <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
-                            <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }}></Box>
+                            <PersonIcon style={{ width: '5%', height: '5%', color: '#aaaa00' }} />
                             <Box style={{ paddingRight: '20px' }}/>
                             <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
                                 <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
@@ -188,8 +201,8 @@ export default function ViewStoryChapter(){
                         </Box>
                     }
                     <Box style={{ paddingBottom: '20px', width: '90%' }}>
-                        {comments.map((comment) =>
-                            <Comment comment={comment} />
+                        {comments.map((comment, i) =>
+                            <Comment key={`comment_${i}`} comment={comment} subcomment={submitSubcomment} />
                         )}
                     </Box>
                 </Box>
