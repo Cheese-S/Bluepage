@@ -1,6 +1,6 @@
 import React, { useEffect ,useState} from 'react';
 import { Typography, Button, Link, Box , Chip} from '@mui/material/';
-import { getContentById, voteOnContent, followContent } from '../api/api';
+import { getContentById, voteOnContent, followContent, getUser, takeoffContent} from '../api/api';
 import { CONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
 import { useNavigate } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
@@ -12,6 +12,7 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 
 export default function ContentBlurb(props) {
     const history = useNavigate();
+    const navigate = useNavigate();
     const { id, type, subtype } = props;
 
     const loggedIn = userStore(state => state.isLoggedIn);
@@ -21,7 +22,7 @@ export default function ContentBlurb(props) {
     const setDislikedContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.setDislikedComics) : userStore(state => state.setDislikedStories);
     const followingContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.followingComics) : userStore(state => state.followingStories);
     const setFollowingContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.setFollowingComics) : userStore(state => state.setFollowingStories);
-
+    const userID = userStore(state => state.id);
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
     const [description, setdescription] = useState(null);
@@ -30,13 +31,14 @@ export default function ContentBlurb(props) {
 
     const [author, setauthor] = useState(null);
     const [authoridlink, setauthorid] = useState(null);
+    
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const [vote, setVote] = useState(VOTE_STATE_TYPE.NEUTRAL);
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
     const [following, setFollowing] = useState(false);
     const [published, setpublished] = useState(false);
-
     const handletoauthor= () =>{
         var his = `/profile/${authoridlink}`
         history(his);
@@ -101,6 +103,9 @@ export default function ContentBlurb(props) {
     useEffect(() => {
         const getcontent = async () =>{
             try{
+                const userRes= await getUser(userID);
+                console.log(userRes);
+                setIsAdmin(userRes.data.user.isAdmin);
                 const res = await getContentById(type,id);
                 if (res.data.content.published) {
                     setpublished(true);
@@ -189,6 +194,16 @@ export default function ContentBlurb(props) {
         }
         
     }
+    const takeOffContentNow = async() => {
+        try {
+            await takeoffContent(type, id);
+            var his = `/profile/${authoridlink}`
+            history(his);
+        }
+        catch (err){
+            console.log(err);
+        }
+    }
     return (
         <Box style={{ backgroundColor: 'white', padding: '10px' }}>
             <Typography style={{ fontWeight: 'bold' }}>{title}</Typography>
@@ -204,6 +219,7 @@ export default function ContentBlurb(props) {
                     <Typography style={{ fontWeight: 'bold', paddingRight:'10px' }}>{followtest}</Typography>
                     {!following && loggedIn && published &&  <Button variant='contained' onClick = {follow}>Follow</Button>}
                     {following && loggedIn && published && <Button variant = 'contained' onClick = {unfollow}>Unfollow</Button>}
+                    {isAdmin && <Button variant = 'contained' onClick = {takeOffContentNow} sx = {{marginLeft: "4px"}}>TAKE OFF</Button>}
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
                     <Typography style={{ fontWeight: 'bold' }}>{dislikes}</Typography>

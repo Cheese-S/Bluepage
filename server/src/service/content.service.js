@@ -185,8 +185,17 @@ const ContentService = {
 
     getPaginatedContent: async (contentType, queryOption, paginateOption) => {
         const model = ContentService.getModel(contentType);
+        console.log("CONTENT TYPE: ", contentType);
         console.log("paginate option:", paginateOption);
         console.log("query option", queryOption);
+        const {title} = queryOption;
+        const authorName = queryOption['author.name']; 
+        if (title) {
+            queryOption.title = new RegExp(title, 'i');
+        }
+        if (authorName) {
+            queryOption['author.name'] = new RegExp(authorName, 'i');
+        }
         return model.paginate(queryOption, paginateOption, (err, result) => {
             if (err) {
                 throw err;
