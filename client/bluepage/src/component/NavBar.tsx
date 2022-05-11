@@ -7,6 +7,7 @@ import { userStore } from '../store/UserStore';
 import { logout } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_TYPE } from '../constant';
+import { getContentPage } from '../api/api';
 
 export const ButtonAppBar: React.FC = () => {
     const history = useNavigate();
@@ -63,6 +64,10 @@ export const ButtonAppBar: React.FC = () => {
         var his = `/profile/${id}`
         history(his);
     };
+
+    const fakeSearch = async () => {
+        console.log(await getContentPage(CONTENT_TYPE.COMIC, {}, {"sort[createdAt]": -1}))
+    } 
 
     return (
         <div>
@@ -200,6 +205,7 @@ export const ButtonAppBar: React.FC = () => {
                             type="submit"
                             variant="contained"
                             sx={{ mt: 3, mb: 2,backgroundColor:'#5227cc',ml:"2%" }}
+                            onClick={fakeSearch}
                         >
                             Search
                         </Button>
