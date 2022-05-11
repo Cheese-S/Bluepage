@@ -348,7 +348,7 @@ export const deleteSubcontent = (subcontentType: SUBCONTENT_TYPE, subcontentID: 
         { subcontentType: subcontentType, subcontentID: subcontentID } 
     })
 }
-export const takeOffContent = (subcontentType: SUBCONTENT_TYPE, subcontentID: string) => {
+export const takeOffSubcontent = (subcontentType: SUBCONTENT_TYPE, subcontentID: string) => {
     return api.put('/subcontent/takeoff', {
         subcontentType: subcontentType,
         subcontentID: subcontentID
