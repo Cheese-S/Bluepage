@@ -4,10 +4,10 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
 import { userStore } from '../store/UserStore';
-import { logout } from '../api/api';
+import { logout, getUser } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_TYPE } from '../constant';
-import { getContentPage } from '../api/api';
+import Notifications from '../subcomponents/Notifications';
 
 export const ButtonAppBar= () => {
     const history = useNavigate();
@@ -20,12 +20,39 @@ export const ButtonAppBar= () => {
     const [useranchorEl, setuserAnchorEl] =  useState(null);
     const [sortanchorEl, setsortAnchorEl] =  useState(null);
     const [notificationanchorEl, setnotificationAnchorEl] = useState(null);
+    const [comicNotification, setComicNotification] = useState([]);
+    const [storyNotification, setStoryNotification] = useState([]);
 
     const id = userStore((state) => state.id);
     const isLoggedIn = userStore((state) => state.isLoggedIn);
     const siteMode = userStore(state => state.siteMode);
     const setSiteMode = userStore(state => state.setSiteMode);
     const resetUserStore = userStore((state) => state.resetStore);
+
+    let sublist;
+    let notification = 0;
+    if (comicNotification.length > 0 && siteMode == CONTENT_TYPE.COMIC) {
+        sublist = comicNotification.map((comicNotification, i) => <Notifications notification = {comicNotification} type = {"comic"}/>);
+        notification = comicNotification.length;
+    } 
+    else if (storyNotification.length > 0 && siteMode == CONTENT_TYPE.STORY) {
+        sublist = storyNotification.map((storyNotification, i) => <Notifications notification = {storyNotification} type = {"story"}/>);
+        notification = storyNotification.length;
+    }
+
+    useEffect(() => {
+        const getUse = async () =>{
+            try {
+                // Load in content
+                const res = await getUser();
+                setComicNotification(res.data.user.comicNotifications);
+                setStoryNotification(res.data.user.storyNotifications);
+            }  catch(err){
+                console.log(err);
+            }
+        }
+        getUse();
+    }, []);
 
     const handleLogout = async () => {
         handleuserClose();
@@ -146,11 +173,7 @@ export const ButtonAppBar= () => {
                             onClose={handleNotificationClose}
                             style={{ width: 370, maxHeight: 200}}
                         >
-                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>"author name" uploads "title of page/chapter" or page/chapter X (if no name is provided) of (title of comic/story)</MenuItem>
-                            <Divider light/>
-                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>George uploaded Page 10 of Test Data</MenuItem>
-                            <Divider light/>
-                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>The scrolling works!!!</MenuItem>
+                            {sublist}
                     </Menu>
 
                     <IconButton size="large"  color="inherit" onClick={handleuserMenu}>
