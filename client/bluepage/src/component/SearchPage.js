@@ -13,30 +13,14 @@ export default function SearchPage(){
     const [contentList, setContentList] = useState(null);
 
     useEffect(() => {
-        console.log(RegExp(searchstring));
-        let regex=RegExp(searchstring)
         const getcontent = async () =>{
             try {
                 let querry={};
                 if(searchmode==0){
-                    querry={
-                        filter: {
-                         title: {
-                          $regex: '/123/',
-                          $options: 'i'
-                         }
-                        }
-                       };
+                    querry={'published':true,'title': searchstring};
                 }
                 else{
-                    querry={
-                        filter: {
-                         author: {
-                          $regex: RegExp(searchstring),
-                          $options: 'i'
-                         }
-                        }
-                       };
+                    querry={'published':true,'author.name': searchstring};
                 }
                 let content=null;
                 if(sortmode==0){
@@ -64,7 +48,7 @@ export default function SearchPage(){
                         console.log("filter");
                         let key = 'author';
                         list = list.filter(o => 
-                            o[key].toLowerCase().includes(searchstring.toLowerCase()));
+                            o[key].name.toLowerCase().includes(searchstring.toLowerCase()));
                     }
                 }
                 const listOfContentview =
