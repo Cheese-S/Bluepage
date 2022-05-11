@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, FormControl, OutlinedInput, InputLabel, TextField, DialogActions, MenuItem, Select } from '@mui/material/';
 import { ButtonAppBar } from './NavBar';
 import { ProfileContentCard } from '../subcomponents/ProfileContentCard';
-import { getUserByID, changeUserDescription, createNewContent, getUser, followUser } from '../api/api';
+import { getUserByID, changeUserDescription, createNewContent, getUser, followUser,uploadThumbnaill } from '../api/api';
 import { useParams } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
 import { CONTENT_TYPE } from "../constant";
@@ -33,6 +33,7 @@ export default function ProfilePage(){
     const contentDesc = useRef(null);
     const contentTags = useRef(null);
 
+    const [File, setFile] = useState(null);
     const [name, setName] = useState('N/A');
     const [followers, setFollowers] = useState(0);
     const [describe, setDescribe] = useState('');
@@ -112,7 +113,17 @@ export default function ProfilePage(){
         const tags = contentTags.current.value;
         
         try {   
-            await createNewContent(siteMode, title, desc, tags);
+            const res = await createNewContent(siteMode, title, desc, tags);
+            console.log(res);
+            if(siteMode==CONTENT_TYPE.COMIC){
+                let comicarray=res.data.user.ownComics;
+                await uploadThumbnaill(siteMode,comicarray[comicarray.length-1]._id,File);
+            }
+            else{
+                let storyarray=res.data.user.ownStories;
+                await uploadThumbnaill(siteMode,storyarray[storyarray.length-1]._id,File);
+            }
+
         } catch(err) {
             console.log(err);
         }
@@ -235,6 +246,13 @@ export default function ProfilePage(){
                                         inputRef={contentDesc}
                                         variant="standard"
                                     />
+                                    <DialogContentText>
+                                        <br/>
+                                        Select a image as thumbnail
+                                    </DialogContentText>
+                                    <DialogContentText id="alert-dialog-slide-description">
+                                        <input type="file" name="file" accept="image/png" onChange={(e) => setFile(e.target.files[0])} />
+                                    </DialogContentText>
                                     <FormControl sx={{marginTop: '15px', width: 300 }}>
                                         <InputLabel id="tags-label">Tags</InputLabel>
                                         <Select

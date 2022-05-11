@@ -57,7 +57,7 @@ export default function EditPage() {
       } catch (err) {
         // Probably unauthorized - kick out
         console.log(err);
-        navigate(`/home/test`);
+        navigate(`/home`);
       }
     }
     getPage();
