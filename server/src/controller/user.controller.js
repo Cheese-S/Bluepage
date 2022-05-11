@@ -156,7 +156,7 @@ const UserController = {
             const user = await UserService.followContent(userID, contentID, contentType, action);
             await UserService.populateUser(user);
             return res.status(200).send({
-                user: omit(user.toJSON(), ['password', 'answers']),
+                user: { ...omit(user.toJSON(), ['password', 'answers']), isLoggedIn: true },
                 content: content
             })
 

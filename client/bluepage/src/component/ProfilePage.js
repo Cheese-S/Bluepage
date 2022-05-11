@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, FormControl, OutlinedInput, InputLabel, TextField, DialogActions, MenuItem, Select } from '@mui/material/';
 import { ButtonAppBar } from './NavBar';
 import { ProfileContentCard } from '../subcomponents/ProfileContentCard';
-import { getUserByID, changeUserDescription, createNewContent, getUser } from '../api/api';
+import { getUserByID, changeUserDescription, createNewContent, getUser, followUser } from '../api/api';
 import { useParams } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
 import { CONTENT_TYPE } from "../constant";
@@ -25,6 +25,8 @@ export default function ProfilePage(){
     const sameUser = selfID === id;
     const siteMode = userStore(state => state.siteMode);
     const formatSiteMode = siteMode === CONTENT_TYPE.COMIC ? ['Comic', 'Comics'] : ['Story', 'Stories'];
+    const following = userStore(state => state.followingUsers);
+    const setFollowing = userStore(state => state.setFollowingUsers);
 
     const valueRef = useRef(null);
     const contentTitle = useRef(null);
@@ -38,6 +40,7 @@ export default function ProfilePage(){
     const [openDescModal, setOpenDescModal] = useState(false);
     const [openCreateModal, setOpenCreateModal] = useState(false);
     const [tag, setTags] = useState([]);
+    const [followingUser, setFollowingUser] = useState(false);
 
     useEffect(() => {
         const getuser = async () =>{
@@ -47,7 +50,14 @@ export default function ProfilePage(){
             setName(res.data.user.name);
             setFollowers(res.data.user.followers.length);
             setDescribe(res.data.user.description);
-
+            if (selfID) {
+                if (following.indexOf(id) > -1) {
+                    setFollowingUser(true);
+                }
+                else {
+                    setFollowingUser(false);
+                }
+            } 
             const listOfContent =
                 <Box style={{ overflowX: "auto", display: 'flex', flexDirection: 'row', margin: '16px' }}>
                     {siteMode === CONTENT_TYPE.COMIC ? 
@@ -109,6 +119,37 @@ export default function ProfilePage(){
         window.location.reload();
     };
 
+    const follow = async() => {
+        const tempFollowing = [...following];
+        try {
+            setFollowingUser(true);
+            tempFollowing.push(id);
+            setFollowing(tempFollowing);
+            await followUser(id, "follow");
+            window.location.reload();
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+    const unfollow = async() => {
+        const tempFollowing = [...following];
+        try {
+            setFollowingUser(false);
+            const removeIndex = tempFollowing.indexOf(id);
+            if (removeIndex > -1) {
+                console.log(tempFollowing.indexOf(id));
+                tempFollowing.splice(removeIndex, 1);
+                console.log(tempFollowing.indexOf(id));
+            }
+            setFollowing(tempFollowing);
+            await followUser(id, "unfollow");
+            window.location.reload();
+        }
+        catch (err){
+            console.log(err);
+        }
+    }
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Dialog open={openDescModal} onClose={() => setOpenDescModal(false)} >
@@ -144,7 +185,8 @@ export default function ProfilePage(){
                         </Box>
                         <Box style={{ backgroundColor: '#ffffff' }}>
                             <Box style={{ display: 'flex', flexDirection: 'row', margin: '10px' }}>
-                                <Button variant='contained' style={{ fontSize: '10px', marginRight: '10px' }}>Follow</Button>
+                                {!sameUser && selfID && !followingUser && <Button variant='contained' onClick = {follow} style={{ fontSize: '10px', marginRight: '10px' }}>Follow</Button>}
+                                {!sameUser && selfID && followingUser && <Button variant='contained' onClick = {unfollow} style={{ fontSize: '10px', marginRight: '10px' }}>Unfollow</Button>}
                                 <Typography>{followers} followers</Typography>
                             </Box>
                             <Box>

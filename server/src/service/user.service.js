@@ -138,7 +138,7 @@ const UserService = {
             update = { $pull: { followers: selfID } };
         }
         return UserService.updateUser(
-            { _id: selfID },
+            { _id: userID },
             update,
             { lean: false, new: true }
         )
@@ -190,7 +190,7 @@ const UserService = {
         return UserService.updateUser(
             { _id: userID },
             updateAction,
-            { lean: true, new: true }
+            { lean: false, new: true }
         )
     },
 

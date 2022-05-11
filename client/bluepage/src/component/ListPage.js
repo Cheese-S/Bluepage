@@ -40,7 +40,9 @@ export default function ListPage() {
                 setComments(res.data.content.comments.reverse());
 
                 // Add a view to that content
-                await viewContent(type, res.data.content._id);
+                if(res.data.content.published) {
+                    await viewContent(type, res.data.content._id);
+                }
             }  catch(err){
                 // Probably unauthorized - kick out
                 console.log(err);
