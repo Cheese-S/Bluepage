@@ -103,7 +103,7 @@ export const ProfileContentCard = (props) => {
     };
 
     return (
-        <Card sx={{ display: "flex", width: 300, marginRight: '16px' }}>
+        <Card sx={{ width: '20%', marginRight: '16px' }}>
             <Modal
                 open={showModal}
                 onClose={() => setShowModal(false)}
@@ -123,7 +123,7 @@ export const ProfileContentCard = (props) => {
                 </Box>
             </Modal>
          <CardActionArea onClick={handlecontent}>
-            <Box style={{ display: 'flex', flexDirection: 'column'}}>
+            <Box style={{ flexDirection: 'column'}}>
                 <CardMedia
                     component="img"
                     sx={{ width: 300 }}
@@ -131,7 +131,7 @@ export const ProfileContentCard = (props) => {
                     alt="Loading...."
                 />
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    <CardContent sx={{ flex: "1 0 auto" }}>
+                    <CardContent sx={{ flex: "auto" }}>
                         <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
                             <Typography sx={{ fontWeight: "bold" }} component="div" variant="h5">
                             {title}
@@ -157,6 +157,7 @@ export const ProfileContentCard = (props) => {
                                 label={tag}
                                 color="primary"
                                 size="small"
+                                sx = {{marginRight: "1.5px", marginBottom: "1px"}}
                             />)}
                         <Typography sx={{ marginTop: '1em' }} variant="body2" color="text.secondary" component="div">
                             Last updated:{time}

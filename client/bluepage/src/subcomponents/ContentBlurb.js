@@ -151,31 +151,36 @@ export default function ContentBlurb(props) {
     }
 
     const follow = async() => {
-    //    const tempFollowing = [...followingContent];
-    //    try{
+        const tempFollowing = [...followingContent];
+        try{
             setFollowing(true);
-    //        tempFollowing.push(id);
-    //        setFollowingContent(tempFollowing);
-    //        await followContent(id, type, "follow");
-    //    }
-    //    catch (err){
-    //        console.log(err);
-    //    }
+            tempFollowing.push(id);
+            setFollowingContent(tempFollowing);
+            await followContent(id, type, "follow");
+            const res = await getContentById(type,id);
+            setfollowers(res.data.content.followers);
+        }
+        catch (err){
+            console.log(err);
+        }
     }
     const unfollow = async() => {
-    //    const tempFollowing = [...followingContent];
-    //    try {
+        const tempFollowing = [...followingContent];
+        try {
             setFollowing(false);
-    //        const removeIndex = tempFollowing.indexOf(id);
-    //        if (removeIndex > -1) {
-    //            tempFollowing.splice(removeIndex, 1);
-    //        }
-    //        setFollowingContent(tempFollowing);
-    //        await followContent(id, type, "unfollow");
-    //    }
-    //    catch (err) {
-    //        console.log(err);
-    //    }
+            const removeIndex = tempFollowing.indexOf(id);
+            if (removeIndex > -1) {
+                tempFollowing.splice(removeIndex, 1);
+            }
+            setFollowingContent(tempFollowing);
+            await followContent(id, type, "unfollow");
+            const res = await getContentById(type, id);
+            setfollowers(res.data.content.followers);
+        }
+        catch (err) {
+            console.log(err);
+        }
+        
     }
     return (
         <Box style={{ backgroundColor: 'white', padding: '10px' }}>
