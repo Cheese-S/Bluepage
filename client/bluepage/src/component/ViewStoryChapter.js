@@ -1,7 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, TextField } from '@mui/material/';
-import { getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent } from '../api/api';
+import { getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent, takeOffSubcontent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
 import { userStore } from '../store/UserStore';
 import ContentBlurb from '../subcomponents/ContentBlurb';
@@ -20,6 +20,7 @@ export default function ViewStoryChapter(){
     const [parentID, setParentID] = useState('');
 
     const loggedIn = userStore(state => state.isLoggedIn);
+    const admin = userStore(state => state.isAdmin);
     const likedChapters = userStore(state => state.likedChapters);
     const setLikedChapters = userStore(state => state.setLikedChapters);
     const dislikedChapters = userStore(state => state.dislikedChapters);
@@ -155,6 +156,18 @@ export default function ViewStoryChapter(){
         }
     };
 
+    const takeOffChapter = async () => {
+        try {
+            // Take off content
+            await takeOffSubcontent(SUBCONTENT_TYPE.CHAPTER, id);
+
+            // Navigate back to the list page
+            navigate(`/list/${parentID}/story`)
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
@@ -173,6 +186,13 @@ export default function ViewStoryChapter(){
                 
                 <Box style={{ width: '98%', margin: 'auto'}}>
                     <hr style={{ color: 'black', backgroundColor: 'black', height: 1}} />
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        {admin &&
+                            <Box style={{ width: '100%', display: 'flex', flexDirection: 'row-reverse' }}>
+                                <Button onClick={takeOffChapter} sx={{ width: '10%', alignSelf: 'flex-end' }}>Take Off</Button>
+                            </Box>
+                        }
+                    </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <Typography style={{ fontWeight: 'bold', width: '70%' }}>{views} views</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>

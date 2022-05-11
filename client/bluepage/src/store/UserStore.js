@@ -42,7 +42,7 @@ export const userStore = create(persist(
         setLikedChapters: (likedChapters) => set({ likedChapters }),
         dislikedChapters: [],
         setDislikedChapters: (dislikedChapters) => set({ dislikedChapters }),
-        login: (id, username, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters) => set({ id, username, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters, isLoggedIn: true }),
+        login: (id, username, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters, isAdmin) => set({ id, username, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters, isLoggedIn: true, isAdmin }),
         resetStore: () => set({ id: '', username: '', comicNotifications: [], storyNotifications: [], followers: [], followingUsers: [], followingComics: [], followingStories: [], ownComics: [], ownStories: [], isLoggedIn: false, isAdmin: false }),
     }),
     {

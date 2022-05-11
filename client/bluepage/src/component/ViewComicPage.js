@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material/';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent } from '../api/api';
+import { getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent, takeOffSubcontent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
 import { Stage, Layer, Line, Rect, Arrow, Circle } from 'react-konva';
 import { userStore } from '../store/UserStore';
@@ -18,6 +18,7 @@ export default function ViewComicPage() {
 
   const loggedIn = userStore(state => state.isLoggedIn);
   const likedPages = userStore(state => state.likedPages);
+  const admin = userStore(state => state.isAdmin);
   const setLikedPages = userStore(state => state.setLikedPages);
   const dislikedPages = userStore(state => state.dislikedPages);
   const setDislikedPages = userStore(state => state.setDislikedPages);
@@ -164,6 +165,18 @@ export default function ViewComicPage() {
     }
   };
 
+  const takeOffPage = async () => {
+    try {
+      // Take off content
+      await takeOffSubcontent(SUBCONTENT_TYPE.PAGE, id);
+
+      // Navigate back to the list page
+      navigate(`/list/${parentID}/comic`)
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
       <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
@@ -241,6 +254,13 @@ export default function ViewComicPage() {
       </Box>
       <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px' }} />
       <Box style={{ backgroundColor: '#ffffff', width: '90%', margin: 'auto', paddingTop: '10px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          {admin &&
+            <Box style={{ width: '100%', display: 'flex', flexDirection: 'row-reverse' }}>
+              <Button onClick={takeOffPage} sx={{ width: '10%', alignSelf: 'flex-end' }}>Take Off</Button>
+            </Box>
+          }
+        </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <Typography style={{ fontWeight: 'bold', width: '70%', marginLeft: '10px' }}>{views} views</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
