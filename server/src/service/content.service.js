@@ -150,10 +150,10 @@ const ContentService = {
         }
     },
 
-    followContent: async (contentType, contentID) => {
+    followContent: async (contentType, contentID, followAction) => {
         return ContentService.updateContent(contentType,
             { _id: contentID, published: true },
-            { $inc: { followers: 1 } },
+            { $inc: { followers: followAction === CONSTANT.FOLLOW_ACTION_TYPE.FOLLOW ? 1 : -1 } },
             { lean: false, new: true, timestamps: false }
         )
     },

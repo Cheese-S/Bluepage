@@ -190,7 +190,7 @@ const UserService = {
         return UserService.updateUser(
             { _id: userID },
             updateAction,
-            { lean: true, new: true }
+            { lean: false, new: true }
         )
     },
 
