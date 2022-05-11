@@ -10,8 +10,6 @@ export default function Notifications(props) {
         setDelete(true);
     }
 
-    console.log(notification);
-
     const handleClose = () => {
         setDelete(true);
     }
