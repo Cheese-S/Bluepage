@@ -20,7 +20,7 @@ export const HomePage = () => {
                 const viewcontent = await getContentPage(siteMode, {},{"sort[views]": -1,"limit":4} );
                 const newcontent = await getContentPage(siteMode, {},{"sort[updatedAt]": -1,"limit":4} );
                 const listOfContentview =
-                <Grid container spacing={2}>
+                <Grid container spacing={2} style={{ marginLeft: 8 }}>
                     {siteMode === CONTENT_TYPE.COMIC ? 
                         viewcontent.data.result.docs.map((comic) => (
                             <Grid item xs={3}>
@@ -36,7 +36,7 @@ export const HomePage = () => {
                     }
                 </Grid >;
                 const listOfContentnew =
-                <Grid container spacing={2}>
+                <Grid container spacing={2} style={{ marginLeft: 8 }}>
                     {siteMode === CONTENT_TYPE.COMIC ? 
                         newcontent.data.result.docs.map((comic) => (
                             <Grid item xs={3}>
