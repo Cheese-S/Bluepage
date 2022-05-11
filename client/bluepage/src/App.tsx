@@ -25,17 +25,13 @@ function App() {
       <Route path="/login"  element={<LogInPage/>} />
       <Route path="/signup"  element={<RegisterPage/>} />
       <Route path="/resetpassword" element={<ResetPasswordPage/>} />
-      <Route path="/nav/test" element={<ButtonAppBar/>} />
-      <Route path="/list/test" element={<ListPage/>} />
       <Route path="/list/:id/:type" element={<ListPage/>} />
-      <Route path="/chapter/test" element={<ViewStoryChapter/>} />
       <Route path="/chapter/:id/:subtype" element={<ViewStoryChapter/>} />
-      <Route path="/page/test" element={<ViewComicPage/>} />
       <Route path="/page/:id/:subtype" element={<ViewComicPage/>} />
       <Route path="/profile/:id" element={<ProfilePage/>} />
       <Route path="/page/edit/:id" element={<EditPage/>} />
       <Route path="/search" element={<SearchPage/>} />
-      <Route path="/home/test" element={<HomePage/>}/>
+      <Route path="/home" element={<HomePage/>}/>
       <Route path="/chapter/edit/:id" element={<EditChapter/>}/>
       <Route path="/changepassword" element={<ChangePassword/>}/>
     </Routes>
