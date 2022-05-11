@@ -26,9 +26,9 @@ export default function ListPage() {
     
     if (list) {
         if (sameUser) {
-            sublist = list.map((list) => <SubcontentListing id={list.subcontent._id} type={subtype}/>);
+            sublist = list.map((list, i) => <SubcontentListing key={`subcontent_${i}`} id={list.subcontent._id} type={subtype}/>);
         } else {
-            sublist = list.filter(function(subcontent) {return subcontent.subcontent.published;} ).map((list) => <SubcontentListing id={list.subcontent._id} type={subtype}/>);
+            sublist = list.filter(function(subcontent) {return subcontent.subcontent.published;} ).map((list, i) => <SubcontentListing key={`subcontent_${i}`} id={list.subcontent._id} type={subtype}/>);
         }
     }
 
@@ -100,6 +100,18 @@ export default function ListPage() {
         setNewComment('');
     };
 
+    const submitSubcomment = async (commentID, text) => {
+        try {
+            // Update server
+            const res = await subcommentContent(type, id, commentID, text);
+
+            // Update local with res
+            setComments(res.data.content.comments.reverse());
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
@@ -128,8 +140,8 @@ export default function ListPage() {
                         </Box>
                     }
                     <Box style={{ display: 'flex', flexDirection: 'row-reverse', paddingBottom: '20px', width: '90%' }} />
-                    {comments.map((comment) =>
-                        <Comment comment={comment} />
+                    {comments.map((comment, i) =>
+                        <Comment key={`comment_${i}`} comment={comment} subcomment={submitSubcomment} />
                     )}
                 </Box>
             </Box>
