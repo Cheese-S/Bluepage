@@ -130,7 +130,7 @@ export const ButtonAppBar: React.FC = () => {
                             >
                                 <MenuItem onClick={handlemyprofile}>My Profile</MenuItem>
                                 <MenuItem onClick={handleuserClose}>My following</MenuItem>
-                                <MenuItem onClick={handleuserClose}>Contact Admin</MenuItem>
+                                <MenuItem onClick={handleuserClose}><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfaVOX_I84bfUAoMuxvQLdzR4FOVNErYoVYUnf5HKfuNcM-EQ/viewform?usp=sf_link">Report Comics/Stories</a></MenuItem>
                                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
                             </Menu>
                     :
