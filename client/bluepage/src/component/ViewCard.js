@@ -1,19 +1,7 @@
 import React, { useEffect, useState }from "react"
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
-import Chip from '@mui/material/Chip';
+import { useNavigate } from 'react-router-dom'; 
+import { Card, CardContent, CardActionArea, CardMedia, Typography, Chip } from '@mui/material/';
 import { getContentById } from '../api/api';
-
-const cardData = {
-    title: "To Kill a Mockingbird",
-    views: 100,
-    followers: 10000,
-    author: "Harper Lee",
-    tags: ['Romance', 'Sci-Fi']
-}
 
 const getFormattedNum = (num)=> {
     if (num > 1000000000)
@@ -27,6 +15,7 @@ const getFormattedNum = (num)=> {
 }   
 
 export const ViewCard = (props) => {
+    const navigate = useNavigate();
 
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
@@ -59,9 +48,13 @@ export const ViewCard = (props) => {
         getcontent();
     },[]);
 
+    const handleNavigate = () => {
+        navigate(`/list/${props.id}/${props.type}`);
+    };
+
     return (
         <Card sx={{ width: 1}}>
-            <CardActionArea>
+            <CardActionArea onClick={handleNavigate} >
                 <CardMedia
                     component="img"
                     height="140"
