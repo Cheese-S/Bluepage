@@ -17,8 +17,8 @@ export const HomePage = () => {
         const getcontent = async () =>{
             try {
                 // Load in content
-                const viewcontent = await getContentPage(siteMode, {},{"sort[views]": -1,"limit":4} );
-                const newcontent = await getContentPage(siteMode, {},{"sort[updatedAt]": -1,"limit":4} );
+                const viewcontent = await getContentPage(siteMode, {'published':true},{"sort[views]": -1,"limit":4} );
+                const newcontent = await getContentPage(siteMode, {'published':true},{"sort[updatedAt]": -1,"limit":4} );
                 const listOfContentview =
                 <Grid container spacing={2} style={{ marginLeft: 8 }}>
                     {siteMode === CONTENT_TYPE.COMIC ? 

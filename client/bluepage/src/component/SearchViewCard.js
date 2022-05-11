@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import { Box, CardActionArea } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import { getContentById } from '../api/api';
+import { useNavigate } from 'react-router-dom'; 
+
 
 const cardData = {
     title: "To Kill a Mockingbird",
@@ -28,6 +30,7 @@ const getFormattedNum = (num)=> {
 }
 
 export const SearchViewCard= (props) => {
+    const navigate = useNavigate();
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
     const [followers, setfollowers] = useState(0);
@@ -60,8 +63,13 @@ export const SearchViewCard= (props) => {
         getcontent();
     },[]);
 
+    const handleNavigate = () => {
+        navigate(`/list/${props.id}/${props.type}`);
+    };
+
     return (
         <Card sx={{ display: "flex" }}>
+            <CardActionArea onClick={handleNavigate} >
             <CardMedia
                 component="img"
                 sx={{ width: 300 }}
@@ -97,6 +105,7 @@ export const SearchViewCard= (props) => {
                     </Typography>
                 </CardContent>
             </Box>
+            </CardActionArea>
         </Card>
     )
 }
