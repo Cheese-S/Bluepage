@@ -22,7 +22,7 @@ export const LogInPage: React.FC = () => {
             const { _id, name, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters } = res.data.user;
 
             storeLogin(_id, name, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters);
-            navigate("/home/test");
+            navigate("/home");
         } catch (err) {
             console.log(err);
             setError('Those credentials are invalid. Please try again.');

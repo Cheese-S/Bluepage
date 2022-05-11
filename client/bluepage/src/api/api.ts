@@ -245,7 +245,7 @@ export const commentSubcontent = (
     subcontentType: SUBCONTENT_TYPE,
     subcontentID: string,
     comment: string) => {
-    return api.put(`/content/comment`, {
+    return api.put(`/subcontent/comment`, {
         subcontentType: subcontentType,
         subcontentID: subcontentID,
         action: COMMENT_ACTION_TYPE.COMMENT,
@@ -258,10 +258,10 @@ export const subcommentSubcontent = (
     subcontentID: string,
     commentID: string,
     comment: string) => {
-    return api.put(`/content/comment`, {
+    return api.put(`/subcontent/comment`, {
         subcontentType: subcontentType,
         subcontentID: subcontentID,
-        action: COMMENT_ACTION_TYPE.COMMENT,
+        action: COMMENT_ACTION_TYPE.SUBCOMMENT,
         comment: comment,
         commentID: commentID
     })

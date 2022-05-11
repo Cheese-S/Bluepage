@@ -147,7 +147,6 @@ export const ProfileContentCard = (props) => {
                         <Typography variant="body1" color="text.secondary" component="div">
                         {getFormattedNum(views)} views · {getFormattedNum(followers)} Followers
                         </Typography>
-
                         <Typography variant="body1" color="text.secondary" component="div" >
                             By {author}
                         </Typography>

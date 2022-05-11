@@ -38,7 +38,7 @@ export const RegisterPage = () => {
             const { _id, name, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters } = res.data.user;
 
             storeLogin(_id, name, likedComics, dislikedComics, likedPages, dislikedPages, likedStories, dislikedStories, likedChapters, dislikedChapters);
-            navigate("/home/test");
+            navigate("/home");
         } catch (err) {
             console.log(err);
             const error = String(err);

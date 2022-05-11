@@ -10,12 +10,12 @@ export const SplashPage: React.FC = () => {
 
     const goToComic = () => {
         setSiteMode(CONTENT_TYPE.COMIC);
-        navigate('/home/test');
+        navigate('/home');
     }
 
     const goToStory = () => {
         setSiteMode(CONTENT_TYPE.STORY);
-        navigate('/home/test');
+        navigate('/home');
     }
     
     return (

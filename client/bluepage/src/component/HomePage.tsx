@@ -9,7 +9,7 @@ export const HomePage: React.FC = () => {
     return (
         <Box style={{ alignItems: 'center', justifyContent: 'center' }}>
             <ButtonAppBar />
-            <Link color='inherit' href="/home/test" underline="hover">
+            <Link color='inherit' href="/home" underline="hover">
                 <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Most Recent</Typography>
             </Link>
             <Grid container spacing={2}>
@@ -30,7 +30,7 @@ export const HomePage: React.FC = () => {
                 </Grid >
 
             </Grid>
-            <Link color='inherit' href="/home/test" underline="hover">
+            <Link color='inherit' href="/home" underline="hover">
                 <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Trending</Typography>
             </Link>
             <Grid container spacing={2}>
@@ -51,7 +51,7 @@ export const HomePage: React.FC = () => {
                 </Grid >
 
             </Grid>
-            <Link color='inherit' href="/home/test" underline="hover">
+            <Link color='inherit' href="/home" underline="hover">
                 <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>From Your Following</Typography>
             </Link>
             <Grid container spacing={2}>

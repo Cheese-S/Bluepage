@@ -1,7 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, TextField } from '@mui/material/';
-import { getSubcontentByID, viewSubcontent, voteOnSubcontent } from '../api/api';
+import { getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
 import { userStore } from '../store/UserStore';
 import ContentBlurb from '../subcomponents/ContentBlurb';
@@ -10,6 +10,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import PersonIcon from '@mui/icons-material/Person';
 import draftToHtml from 'draftjs-to-html';
 
 
@@ -28,7 +29,9 @@ export default function ViewStoryChapter(){
     const [views, setViews] = useState(0);
     const [vote, setVote] = useState(VOTE_STATE_TYPE.NEUTRAL);
     const [likes, setLikes] = useState(0);
-    const [dislikes, setDislikes] = useState(0);  
+    const [dislikes, setDislikes] = useState(0);
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
     const [html,sethtml] = useState('');
 
     /**
@@ -95,6 +98,8 @@ export default function ViewStoryChapter(){
                 // load in data from the body
                 settitle(res.data.subcontent.title);
                 setViews(res.data.subcontent.views);
+                setComments(res.data.subcontent.comments.reverse());
+
                 if (res.data.subcontent.body.v) {
                     sethtml(draftToHtml(res.data.subcontent.body.v));
                 }
@@ -117,11 +122,38 @@ export default function ViewStoryChapter(){
             } catch (err) {
                 // Probably unauthorized - kick out
                 console.log(err);
-                navigate(`/home/test`);
+                navigate(`/home`);
             }
         }
         getChapter();
     }, []);
+
+    const submitComment = async () => {
+        try {
+            // Update server
+            const res = await commentSubcontent(SUBCONTENT_TYPE.CHAPTER, id, newComment);
+
+            // Update local with res
+            setComments(res.data.subcontent.comments.reverse());
+        } catch (err) {
+            console.log(err);
+        }
+
+        // Clear comment field
+        setNewComment('');
+    };
+
+    const submitSubcomment = async (commentID, text) => {
+        try {
+            // Update server
+            const res = await subcommentSubcontent(SUBCONTENT_TYPE.CHAPTER, id, commentID, text);
+
+            // Update local with res
+            setComments(res.data.subcontent.comments.reverse());
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
@@ -158,18 +190,21 @@ export default function ViewStoryChapter(){
                         </Box>
                     </Box>
                     <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
-                    <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
-                        <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }}></Box>
-                        <Box style={{ paddingRight: '20px' }}/>
-                        <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
-                            <TextField fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
-                            <Button variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>
+                    {loggedIn &&
+                        <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
+                            <PersonIcon style={{ width: '5%', height: '5%', color: '#aaaa00' }} />
+                            <Box style={{ paddingRight: '20px' }}/>
+                            <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
+                                <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
+                                <Button onClick={submitComment} variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>
+                            </Box>
                         </Box>
-                    </Box>
+                    }
                     <Box style={{ paddingBottom: '20px', width: '90%' }}>
-                        
+                        {comments.map((comment, i) =>
+                            <Comment key={`comment_${i}`} comment={comment} subcomment={submitSubcomment} />
+                        )}
                     </Box>
-                    <Comment/>
                 </Box>
             </Box>
         </Box>
