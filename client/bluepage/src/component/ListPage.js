@@ -15,6 +15,8 @@ export default function ListPage() {
     const subtype = (type === CONTENT_TYPE.STORY) ? SUBCONTENT_TYPE.CHAPTER : SUBCONTENT_TYPE.PAGE;
 
     const selfID = userStore(state => state.id);
+    const loggedIn = userStore(state => state.isLoggedIn);
+
     const [sameUser, setSameUser] = useState(false);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -115,14 +117,16 @@ export default function ListPage() {
                     {sublist}
                     <hr style={{ color: 'black', backgroundColor: 'black', height: 1}} />
                     <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
-                    <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
-                        <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }}></Box>
+                    {loggedIn &&
+                        <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
+                        <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }} />
                         <Box style={{ paddingRight: '20px' }}/>
-                        <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
-                            <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
-                            <Button disabled={newComment === ''} onClick={submitComment} variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>
+                            <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
+                                <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
+                                <Button disabled={newComment === ''} onClick={submitComment} variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>
+                            </Box>    
                         </Box>
-                    </Box>
+                    }
                     <Box style={{ display: 'flex', flexDirection: 'row-reverse', paddingBottom: '20px', width: '90%' }} />
                     {comments.map((comment) =>
                         <Comment comment={comment} />

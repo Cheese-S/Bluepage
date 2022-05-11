@@ -177,14 +177,16 @@ export default function ViewStoryChapter(){
                         </Box>
                     </Box>
                     <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
-                    <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
-                        <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }}></Box>
-                        <Box style={{ paddingRight: '20px' }}/>
-                        <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
-                            <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
-                            <Button onClick={submitComment} variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>
+                    {loggedIn &&
+                        <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
+                            <Box style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#aaaa00' }}></Box>
+                            <Box style={{ paddingRight: '20px' }}/>
+                            <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
+                                <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
+                                <Button onClick={submitComment} variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>
+                            </Box>
                         </Box>
-                    </Box>
+                    }
                     <Box style={{ paddingBottom: '20px', width: '90%' }}>
                         {comments.map((comment) =>
                             <Comment comment={comment} />
