@@ -13,6 +13,8 @@ const api = Axios.create({
     baseURL: url,
 });
 
+
+
 export const registerUser = (username: string, password: string, passwordConfirmation: string, email: string, answers: string[]) => {
     return api.post(`/users`, {
         name: username,
@@ -172,11 +174,11 @@ export const getUserByID = (id: string) => {
 };
 
 
-export const getContentPage = (contentType: CONTENT_TYPE, query: any) => {
-    return api.post(`/content/paginate/?page=1&limit=1`, {
+export const getContentPage = (contentType: CONTENT_TYPE, query: any, option: any) => {
+    return api.post(`/content/paginate/`, {
         contentType: contentType,
         query: query
-    })
+    }, {params: option})
 }
 
 
@@ -348,7 +350,7 @@ export const deleteSubcontent = (subcontentType: SUBCONTENT_TYPE, subcontentID: 
         { subcontentType: subcontentType, subcontentID: subcontentID } 
     })
 }
-export const takeOffContent = (subcontentType: SUBCONTENT_TYPE, subcontentID: string) => {
+export const takeOffSubcontent = (subcontentType: SUBCONTENT_TYPE, subcontentID: string) => {
     return api.put('/subcontent/takeoff', {
         subcontentType: subcontentType,
         subcontentID: subcontentID

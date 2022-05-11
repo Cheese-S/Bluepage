@@ -9,7 +9,7 @@ import { userStore } from '../store/UserStore';
 import { logout,  getUser} from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_TYPE } from '../constant';
-import { listenerCount } from 'process';
+import { getContentPage } from '../api/api';
 
 export const ButtonAppBar: React.FC = () => {
     const history = useNavigate();
@@ -94,6 +94,10 @@ export const ButtonAppBar: React.FC = () => {
         history(his);
     };
 
+    const fakeSearch = async () => {
+        console.log(await getContentPage(CONTENT_TYPE.COMIC, {}, {"sort[createdAt]": -1}))
+    } 
+
     return (
         <div>
             <Box sx={{ flexGrow: 1 }}>
@@ -156,7 +160,7 @@ export const ButtonAppBar: React.FC = () => {
                             >
                                 <MenuItem onClick={handlemyprofile}>My Profile</MenuItem>
                                 <MenuItem onClick={handleuserClose}>My following</MenuItem>
-                                <MenuItem onClick={handleuserClose}>Contact Admin</MenuItem>
+                                <MenuItem onClick={handleuserClose}><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfaVOX_I84bfUAoMuxvQLdzR4FOVNErYoVYUnf5HKfuNcM-EQ/viewform?usp=sf_link">Report Comics/Stories</a></MenuItem>
                                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
                             </Menu>
                     :
@@ -226,6 +230,7 @@ export const ButtonAppBar: React.FC = () => {
                             type="submit"
                             variant="contained"
                             sx={{ mt: 3, mb: 2,backgroundColor:'#5227cc',ml:"2%" }}
+                            onClick={fakeSearch}
                         >
                             Search
                         </Button>
