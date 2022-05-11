@@ -1,54 +1,32 @@
-import * as React from 'react';
-import {useState, useEffect} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AppBar, Box, Badge, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Divider, Switch, TextField, Link } from '@mui/material/';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Notifications from '../subcomponents/Notifications';
 import SortIcon from '@mui/icons-material/Sort';
 import { userStore } from '../store/UserStore';
-import { logout,  getUser} from '../api/api';
+import { logout } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_TYPE } from '../constant';
 import { getContentPage } from '../api/api';
 
-export const ButtonAppBar: React.FC = () => {
+export const ButtonAppBar= () => {
     const history = useNavigate();
 
-    const [useranchorEl, setuserAnchorEl] =  React.useState<null | HTMLElement>(null);
-    const [sortanchorEl, setsortAnchorEl] =  React.useState<null | HTMLElement>(null);
-    const [notificationanchorEl, setnotificationAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [comicNotification, setComicNotification] = useState([]);
-    const [storyNotification, setStoryNotification] = useState([]);
+    const search = useRef(null);
 
-    const id = userStore((state: { id: any; }) => state.id);
-    const isLoggedIn = userStore((state: { isLoggedIn: any; }) => state.isLoggedIn);
+    const [searchmode, setsearchmode] =useState(0);
+    const [sort, setsort] = useState(0);
+
+    const [useranchorEl, setuserAnchorEl] =  useState(null);
+    const [sortanchorEl, setsortAnchorEl] =  useState(null);
+    const [notificationanchorEl, setnotificationAnchorEl] = useState(null);
+
+    const id = userStore((state) => state.id);
+    const isLoggedIn = userStore((state) => state.isLoggedIn);
     const siteMode = userStore(state => state.siteMode);
     const setSiteMode = userStore(state => state.setSiteMode);
-    const resetUserStore = userStore((state: { resetStore: any; }) => state.resetStore);
-    
-    let sublist;
-    let notification = 0;
-    if (comicNotification.length > 0 && siteMode == CONTENT_TYPE.COMIC) {
-        sublist = comicNotification.map((comicNotification, i) => <Notifications notification = {comicNotification} type = {"comic"}/>);
-        notification = comicNotification.length;
-    } 
-    else if (storyNotification.length > 0 && siteMode == CONTENT_TYPE.STORY) {
-        sublist = storyNotification.map((storyNotification, i) => <Notifications notification = {storyNotification} type = {"story"}/>);
-        notification = storyNotification.length;
-    }
-    useEffect(() => {
-        const getUse = async () =>{
-            try {
-                // Load in content
-                const res = await getUser();
-                setComicNotification(res.data.user.comicNotifications);
-                setStoryNotification(res.data.user.storyNotifications);
-            }  catch(err){
-                console.log(err);
-            }
-        }
-        getUse();
-    }, []);
+    const resetUserStore = userStore((state) => state.resetStore);
+
     const handleLogout = async () => {
         handleuserClose();
         resetUserStore();
@@ -56,14 +34,14 @@ export const ButtonAppBar: React.FC = () => {
         window.location.reload();
     };
 
-    const handleChangeMode = (mode: String) => {
+    const handleChangeMode = (mode) => {
         if (siteMode !== mode) {
             setSiteMode(mode);
             window.location.reload();
         }
     };
 
-    const handleuserMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleuserMenu = (event) => {
         setuserAnchorEl(event.currentTarget);
     };
 
@@ -71,7 +49,7 @@ export const ButtonAppBar: React.FC = () => {
         setuserAnchorEl(null);
     };
 
-    const handlesortMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handlesortMenu = (event) => {
         setsortAnchorEl(event.currentTarget);
     };
     
@@ -79,10 +57,36 @@ export const ButtonAppBar: React.FC = () => {
         setsortAnchorEl(null);
     };
 
-    const handleNotificationMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (notification > 0) {
-            setnotificationAnchorEl(event.currentTarget);
+    const Switchmode = () =>{
+        if(searchmode==1){
+            setsearchmode(2);
         }
+        else{
+            setsearchmode(1);
+        }
+    }
+
+    const handlesortCloseNew = () => {
+        setsort(0);
+        setsortAnchorEl(null);
+    };
+
+    const handlesortCloseView = () => {
+        setsort(1);
+        setsortAnchorEl(null);
+    };
+
+    const handlesortCloseLike = () => {
+        setsort(2);
+        setsortAnchorEl(null);
+    };
+
+    const handlesortCloseOld = () => {
+        setsort(3);
+        setsortAnchorEl(null);
+    };
+    const handleNotificationMenu = (event) => {
+        setnotificationAnchorEl(event.currentTarget);
     };
 
     const handleNotificationClose = () => {
@@ -94,8 +98,13 @@ export const ButtonAppBar: React.FC = () => {
         history(his);
     };
 
-    const fakeSearch = async () => {
-        console.log(await getContentPage(CONTENT_TYPE.COMIC, {}, {"sort[createdAt]": -1}))
+    const Search = async () => {
+        let re="-";
+        if(search.current.value!=""){
+            re=search.current.value;
+        }
+        var his = `/search/${sort}/${searchmode}/${re}`
+        history(his);
     } 
 
     return (
@@ -115,12 +124,12 @@ export const ButtonAppBar: React.FC = () => {
                             </Link>
                         </Box>
 
-                    <Badge badgeContent = {notification} color = 'error'> 
+                    <Badge badgeContent = {3} color = 'error'>
                         <IconButton size="small"  color="inherit" onClick = {handleNotificationMenu}>
                             <NotificationsIcon/>
                         </IconButton>
                     </Badge>
-                    {isLoggedIn && <Menu 
+                    <Menu 
                             id = "notification-appbar"
                             anchorEl={notificationanchorEl}
                             anchorOrigin={{
@@ -134,10 +143,14 @@ export const ButtonAppBar: React.FC = () => {
                             }}
                             open={Boolean(notificationanchorEl)}
                             onClose={handleNotificationClose}
-                            style={{ width: "100%", maxHeight: 200}}
+                            style={{ width: 370, maxHeight: 200}}
                         >
-                            {sublist}
-                        </Menu> }
+                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>"author name" uploads "title of page/chapter" or page/chapter X (if no name is provided) of (title of comic/story)</MenuItem>
+                            <Divider light/>
+                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>George uploaded Page 10 of Test Data</MenuItem>
+                            <Divider light/>
+                            <MenuItem onClick={handleNotificationClose} style = {{width: 350, whiteSpace: "normal"}}>The scrolling works!!!</MenuItem>
+                    </Menu>
 
                     <IconButton size="large"  color="inherit" onClick={handleuserMenu}>
                         <AccountCircleIcon/>
@@ -213,7 +226,7 @@ export const ButtonAppBar: React.FC = () => {
                         </Link>
                         <Divider orientation="vertical" sx={{ flexGrow: 1 }} flexItem>  
                         </Divider>
-                        <Switch defaultChecked />
+                        <Switch defaultChecked onClick={Switchmode} />
                         <Typography sx={{pr:"2%"}}>Search User</Typography>
                         <TextField
                             margin="normal"
@@ -222,6 +235,7 @@ export const ButtonAppBar: React.FC = () => {
                             label="Search"
                             name="Search"
                             autoComplete="Search"
+                            inputRef={search}
                             autoFocus
                             InputLabelProps={{style : {color : 'white'} }}
                             sx={{ color:'white',input: { color: 'white' }}}
@@ -230,7 +244,7 @@ export const ButtonAppBar: React.FC = () => {
                             type="submit"
                             variant="contained"
                             sx={{ mt: 3, mb: 2,backgroundColor:'#5227cc',ml:"2%" }}
-                            onClick={fakeSearch}
+                            onClick={Search}
                         >
                             Search
                         </Button>
@@ -252,10 +266,10 @@ export const ButtonAppBar: React.FC = () => {
                             open={Boolean(sortanchorEl)}
                             onClose={handlesortClose}
                         >
-                            <MenuItem onClick={handlesortClose}>New</MenuItem>
-                            <MenuItem onClick={handlesortClose}>View</MenuItem>
-                            <MenuItem onClick={handlesortClose}>Like</MenuItem>
-                            <MenuItem onClick={handlesortClose}>Old</MenuItem>
+                            <MenuItem onClick={handlesortCloseNew}>New</MenuItem>
+                            <MenuItem onClick={handlesortCloseView}>View</MenuItem>
+                            <MenuItem onClick={handlesortCloseLike}>Like</MenuItem>
+                            <MenuItem onClick={handlesortCloseOld}>Old</MenuItem>
                         </Menu>
                     </Toolbar>
                 </AppBar>
