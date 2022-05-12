@@ -8,8 +8,7 @@ const notificationSchema = new Schema({
     link: { type: ObjectId, required: true }
 },
     { 
-        timestamps: { createdAt: true, updatedAt: false },
-        _id: false
+        timestamps: { createdAt: true, updatedAt: false }
     }
 )
 

@@ -25,6 +25,7 @@ function routes(app) {
 
     app.put("/api/users/description", auth.verify, validator('changeUserDescription'), UserController.changeDescription); 
 
+    app.put("/api/users/notification/remove", auth.verify, validator('removeNotification'), UserController.removeNotification); 
 
     app.put("/api/users/followUser", auth.verify, validator('followUser'), UserController.followUser);
 
@@ -37,6 +38,8 @@ function routes(app) {
     app.post("/api/users/login", validator('loginUser'), UserController.loginUser)
 
     app.post("/api/users/logout", UserController.logoutUser)
+
+
 
     /* ------------------------------- CONTENT API ------------------------------ */
     app.post("/api/content", auth.verify, validator('createContent'), ContentController.createContent)
