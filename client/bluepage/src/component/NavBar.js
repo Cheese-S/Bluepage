@@ -171,7 +171,7 @@ export const ButtonAppBar= () => {
                             }}
                             open={Boolean(notificationanchorEl)}
                             onClose={handleNotificationClose}
-                            style={{ width: 370, maxHeight: 200}}
+                            style={{ width: "100%", maxHeight: 200}}
                         >
                             {sublist}
                     </Menu>

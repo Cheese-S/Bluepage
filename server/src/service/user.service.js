@@ -104,32 +104,32 @@ const UserService = {
     getUser: async (userID, published) => {
         if (published) {
             return UserModel.findOne(
-                {_id: userID}
+                { _id: userID }
             )
-            .populate({
-                path: 'ownComics',
-                select: '-comments -contentList',
-                match: { published: published }
-            })
-            .populate({
-                path: 'ownStories',
-                select: '-comments -contentList',
-                match: { published: published },
-            })
+                .populate({
+                    path: 'ownComics',
+                    select: '-comments -contentList',
+                    match: { published: published }
+                })
+                .populate({
+                    path: 'ownStories',
+                    select: '-comments -contentList',
+                    match: { published: published },
+                })
         } else {
             return UserModel.findOne(
-                {_id: userID}
+                { _id: userID }
             )
-            .populate({
-                path: 'ownComics',
-                select: '-comments -contentList',
-            })
-            .populate({
-                path: 'ownStories',
-                select: '-comments -contentList'
-            })
+                .populate({
+                    path: 'ownComics',
+                    select: '-comments -contentList',
+                })
+                .populate({
+                    path: 'ownStories',
+                    select: '-comments -contentList'
+                })
         }
-        
+
     },
 
     followUser: async (selfID, userID, action) => {
@@ -162,7 +162,7 @@ const UserService = {
             if (!isValid) {
                 throw new Error("The username / email or your password is not correct");
             }
-            return user; 
+            return user;
         } catch (e) {
             throw e;
         }
@@ -221,7 +221,7 @@ const UserService = {
     validateAnswers: (userAnswers, answers) => {
         try {
             return userAnswers.every((ans, i) => {
-                return bcrypt.compareSync(answers[i], ans);   
+                return bcrypt.compareSync(answers[i], ans);
             })
         } catch (e) {
             throw e;
@@ -320,6 +320,34 @@ const UserService = {
         )
     },
 
+    removeNotificationFromUser: async (contentType, userID, notificationID) => {
+        let updateAction;
+        if (contentType === CONSTANT.CONTENT_TYPE.COMIC || contentType === CONSTANT.CONTENT_TYPE.PAGE) {
+            updateAction = {
+                $pull:
+                {
+                    comicNotifications: {
+                        _id: notificationID
+                    }
+                }
+            }
+        } else {
+            updateAction = {
+                $pull:
+                {
+                    storyNotifications: {
+                        _id: notificationID
+                    }
+                }
+            }
+        }
+        return UserService.updateUser(
+            {_id: userID},
+            updateAction,
+            { lean: false, new: true }
+        )
+    },
+
     addUserContent: async (contentType, userID, contentID) => {
         if (contentType === CONSTANT.CONTENT_TYPE.COMIC) {
             return UserService.updateUser(
@@ -330,7 +358,7 @@ const UserService = {
         } else {
             return UserService.updateUser(
                 { _id: userID },
-                { $addToSet: { ownStories: contentID } }, 
+                { $addToSet: { ownStories: contentID } },
                 { lean: false, new: true }
             )
         }
@@ -346,16 +374,16 @@ const UserService = {
 
     populateUser: async (user) => {
         await user
-        .populate({
-            path: 'ownComics',
-            select: '-comments -contentList'
-        });
+            .populate({
+                path: 'ownComics',
+                select: '-comments -contentList'
+            });
 
         await user
-        .populate({
-            path: 'ownStories',
-            select: '-comments -contentList'
-        });
+            .populate({
+                path: 'ownStories',
+                select: '-comments -contentList'
+            });
 
         return user;
     }

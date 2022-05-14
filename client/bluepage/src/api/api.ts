@@ -173,6 +173,13 @@ export const getUserByID = (id: string) => {
     });
 };
 
+export const removeNotification = (contentType: CONTENT_TYPE, notificationID: string) => {
+    return api.put('/api/users/notification/remove', {
+        contentType: contentType,
+        notificationID: notificationID
+    })
+}
+
 
 export const getContentPage = (contentType: CONTENT_TYPE, query: any, option: any) => {
     return api.post(`/content/paginate/`, {

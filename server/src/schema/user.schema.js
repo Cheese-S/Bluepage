@@ -85,6 +85,11 @@ const changeUserDescriptionSchema = Joi.object({
     description: Joi.string().required().max(150)
 })
 
+const removeUserNotificationSchema = Joi.object({
+    contentType: Joi.string().valid(CONSTANT.CONTENT_TYPE.COMIC, CONSTANT.CONTENT_TYPE.STORY).required(),
+    notificationID: Joi.string().length(24).required()
+})
+
 module.exports = {
     registerSchema,
     changePwdSchema,
@@ -94,5 +99,6 @@ module.exports = {
     voteOnSubcontentSchema, 
     loginSchema,
     getUserByIDSchema,
-    changeUserDescriptionSchema
+    changeUserDescriptionSchema,
+    removeUserNotificationSchema
 }

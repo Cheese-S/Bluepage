@@ -92,7 +92,7 @@ const UserController = {
             const user = await UserService.followUser(req.locals.userID, req.body.followingUserID, req.body.action);
             await UserService.populateUser(user);
             return res.status(200).send({
-                user: omit(user.toJSON(), ['password', 'answers'])
+                user: omit(user.toJSON(), ['password', 'answers', 'comicNotifications', 'storyNotifications'])
             })
         } catch (e) {
             return res.status(500).send({
@@ -306,6 +306,24 @@ const UserController = {
                 })
             }
             next();
+        } catch (e) {
+            return res.status(500).send({
+                error: e.message
+            })
+        }
+    },
+
+    removeNotification: async (req, res, next) => {
+        try {
+            const { userID } = req.locals;
+            const { contentType, notificationID } = req.body;
+            const user = await UserService.removeNotificationFromUser(contentType, userID, notificationID);
+
+            await UserService.populateUser(user);
+
+            return res.status(200).send({
+                ...omit(user.toJSON(), ['password', 'answers']), isLoggedIn: true
+            })
         } catch (e) {
             return res.status(500).send({
                 error: e.message
