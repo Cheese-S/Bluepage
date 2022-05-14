@@ -38,6 +38,8 @@ export const ButtonAppBar= () => {
     else if (storyNotification.length > 0 && siteMode == CONTENT_TYPE.STORY) {
         sublist = storyNotification.map((storyNotification, i) => <Notifications notification = {storyNotification} type = {"story"}/>);
         notification = storyNotification.length;
+    } else {
+        sublist = <MenuItem component="a" style = {{width: "100%", whiteSpace: "normal"}}>No notifications here. You're all caught up!</MenuItem>
     }
 
     useEffect(() => {
@@ -152,7 +154,7 @@ export const ButtonAppBar= () => {
                             </Link>
                         </Box>
 
-                    <Badge badgeContent = {3} color = 'error'>
+                    <Badge badgeContent = {notification} color = 'error'>
                         <IconButton size="small"  color="inherit" onClick = {handleNotificationMenu}>
                             <NotificationsIcon/>
                         </IconButton>
