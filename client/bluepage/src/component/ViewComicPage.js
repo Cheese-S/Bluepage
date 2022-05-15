@@ -132,7 +132,7 @@ export default function ViewComicPage() {
       } catch (err) {
         // Probably unauthorized - kick out
         console.log(err);
-        navigate(`/home`);
+        navigate(`/404`);
       }
     }
     getcontent();
@@ -280,7 +280,7 @@ export default function ViewComicPage() {
         <Box style={{ width: '98%', margin: 'auto' }}>
           <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           </Box>
-          <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
+          <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Comments</Typography>
           {loggedIn &&
             <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
               <PersonIcon style={{ width: '5%', height: '5%', color: '#aaaa00' }} />

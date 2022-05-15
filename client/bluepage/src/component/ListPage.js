@@ -18,6 +18,7 @@ export default function ListPage() {
     const selfID = userStore(state => state.id);
     const loggedIn = userStore(state => state.isLoggedIn);
 
+    const [published, setPublished] = useState(false);
     const [sameUser, setSameUser] = useState(false);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -40,6 +41,7 @@ export default function ListPage() {
                 setlist(res.data.content.contentList);
                 setSameUser(res.data.content.author.id === selfID);
                 setComments(res.data.content.comments.reverse());
+                setPublished(res.data.content.published);
 
                 // Add a view to that content
                 if(res.data.content.published) {
@@ -48,7 +50,7 @@ export default function ListPage() {
             }  catch(err){
                 // Probably unauthorized - kick out
                 console.log(err);
-                navigate('/home')
+                navigate('/404')
             }
         }
         getcontent();
@@ -128,11 +130,11 @@ export default function ListPage() {
                 <Box style={{ width: '98%', margin: 'auto'}}>
                     {sublist}
                     <hr style={{ color: 'black', backgroundColor: 'black', height: 1}} />
-                    <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
-                    {loggedIn &&
+                    <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Comments</Typography>
+                    {(published && loggedIn) &&
                         <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
-                        <PersonIcon style={{ width: '5%', height: '5%', color: '#aaaa00' }} />
-                        <Box style={{ paddingRight: '20px' }}/>
+                            <PersonIcon style={{ width: '5%', height: '5%', color: '#aaaa00' }} />
+                            <Box style={{ paddingRight: '20px' }}/>
                             <Box style={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
                                 <TextField value={newComment} onChange={(event) => setNewComment(event.target.value)} fullWidth placeholder='Add a comment...' style={{ paddingBottom: '10px'}}/>
                                 <Button disabled={newComment === ''} onClick={submitComment} variant='contained' sx={{ width: '7%', alignSelf: 'flex-end' }}>Submit</Button>

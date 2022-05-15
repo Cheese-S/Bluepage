@@ -8,16 +8,6 @@ import Chip from '@mui/material/Chip';
 import { getContentById } from '../api/api';
 import { useNavigate } from 'react-router-dom'; 
 
-
-const cardData = {
-    title: "To Kill a Mockingbird",
-    views: 100,
-    followers: 10000,
-    author: "Harper Lee",
-    tags: ['Romance', 'Sci-Fi']
-}
-
-
 const getFormattedNum = (num)=> {
     if (num > 1000000000)
         return `${(num / 1000000000).toFixed(2)}B`
@@ -34,11 +24,14 @@ export const SearchViewCard= (props) => {
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
     const [followers, setfollowers] = useState(0);
+    const [likes, setLikes] = useState(0);
+    const [dislikes, setDislikes] = useState(0);
     const [author, setauthor] = useState(null);
     const [description, setdescription] = useState(null);
     const [thumb, setthumb] = useState("https://wallpaperaccess.com/full/629055.jpg");
     const [time, settime] = useState(null);
     const [tag, settag] = useState(['Romance', 'Sci-Fi']);
+
     useEffect(() => {
         const getcontent = async () =>{
             try{
@@ -46,10 +39,13 @@ export const SearchViewCard= (props) => {
                 settitle(res.data.content.title);
                 setviews(res.data.content.views);
                 setfollowers(res.data.content.followers);
+                setLikes(res.data.content.likes);
+                setDislikes(res.data.content.dislikes);
                 setauthor(res.data.content.author.name);
-                settime(res.data.content.updatedAt);
+                settime(new Date(res.data.content.updatedAt).toLocaleDateString());
                 setdescription(res.data.content.description);
                 settag(res.data.content.tags);
+
                 if(res.data.content.thumbnail){
                         setthumb('data:image/jpeg;base64,' + btoa(
                             res.data.content.thumbnail.data.reduce((data, byte) => data + String.fromCharCode(byte), '')
@@ -68,8 +64,9 @@ export const SearchViewCard= (props) => {
     };
 
     return (
-        <Card sx={{ display: "flex" }}>
+        <Card sx={{ display: "flex", marginLeft: '2%', marginRight: '2%', marginBottom: '1%' }}>
             <CardActionArea onClick={handleNavigate} >
+<<<<<<< HEAD
             <CardMedia
                 component="img"
                 sx={{ width: 300 }}
@@ -104,6 +101,45 @@ export const SearchViewCard= (props) => {
                         {time}
                     </Typography>
                 </CardContent>
+=======
+            <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                <CardMedia
+                    component="img"
+                    sx={{ width: 300 }}
+                    image={thumb}
+                    alt="Thumbnail"
+                />
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        <CardContent sx={{ flex: "1 0 auto" }}>
+                            <Typography sx={{ fontWeight: "bold" }} component="div" variant="h5">
+                                {title}
+                            </Typography>
+                            <Typography variant="body1" color="black" component="div" >
+                                By {author}
+                            </Typography>
+                            <Typography sx={{ marginY: '1em' }} variant="body1" color="text" component="div">
+                                {description}
+                            </Typography>
+                            <Typography variant="body1" color="text.secondary" component="div">
+                                {getFormattedNum(views)} {views === 1 ? 'view' : 'views'} · {getFormattedNum(followers)} {followers === 1 ? 'follower' : 'followers'}
+                            </Typography>
+                            <Typography variant="body1" color="text.secondary" component="div">
+                                {getFormattedNum(likes)} {likes === 1 ? 'like' : 'likes'} · {getFormattedNum(dislikes)} {dislikes === 1 ? 'dislike' : 'dislikes'}
+                            </Typography>
+                            {tag.map((tag) =>
+                                <Chip
+                                    key={tag}
+                                    label={tag}
+                                    color="primary"
+                                    size="small"
+                                    sx={{ marginRight: "1.5px", marginBottom: "1px" }}
+                                />)}
+                            <Typography sx={{ marginTop: '1em' }} variant="body2" color="text.secondary" component="div">
+                                Last updated: {time}
+                            </Typography>
+                        </CardContent>
+                    </Box>
+>>>>>>> 57ad8e42672a0f2af447c3543ca4c84982358543
             </Box>
             </CardActionArea>
         </Card>

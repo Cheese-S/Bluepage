@@ -16,6 +16,8 @@ import {HomePage} from './component/HomePage';
 import EditChapter from './component/EditChapter';
 import { ResetPasswordPage } from './component/ResetPassword';
 import {ChangePassword} from './component/ChangePassword';
+import FourOFourPage from './component/FourOFourPage';
+import { MyFollowing } from './component/MyFollowing';
 
 function App() { 
   return (
@@ -34,6 +36,8 @@ function App() {
       <Route path="/home" element={<HomePage/>}/>
       <Route path="/chapter/edit/:id" element={<EditChapter/>}/>
       <Route path="/changepassword" element={<ChangePassword/>}/>
+      <Route path="/404" element={<FourOFourPage/>}/>
+      <Route path="/following" element={<MyFollowing/>}/>
     </Routes>
     </BrowserRouter>
   );

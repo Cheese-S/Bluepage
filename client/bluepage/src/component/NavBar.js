@@ -4,7 +4,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
 import { userStore } from '../store/UserStore';
-import { logout, getUser } from '../api/api';
+import { logout, getUser, removeNotification } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_TYPE } from '../constant';
 import Notifications from '../subcomponents/Notifications';
@@ -14,7 +14,7 @@ export const ButtonAppBar= () => {
 
     const search = useRef(null);
 
-    const [searchmode, setsearchmode] =useState(0);
+    const [searchmode, setsearchmode] = useState(0);
     const [sort, setsort] = useState(0);
 
     const [useranchorEl, setuserAnchorEl] =  useState(null);
@@ -28,17 +28,6 @@ export const ButtonAppBar= () => {
     const siteMode = userStore(state => state.siteMode);
     const setSiteMode = userStore(state => state.setSiteMode);
     const resetUserStore = userStore((state) => state.resetStore);
-
-    let sublist;
-    let notification = 0;
-    if (comicNotification.length > 0 && siteMode == CONTENT_TYPE.COMIC) {
-        sublist = comicNotification.map((comicNotification, i) => <Notifications notification = {comicNotification} type = {"comic"}/>);
-        notification = comicNotification.length;
-    } 
-    else if (storyNotification.length > 0 && siteMode == CONTENT_TYPE.STORY) {
-        sublist = storyNotification.map((storyNotification, i) => <Notifications notification = {storyNotification} type = {"story"}/>);
-        notification = storyNotification.length;
-    }
 
     useEffect(() => {
         const getUse = async () =>{
@@ -125,6 +114,10 @@ export const ButtonAppBar= () => {
         history(his);
     };
 
+    const handleMyFollowing = () => {
+        history('/following');
+    };
+
     const Search = async () => {
         let re="-";
         if(search.current.value!=""){
@@ -133,7 +126,66 @@ export const ButtonAppBar= () => {
         var his = `/search/${sort}/${searchmode}/${re}`
         history(his);
         window.location.reload();
+    };
+
+    const handleKeyPress = async (event) => {
+        if (event.keyCode === 13) {
+            await Search();
+        }
+    };
+
+    const deleteNotification = async (type, id) => {
+        // Remove from local notifications
+        let tempNotifications = [];
+        if (type === CONTENT_TYPE.COMIC) {
+            tempNotifications = [...comicNotification];
+        } else {
+            tempNotifications = [...storyNotification];
+        }
+        
+        // Get index of notification to delete
+        let indexOf = -1;
+        for (let i = 0; i < tempNotifications.length; i++) {
+            if (tempNotifications[i]._id === id) {
+                indexOf = i;
+                break;
+            }
+        }
+
+        // if index somehow not found, do nothing
+        if (indexOf === -1) return;
+
+        // Remove notification from array
+        tempNotifications.splice(indexOf, 1);
+
+        // Set back into NavBar state
+        if (type === CONTENT_TYPE.COMIC) {
+            setComicNotification(tempNotifications);
+        } else {
+            setStoryNotification(tempNotifications);
+        }
+
+        // Lastly, remove from database
+        try {
+            await removeNotification(type, id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    
+    let sublist;
+    let notification = 0;
+    if (comicNotification.length > 0 && siteMode == CONTENT_TYPE.COMIC) {
+        sublist = comicNotification.map((comicNotification, i) => <Notifications key={i} deleteSelf={deleteNotification} notification = {comicNotification} type = {CONTENT_TYPE.COMIC}/>);
+        notification = comicNotification.length;
     } 
+    else if (storyNotification.length > 0 && siteMode == CONTENT_TYPE.STORY) {
+        sublist = storyNotification.map((storyNotification, i) => <Notifications key={i} deleteSelf={deleteNotification} notification = {storyNotification} type = {CONTENT_TYPE.STORY}/>);
+        notification = storyNotification.length;
+    } else {
+        sublist = <MenuItem component="a" style = {{width: "100%", whiteSpace: "normal"}}>No notifications here. You're all caught up!</MenuItem>
+    }
 
     return (
         <div>
@@ -152,7 +204,7 @@ export const ButtonAppBar= () => {
                             </Link>
                         </Box>
 
-                    <Badge badgeContent = {3} color = 'error'>
+                    <Badge badgeContent = {notification} color = 'error'>
                         <IconButton size="small"  color="inherit" onClick = {handleNotificationMenu}>
                             <NotificationsIcon/>
                         </IconButton>
@@ -171,7 +223,7 @@ export const ButtonAppBar= () => {
                             }}
                             open={Boolean(notificationanchorEl)}
                             onClose={handleNotificationClose}
-                            style={{ width: 370, maxHeight: 200}}
+                            style={{ width: "100%", height: "30%"}}
                         >
                             {sublist}
                     </Menu>
@@ -196,8 +248,8 @@ export const ButtonAppBar= () => {
                                 onClose={handleuserClose}
                             >
                                 <MenuItem onClick={handlemyprofile}>My Profile</MenuItem>
-                                <MenuItem onClick={handleuserClose}>My following</MenuItem>
-                                <MenuItem onClick={handleuserClose}><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfaVOX_I84bfUAoMuxvQLdzR4FOVNErYoVYUnf5HKfuNcM-EQ/viewform?usp=sf_link">Report Comics/Stories</a></MenuItem>
+                                <MenuItem onClick={handleMyFollowing}>{siteMode === CONTENT_TYPE.COMIC ? 'Comics' : 'Stories'} I'm Following</MenuItem>
+                                <MenuItem onClick={handleuserClose}><Link target="_blank" underline = "none" style = {{color: "#000000"}} href="https://docs.google.com/forms/d/e/1FAIpQLSfaVOX_I84bfUAoMuxvQLdzR4FOVNErYoVYUnf5HKfuNcM-EQ/viewform?usp=sf_link">Report Comics/Stories</Link></MenuItem>
                                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
                             </Menu>
                     :
@@ -216,8 +268,10 @@ export const ButtonAppBar= () => {
                                 open={Boolean(useranchorEl)}
                                 onClose={handleuserClose}
                             >
-                                <MenuItem><Link href="/login" underline="none">Login</Link></MenuItem>
-                                <MenuItem><Link href="/signup" underline="none">Sign up</Link></MenuItem>
+                                <MenuItem><Link href="/login" underline="none" sx = {{flexGrow: 1}}>Login</Link></MenuItem>
+                                <MenuItem><Link href="/signup" underline="none" sx = {{flexGrow: 1}}>Sign up</Link></MenuItem>
+                                <MenuItem onClick={handleuserClose}><Link target="_blank" underline = "none" href="https://docs.google.com/forms/d/e/1FAIpQLSfaVOX_I84bfUAoMuxvQLdzR4FOVNErYoVYUnf5HKfuNcM-EQ/viewform?usp=sf_link">Report Comics/Stories</Link></MenuItem>
+
                             </Menu>
                     }
                     </Toolbar>
@@ -260,6 +314,7 @@ export const ButtonAppBar= () => {
                             name="Search"
                             autoComplete="Search"
                             inputRef={search}
+                            onKeyDown={handleKeyPress}
                             autoFocus
                             InputLabelProps={{style : {color : 'white'} }}
                             sx={{ color:'white',input: { color: 'white' }}}

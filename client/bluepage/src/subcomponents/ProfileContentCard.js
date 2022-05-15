@@ -6,14 +6,6 @@ import { CONTENT_TYPE, SUBCONTENT_TYPE } from "../constant";
 import { getContentById, deleteContent, deleteSubcontent } from '../api/api';
 import { userStore } from "../store/UserStore";
 
-const cardData = {
-    title: "To Kill a Mockingbird",
-    views: 100,
-    followers: 10000,
-    author: "Harper Lee",
-    tags: ['Romance', 'Sci-Fi']
-}
-
 
 const getFormattedNum = (num) => {
     if (num > 1000000000)
@@ -26,19 +18,18 @@ const getFormattedNum = (num) => {
     return num.toString();
 }
 
-
-
-
 export const ProfileContentCard = (props) => {
     const [title, settitle] = useState(null);
+    const [description, setdescription] = useState(null);
     const [views, setviews] = useState(0);
     const [followers, setfollowers] = useState(0);
+    const [likes, setLikes] = useState(0);
+    const [dislikes, setDislikes] = useState(0);
     const [author, setauthor] = useState(null);
-    const [authorid, setauthorid] = useState(null);
-    const [tag, settag] = useState(['Romance', 'Sci-Fi']);
-    const [description, setdescription] = useState(null);
+    const [tag, settag] = useState([]);
     const [thumb, setthumb] = useState("https://wallpaperaccess.com/full/629055.jpg");
     const [time, settime] = useState(null);
+
     const [sameUser, setSameUser] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const selfID = userStore(state => state.id);
@@ -54,14 +45,16 @@ export const ProfileContentCard = (props) => {
             try{
                 const res = await getContentById(props.type,props.id);
                 settitle(res.data.content.title);
+                setdescription(res.data.content.description);
                 setviews(res.data.content.views);
                 setfollowers(res.data.content.followers);
+                setLikes(res.data.content.likes);
+                setDislikes(res.data.content.dislikes);
                 setauthor(res.data.content.author.name);
-                setauthorid(res.data.content.author.id);
                 settag(res.data.content.tags);
-                setdescription(res.data.content.description);
-                settime(res.data.content.updatedAt);
+                settime(new Date(res.data.content.updatedAt).toLocaleDateString());
                 setSameUser(res.data.content.author.id === selfID);
+
                 if(res.data.content.thumbnail){
                         setthumb('data:image/jpeg;base64,' + btoa(
                             res.data.content.thumbnail.data.reduce((data, byte) => data + String.fromCharCode(byte), '')
@@ -103,7 +96,7 @@ export const ProfileContentCard = (props) => {
     };
 
     return (
-        <Card sx={{ width: '20%', marginRight: '16px' }}>
+        <Card sx={{ width: '100%', height: '100%' }}>
             <Modal
                 open={showModal}
                 onClose={() => setShowModal(false)}
@@ -126,7 +119,7 @@ export const ProfileContentCard = (props) => {
             <Box style={{ flexDirection: 'column'}}>
                 <CardMedia
                     component="img"
-                    sx={{ width: 300 }}
+                    sx={{ width: '100%' }}
                     image={thumb}
                     alt="Loading...."
                 />
@@ -140,15 +133,18 @@ export const ProfileContentCard = (props) => {
                                 <DeleteIcon onClick={(e) => handleDelete(e)} style={{ fontSize: '36px' }} />
                             }
                         </Box>
+                        <Typography variant="body1" color="black" component="div" >
+                            By {author}
+                        </Typography>
                         <Typography sx={{ marginY: '1em' }} variant="body1" color="text" component="div">
                             {description}
                         </Typography>
 
                         <Typography variant="body1" color="text.secondary" component="div">
-                        {getFormattedNum(views)} views · {getFormattedNum(followers)} Followers
+                            {getFormattedNum(views)} {views === 1 ? 'view' : 'views'} · {getFormattedNum(followers)} {followers === 1 ? 'follower' : 'followers'}
                         </Typography>
-                        <Typography variant="body1" color="text.secondary" component="div" >
-                            By {author}
+                        <Typography variant="body1" color="text.secondary" component="div">
+                            {getFormattedNum(likes)} {likes === 1 ? 'like' : 'likes'} · {getFormattedNum(dislikes)} {dislikes === 1 ? 'dislike' : 'dislikes'}
                         </Typography>
                         {tag.map((tag) =>
                             <Chip
@@ -159,7 +155,7 @@ export const ProfileContentCard = (props) => {
                                 sx = {{marginRight: "1.5px", marginBottom: "1px"}}
                             />)}
                         <Typography sx={{ marginTop: '1em' }} variant="body2" color="text.secondary" component="div">
-                            Last updated:{time}
+                            Last updated: {time}
                         </Typography>
                     </CardContent>
                 </Box>

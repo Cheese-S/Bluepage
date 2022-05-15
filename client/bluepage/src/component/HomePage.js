@@ -17,38 +17,38 @@ export const HomePage = () => {
         const getcontent = async () =>{
             try {
                 // Load in content
-                const viewcontent = await getContentPage(siteMode, {'published':true},{"sort[views]": -1,"limit":4} );
-                const newcontent = await getContentPage(siteMode, {'published':true},{"sort[updatedAt]": -1,"limit":4} );
+                const viewcontent = await getContentPage(siteMode, {'published':true}, {"sort[views]": -1,"limit":5} );
+                const newcontent = await getContentPage(siteMode, {'published':true}, {"sort[updatedAt]": -1,"limit":5} );
                 const listOfContentview =
-                <Grid container spacing={2} style={{ marginLeft: 8 }}>
-                    {siteMode === CONTENT_TYPE.COMIC ? 
-                        viewcontent.data.result.docs.map((comic) => (
-                            <Grid item xs={3}>
-                            <ViewCard id={comic._id} type={siteMode} key={comic._id} />
+                <Grid container>
+                    {viewcontent.data.result.docs.length > 0 ?
+                        viewcontent.data.result.docs.map((content) => (
+                            <Grid item xs={2} style={{ marginLeft: 16, marginBottom: 16 }}>
+                                <ViewCard id={content._id} type={siteMode} key={content._id} />
                             </Grid>
                         ))
                     :
-                        viewcontent.data.result.docs.map((story) => (
-                            <Grid item xs={3}>
-                            <ViewCard id={story._id} type={siteMode} key={story._id} />
-                            </Grid>
-                        ))
+                        <Grid item xs={2} style={{ marginLeft: 16 }}>
+                            <Typography>
+                                There are no published items yet.
+                            </Typography>
+                        </Grid>
                     }
                 </Grid >;
                 const listOfContentnew =
-                <Grid container spacing={2} style={{ marginLeft: 8 }}>
-                    {siteMode === CONTENT_TYPE.COMIC ? 
-                        newcontent.data.result.docs.map((comic) => (
-                            <Grid item xs={3}>
-                            <ViewCard id={comic._id} type={siteMode} key={comic._id} />
+                <Grid container>
+                    {newcontent.data.result.docs.length > 0 ?
+                        newcontent.data.result.docs.map((content) => (
+                            <Grid item xs={2} style={{ marginLeft: 16, marginBottom: 16, overflowX: 'auto' }}>
+                                <ViewCard id={content._id} type={siteMode} key={content._id} />
                             </Grid>
                         ))
                     :
-                        newcontent.data.result.docs.map((story) => (
-                            <Grid item xs={3}>
-                            <ViewCard id={story._id} type={siteMode} key={story._id} />
-                            </Grid>
-                        ))
+                        <Grid item xs={2} style={{ marginLeft: 16 }}>
+                            <Typography>
+                                Try making your own!
+                            </Typography>
+                        </Grid>
                     }
                 </Grid >;
                 setContentListnew(listOfContentnew);
@@ -66,11 +66,15 @@ export const HomePage = () => {
             <Link color='inherit' href="/search/1/0/-" underline="hover">
                 <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Most Popular</Typography>
             </Link>
-            {contentListview}
+            <Box style={{ width: '100%' }}>
+                {contentListview}
+            </Box>
             <Link color='inherit' href="/search/0/0/-" underline="hover">
                 <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Most Recent</Typography>
             </Link>
-            {contentListnew}
+            <Box style={{ width: '100%' }}>
+                {contentListnew}
+            </Box>
         </Box>
     )
 }

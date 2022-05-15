@@ -104,32 +104,32 @@ const UserService = {
     getUser: async (userID, published) => {
         if (published) {
             return UserModel.findOne(
-                {_id: userID}
+                { _id: userID }
             )
-            .populate({
-                path: 'ownComics',
-                select: '-comments -contentList',
-                match: { published: published }
-            })
-            .populate({
-                path: 'ownStories',
-                select: '-comments -contentList',
-                match: { published: published },
-            })
+                .populate({
+                    path: 'ownComics',
+                    select: '-comments -contentList',
+                    match: { published: published }
+                })
+                .populate({
+                    path: 'ownStories',
+                    select: '-comments -contentList',
+                    match: { published: published },
+                })
         } else {
             return UserModel.findOne(
-                {_id: userID}
+                { _id: userID }
             )
-            .populate({
-                path: 'ownComics',
-                select: '-comments -contentList',
-            })
-            .populate({
-                path: 'ownStories',
-                select: '-comments -contentList'
-            })
+                .populate({
+                    path: 'ownComics',
+                    select: '-comments -contentList',
+                })
+                .populate({
+                    path: 'ownStories',
+                    select: '-comments -contentList'
+                })
         }
-        
+
     },
 
     followUser: async (selfID, userID, action) => {
@@ -162,7 +162,7 @@ const UserService = {
             if (!isValid) {
                 throw new Error("The username / email or your password is not correct");
             }
-            return user; 
+            return user;
         } catch (e) {
             throw e;
         }
@@ -221,7 +221,7 @@ const UserService = {
     validateAnswers: (userAnswers, answers) => {
         try {
             return userAnswers.every((ans, i) => {
-                return bcrypt.compareSync(answers[i], ans);   
+                return bcrypt.compareSync(answers[i], ans);
             })
         } catch (e) {
             throw e;
@@ -309,6 +309,7 @@ const UserService = {
 
     addNotificationToUser: async (contentType, userID, notification) => {
         let updateAction;
+        console.log("ADD NOTIFICATION: %s, %s ", contentType, userID);
         if (contentType === CONSTANT.CONTENT_TYPE.COMIC || contentType === CONSTANT.SUBCONTENT_TYPE.PAGE) {
             updateAction = { $push: { comicNotifications: notification } };
         } else {
@@ -317,6 +318,35 @@ const UserService = {
         return UserService.updateUser(
             { _id: userID },
             updateAction
+        )
+    },
+
+    removeNotificationFromUser: async (contentType, userID, notificationID) => {
+        let updateAction;
+        console.log("REMOVE NOTIFICATION: %s, %s, %s", contentType, userID, notificationID);
+        if (contentType === CONSTANT.CONTENT_TYPE.COMIC || contentType === CONSTANT.CONTENT_TYPE.PAGE) {
+            updateAction = {
+                $pull:
+                {
+                    comicNotifications: {
+                        _id: notificationID
+                    }
+                }
+            }
+        } else {
+            updateAction = {
+                $pull:
+                {
+                    storyNotifications: {
+                        _id: notificationID
+                    }
+                }
+            }
+        }
+        return UserService.updateUser(
+            {_id: userID},
+            updateAction,
+            { lean: false, new: true }
         )
     },
 
@@ -330,7 +360,7 @@ const UserService = {
         } else {
             return UserService.updateUser(
                 { _id: userID },
-                { $addToSet: { ownStories: contentID } }, 
+                { $addToSet: { ownStories: contentID } },
                 { lean: false, new: true }
             )
         }
@@ -346,16 +376,16 @@ const UserService = {
 
     populateUser: async (user) => {
         await user
-        .populate({
-            path: 'ownComics',
-            select: '-comments -contentList'
-        });
+            .populate({
+                path: 'ownComics',
+                select: '-comments -contentList'
+            });
 
         await user
-        .populate({
-            path: 'ownStories',
-            select: '-comments -contentList'
-        });
+            .populate({
+                path: 'ownStories',
+                select: '-comments -contentList'
+            });
 
         return user;
     }

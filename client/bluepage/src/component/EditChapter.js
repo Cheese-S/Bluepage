@@ -2,7 +2,7 @@ import React,{useState, useEffect} from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material/';
 import { Editor } from "react-draft-wysiwyg";
 import { useParams, useNavigate } from 'react-router-dom';
-import { EditorState ,convertToRaw,convertFromHTML,ContentState,compositeDecorator,convertFromRaw} from 'draft-js';
+import { EditorState ,convertToRaw, compositeDecorator,convertFromRaw} from 'draft-js';
 import { getSubcontentByID,updateSubContent,publishSubContent,getContentById,updateContent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE } from '../constant';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -36,7 +36,7 @@ export default function EditChapter() {
           } catch (err) {
             // Probably unauthorized - kick out
             console.log(err);
-            navigate(`/home`);
+            navigate(`/404`);
           }
         }
         getChapter();

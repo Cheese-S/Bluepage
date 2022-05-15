@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, FormControl, OutlinedInput, InputLabel, TextField, DialogActions, MenuItem, Select } from '@mui/material/';
+import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, FormControl, OutlinedInput, InputLabel, TextField, DialogActions, MenuItem, Select, Grid } from '@mui/material/';
 import { ButtonAppBar } from './NavBar';
 import { ProfileContentCard } from '../subcomponents/ProfileContentCard';
 import { getUserByID, changeUserDescription, createNewContent, getUser, followUser,uploadThumbnaill } from '../api/api';
@@ -58,23 +58,19 @@ export default function ProfilePage(){
                 else {
                     setFollowingUser(false);
                 }
-            } 
+            }
+
+            const ownContent = (siteMode === CONTENT_TYPE.COMIC) ? res.data.user.ownComics.reverse() : res.data.user.ownStories.reverse();
             const listOfContent =
-                <Box style={{ overflowX: "auto", display: 'flex', flexDirection: 'row', margin: '16px' }}>
-                    {siteMode === CONTENT_TYPE.COMIC ? 
-                        res.data.user.ownComics.map((comic) => (
-                            <ProfileContentCard
-                                id={comic._id} type={CONTENT_TYPE.COMIC} key={comic.id}
-                            />
-                        ))
-                    :
-                        res.data.user.ownStories.map((story) => (
-                            <ProfileContentCard
-                                id={story._id} type={CONTENT_TYPE.STORY} key={story.id}
-                            />
-                        ))
-                    }
-                </Box>;
+            <Box style={{ margin: 16 }}>
+                <Grid container spacing={2}>
+                    {ownContent.map((content, i) => (
+                        <Grid key={`griditem_${i}`} item xs={3}>
+                            <ProfileContentCard id={content._id} type={siteMode} key={content.id} />
+                        </Grid>
+                    ))}
+                </Grid>
+            </Box>;
             
             setContentList(listOfContent);
         }
