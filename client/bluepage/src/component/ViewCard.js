@@ -57,7 +57,7 @@ export const ViewCard = (props) => {
     };
 
     return (
-        <Card sx={{ width: 1}}>
+        <Card sx={{ width: 1, height: '100%' }}>
             <CardActionArea onClick={handleNavigate} >
                 <CardMedia
                     component="img"
