@@ -209,7 +209,7 @@ export default function ViewStoryChapter(){
                             }
                         </Box>
                     </Box>
-                    <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Leave a comment...</Typography>
+                    <Typography style={{ fontSize: '18px', paddingTop: '5px', paddingBottom: '20px' }}>Comments</Typography>
                     {loggedIn &&
                         <Box style={{ display: 'flex', flexDirection: 'row', paddingBottom: '20px' }}>
                             <PersonIcon style={{ width: '5%', height: '5%', color: '#aaaa00' }} />
