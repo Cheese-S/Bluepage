@@ -249,7 +249,7 @@ export const ButtonAppBar= () => {
                             >
                                 <MenuItem onClick={handlemyprofile}>My Profile</MenuItem>
                                 <MenuItem onClick={handleMyFollowing}>{siteMode === CONTENT_TYPE.COMIC ? 'Comics' : 'Stories'} I'm Following</MenuItem>
-                                <MenuItem onClick={handleuserClose}><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfaVOX_I84bfUAoMuxvQLdzR4FOVNErYoVYUnf5HKfuNcM-EQ/viewform?usp=sf_link">Report Comics/Stories</a></MenuItem>
+                                <MenuItem onClick={handleuserClose}><Link target="_blank" underline = "none" style = {{color: "#000000"}} href="https://docs.google.com/forms/d/e/1FAIpQLSfaVOX_I84bfUAoMuxvQLdzR4FOVNErYoVYUnf5HKfuNcM-EQ/viewform?usp=sf_link">Report Comics/Stories</Link></MenuItem>
                                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
                             </Menu>
                     :
@@ -268,8 +268,10 @@ export const ButtonAppBar= () => {
                                 open={Boolean(useranchorEl)}
                                 onClose={handleuserClose}
                             >
-                                <MenuItem><Link href="/login" underline="none">Login</Link></MenuItem>
-                                <MenuItem><Link href="/signup" underline="none">Sign up</Link></MenuItem>
+                                <MenuItem><Link href="/login" underline="none" sx = {{flexGrow: 1}}>Login</Link></MenuItem>
+                                <MenuItem><Link href="/signup" underline="none" sx = {{flexGrow: 1}}>Sign up</Link></MenuItem>
+                                <MenuItem onClick={handleuserClose}><Link target="_blank" underline = "none" href="https://docs.google.com/forms/d/e/1FAIpQLSfaVOX_I84bfUAoMuxvQLdzR4FOVNErYoVYUnf5HKfuNcM-EQ/viewform?usp=sf_link">Report Comics/Stories</Link></MenuItem>
+
                             </Menu>
                     }
                     </Toolbar>
