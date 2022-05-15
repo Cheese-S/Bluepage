@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Box } from '@mui/material/';
+import React, { useEffect, useState } from 'react';
+import { Box, Typography } from '@mui/material/';
 import { ButtonAppBar } from './NavBar';
 import { SearchViewCard } from './SearchViewCard';
 import { useParams } from 'react-router-dom';
 import { userStore } from '../store/UserStore';
 import { getContentPage } from '../api/api';
-import { CONTENT_TYPE } from "../constant";
 
 export default function SearchPage(){
     const { sortmode,searchmode,searchstring } = useParams();
@@ -51,14 +50,18 @@ export default function SearchPage(){
                 }
                 const listOfContentview =
                 <Box style={{ display: 'flex', flexDirection: 'column' }}>
-                    {siteMode === CONTENT_TYPE.COMIC ? 
-                        list.map((comic) => (
-                            <SearchViewCard id={comic._id} type={siteMode} key={comic._id} />
-                        ))
+                    {list.length > 0 ? list.map((content) => (
+                        <SearchViewCard id={content._id} type={siteMode} key={content._id} />
+                    ))
                     :
-                        list.map((story) => (
-                            <SearchViewCard id={story._id} type={siteMode} key={story._id} />
-                        ))
+                        <>
+                            <Typography style={{ fontWeight: 'bold', fontSize: 32, marginLeft: 16 }}>
+                                Whoops! Looks like there are no results.
+                            </Typography>
+                            <Typography style={{ fontSize: 24, marginLeft: 16 }}>
+                                Try searching for something else.
+                            </Typography>
+                        </>
                     }
                 </Box>;
                 setContentList(listOfContentview);
