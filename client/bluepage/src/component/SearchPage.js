@@ -15,13 +15,12 @@ export default function SearchPage(){
         const getcontent = async () =>{
             try {
                 let querry={};
-                let searchs=""
                 if(searchmode==0){
-                    querry={'published':true,'title': searchs};
+                    querry={'published':true,'title': searchstring};
                     if(searchstring=="-"){ querry={'published':true};}
                 }
                 if(searchmode==1){
-                    querry={'published':true,'author.name': searchs};
+                    querry={'published':true,'author.name': searchstring};
                     if(searchstring=="-"){ querry={'published':true};}
                 }
                 if(searchmode==2){querry={'published':true,'tags': "Sci-fi"};}

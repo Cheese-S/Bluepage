@@ -123,7 +123,7 @@ export const ButtonAppBar= () => {
         if(search.current.value!=""){
             re=search.current.value;
         }
-        var his = `/search/${sort}/${searchmode}/${re}`
+        var his = `/search/${sort}/${searchmode}/${re}/0`
         history(his);
         window.location.reload();
     };
@@ -281,25 +281,25 @@ export const ButtonAppBar= () => {
                 <AppBar position="static" style={{ background: '#5227cc' }}>
                     <Toolbar>
                         <Typography>Tag:</Typography>
-                        <Link href="/search/0/2/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/2/-/0" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Sci-fi
                         </Link>
-                        <Link href="/search/0/3/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/3/-/0" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Fantasy
                         </Link>
-                        <Link href="/search/0/4/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/4/-/0" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Comedy
                         </Link>
-                        <Link href="/search/0/5/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/5/-/0" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Action
                         </Link>
-                        <Link href="/search/0/6/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/6/-/0" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Adventure
                         </Link>
-                        <Link href="/search/0/7/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/7/-/0" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Romance
                         </Link>
-                        <Link href="/search/0/8/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/8/-/0" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Mystery
                         </Link>
                         <Divider orientation="vertical" sx={{ flexGrow: 1 }} flexItem>  
