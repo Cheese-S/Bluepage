@@ -77,10 +77,10 @@ export default function SubcontentListing(props) {
                 </Box>
 
                 <Dialog open={deleteModal} onClose={handleClose} >
-                    <DialogTitle>Edit description</DialogTitle>
+                    <DialogTitle>Are you sure?</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Delete the page?
+                            Do you really want to delete that {type === SUBCONTENT_TYPE.PAGE ? 'page' : 'chapter'}?
                         </DialogContentText>
                     </DialogContent>
                     <Button onClick={handleClose}>Cancel</Button>
