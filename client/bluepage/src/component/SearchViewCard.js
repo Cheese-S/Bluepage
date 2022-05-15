@@ -47,9 +47,10 @@ export const SearchViewCard= (props) => {
                 setviews(res.data.content.views);
                 setfollowers(res.data.content.followers);
                 setauthor(res.data.content.author.name);
-                settime(res.data.content.updatedAt);
+                settime(new Date(res.data.content.updatedAt).toLocaleDateString());
                 setdescription(res.data.content.description);
                 settag(res.data.content.tags);
+
                 if(res.data.content.thumbnail){
                         setthumb('data:image/jpeg;base64,' + btoa(
                             res.data.content.thumbnail.data.reduce((data, byte) => data + String.fromCharCode(byte), '')
@@ -102,7 +103,7 @@ export const SearchViewCard= (props) => {
                                     sx={{ marginRight: "1.5px", marginBottom: "1px" }}
                                 />)}
                             <Typography sx={{ marginTop: '1em' }} variant="body2" color="text.secondary" component="div">
-                                {time}
+                                Last updated: {time}
                             </Typography>
                         </CardContent>
                     </Box>

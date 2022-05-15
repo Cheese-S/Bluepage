@@ -49,7 +49,7 @@ export const ProfileContentCard = (props) => {
                 setauthorid(res.data.content.author.id);
                 settag(res.data.content.tags);
                 setdescription(res.data.content.description);
-                settime(res.data.content.updatedAt);
+                settime(new Date(res.data.content.updatedAt).toLocaleDateString());
                 setSameUser(res.data.content.author.id === selfID);
                 if(res.data.content.thumbnail){
                         setthumb('data:image/jpeg;base64,' + btoa(

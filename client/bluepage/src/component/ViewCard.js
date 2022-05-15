@@ -33,7 +33,7 @@ export const ViewCard = (props) => {
                 setviews(res.data.content.views);
                 setfollowers(res.data.content.followers);
                 setauthor(res.data.content.author.name);
-                settime(res.data.content.updatedAt);
+                settime(new Date(res.data.content.updatedAt).toLocaleDateString());
                 settag(res.data.content.tags);
                 if(res.data.content.thumbnail){
                         setthumb('data:image/jpeg;base64,' + btoa(
@@ -83,7 +83,7 @@ export const ViewCard = (props) => {
                                 sx = {{marginRight: "1.5px", marginBottom: "1px"}}
                             />)}
                     <Typography variant="body2" color="text.secondary" display="block">
-                        {time}
+                        Last updated: {time}
                     </Typography>
                 </CardContent>
             </CardActionArea>
