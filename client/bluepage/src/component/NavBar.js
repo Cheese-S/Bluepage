@@ -135,7 +135,13 @@ export const ButtonAppBar= () => {
         var his = `/search/${sort}/${searchmode}/${re}`
         history(his);
         window.location.reload();
-    } 
+    };
+
+    const handleKeyPress = async (event) => {
+        if (event.keyCode === 13) {
+            await Search();
+        }
+    };
 
     return (
         <div>
@@ -262,6 +268,7 @@ export const ButtonAppBar= () => {
                             name="Search"
                             autoComplete="Search"
                             inputRef={search}
+                            onKeyDown={handleKeyPress}
                             autoFocus
                             InputLabelProps={{style : {color : 'white'} }}
                             sx={{ color:'white',input: { color: 'white' }}}
