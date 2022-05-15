@@ -6,14 +6,6 @@ import { CONTENT_TYPE, SUBCONTENT_TYPE } from "../constant";
 import { getContentById, deleteContent, deleteSubcontent } from '../api/api';
 import { userStore } from "../store/UserStore";
 
-const cardData = {
-    title: "To Kill a Mockingbird",
-    views: 100,
-    followers: 10000,
-    author: "Harper Lee",
-    tags: ['Romance', 'Sci-Fi']
-}
-
 
 const getFormattedNum = (num) => {
     if (num > 1000000000)
@@ -25,9 +17,6 @@ const getFormattedNum = (num) => {
 
     return num.toString();
 }
-
-
-
 
 export const ProfileContentCard = (props) => {
     const [title, settitle] = useState(null);
@@ -103,7 +92,7 @@ export const ProfileContentCard = (props) => {
     };
 
     return (
-        <Card sx={{ width: '20%', marginRight: '16px' }}>
+        <Card sx={{ width: '100%' }}>
             <Modal
                 open={showModal}
                 onClose={() => setShowModal(false)}
@@ -126,7 +115,7 @@ export const ProfileContentCard = (props) => {
             <Box style={{ flexDirection: 'column'}}>
                 <CardMedia
                     component="img"
-                    sx={{ width: 300 }}
+                    sx={{ width: '100%' }}
                     image={thumb}
                     alt="Loading...."
                 />
@@ -159,7 +148,7 @@ export const ProfileContentCard = (props) => {
                                 sx = {{marginRight: "1.5px", marginBottom: "1px"}}
                             />)}
                         <Typography sx={{ marginTop: '1em' }} variant="body2" color="text.secondary" component="div">
-                            Last updated:{time}
+                            Last updated: {time}
                         </Typography>
                     </CardContent>
                 </Box>

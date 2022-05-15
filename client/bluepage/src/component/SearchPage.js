@@ -39,13 +39,11 @@ export default function SearchPage(){
                 if(searchstring=="-"){}
                 else{
                     if(searchmode==0){
-                        console.log("filter");
                         let key = 'title';
                         list = list.filter(o => 
                             o[key].toLowerCase().includes(searchstring.toLowerCase()));
                     }
                     else{
-                        console.log("filter");
                         let key = 'author';
                         list = list.filter(o => 
                             o[key].name.toLowerCase().includes(searchstring.toLowerCase()));
