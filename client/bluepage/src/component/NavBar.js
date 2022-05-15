@@ -227,25 +227,25 @@ export const ButtonAppBar= () => {
                 <AppBar position="static" style={{ background: '#5227cc' }}>
                     <Toolbar>
                         <Typography>Tag:</Typography>
-                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/2/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Sci-fi
                         </Link>
-                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/3/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Fantasy
                         </Link>
-                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/4/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Comedy
                         </Link>
-                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/5/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Action
                         </Link>
-                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/6/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Adventure
                         </Link>
-                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/7/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Romance
                         </Link>
-                        <Link href="/" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
+                        <Link href="/search/0/8/-" underline="none"  variant="body2" color="#ffffff" sx={{pl:"2%"}}>
                             Mystery
                         </Link>
                         <Divider orientation="vertical" sx={{ flexGrow: 1 }} flexItem>  

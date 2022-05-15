@@ -8,7 +8,7 @@ import { getContentPage } from '../api/api';
 import { CONTENT_TYPE } from "../constant";
 
 export default function SearchPage(){
-    const { sortmode,searchmode,searchstring } = useParams();
+    const { sortmode,searchmode,searchstring,Page } = useParams();
     const siteMode = userStore(state => state.siteMode);
     const [contentList, setContentList] = useState(null);
 
@@ -16,12 +16,22 @@ export default function SearchPage(){
         const getcontent = async () =>{
             try {
                 let querry={};
+                let searchs=""
                 if(searchmode==0){
-                    querry={'published':true,'title': searchstring};
+                    querry={'published':true,'title': searchs};
+                    if(searchstring=="-"){ querry={'published':true};}
                 }
-                else{
-                    querry={'published':true,'author.name': searchstring};
+                if(searchmode==1){
+                    querry={'published':true,'author.name': searchs};
+                    if(searchstring=="-"){ querry={'published':true};}
                 }
+                if(searchmode==2){querry={'published':true,'tags': "Sci-fi"};}
+                if(searchmode==3){querry={'published':true,'tags': "Fantasy"};}
+                if(searchmode==4){querry={'published':true,'tags': "Comedy"};}
+                if(searchmode==5){querry={'published':true,'tags': "Action"};}
+                if(searchmode==6){querry={'published':true,'tags': "Adventure"};}
+                if(searchmode==7){querry={'published':true,'tags': "Romance"};}
+                if(searchmode==8){querry={'published':true,'tags': "Mystery"};}
                 let content=null;
                 if(sortmode==0){
                     content = await getContentPage(siteMode, querry,{"sort[updatedAt]": -1,"limit":99} );
@@ -36,21 +46,6 @@ export default function SearchPage(){
                     content = await getContentPage(siteMode, querry,{"sort[updatedAt]": 1,"limit":99} );
                 }
                 let list = content.data.result.docs;
-                if(searchstring=="-"){}
-                else{
-                    if(searchmode==0){
-                        console.log("filter");
-                        let key = 'title';
-                        list = list.filter(o => 
-                            o[key].toLowerCase().includes(searchstring.toLowerCase()));
-                    }
-                    else{
-                        console.log("filter");
-                        let key = 'author';
-                        list = list.filter(o => 
-                            o[key].name.toLowerCase().includes(searchstring.toLowerCase()));
-                    }
-                }
                 const listOfContentview =
                 <Box style={{ display: 'flex', flexDirection: 'column' }}>
                     {siteMode === CONTENT_TYPE.COMIC ? 

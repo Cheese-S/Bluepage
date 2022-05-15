@@ -63,11 +63,11 @@ export const HomePage = () => {
     return (
         <Box style={{ alignItems: 'center', justifyContent: 'center' }}>
             <ButtonAppBar />
-            <Link color='inherit' href="/home" underline="hover">
+            <Link color='inherit' href="/search/1/0/-" underline="hover">
                 <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Most Popular</Typography>
             </Link>
             {contentListview}
-            <Link color='inherit' href="/home" underline="hover">
+            <Link color='inherit' href="/search/0/0/-" underline="hover">
                 <Typography style={{ fontWeight: 'bold', fontSize: '24px', marginLeft: '16px', marginTop: '10px' }}>Most Recent</Typography>
             </Link>
             {contentListnew}
