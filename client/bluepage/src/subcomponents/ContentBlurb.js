@@ -147,12 +147,9 @@ export default function ContentBlurb(props) {
             getcontent();
         }
     }, [id]);
+    const followtest = followers + " following"
 
     let tags=""
-    let followtest=""
-    if(followers){
-        followtest=followers+ " following"
-    }
     if (tag){
         tags= tag.map((tag) =>
             <Chip
