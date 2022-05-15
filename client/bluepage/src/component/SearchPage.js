@@ -45,22 +45,6 @@ export default function SearchPage(){
                     content = await getContentPage(siteMode, querry,{"sort[updatedAt]": 1,"limit":99} );
                 }
                 let list = content.data.result.docs;
-<<<<<<< HEAD
-=======
-                if(searchstring=="-"){}
-                else{
-                    if(searchmode==0){
-                        let key = 'title';
-                        list = list.filter(o => 
-                            o[key].toLowerCase().includes(searchstring.toLowerCase()));
-                    }
-                    else{
-                        let key = 'author';
-                        list = list.filter(o => 
-                            o[key].name.toLowerCase().includes(searchstring.toLowerCase()));
-                    }
-                }
->>>>>>> 57ad8e42672a0f2af447c3543ca4c84982358543
                 const listOfContentview =
                 <Box style={{ display: 'flex', flexDirection: 'column' }}>
                     {list.length > 0 ? list.map((content) => (

@@ -66,42 +66,6 @@ export const SearchViewCard= (props) => {
     return (
         <Card sx={{ display: "flex", marginLeft: '2%', marginRight: '2%', marginBottom: '1%' }}>
             <CardActionArea onClick={handleNavigate} >
-<<<<<<< HEAD
-            <CardMedia
-                component="img"
-                sx={{ width: 300 }}
-                image={thumb}
-                alt="Live from space album cover"
-            />
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <CardContent sx={{ flex: "1 0 auto" }}>
-                    <Typography sx={{ fontWeight: "bold" }} component="div" variant="h5">
-                        {title}
-                    </Typography>
-                    <Typography sx={{ marginY: '1em' }} variant="body1" color="text" component="div">
-                        {description}
-                    </Typography>
-
-                    <Typography variant="body1" color="text.secondary" component="div">
-                        {views} views · {followers} followers
-                    </Typography>
-
-                    <Typography variant="body1" color="text.secondary" component="div" >
-                        {author}
-                    </Typography>
-                    {tag.map((tag) =>
-                            <Chip
-                                key={tag}
-                                label={tag}
-                                color="primary"
-                                size="small"
-                                sx = {{marginRight: "1.5px", marginBottom: "1px"}}
-                            />)}
-                    <Typography sx={{ marginTop: '1em' }} variant="body2" color="text.secondary" component="div">
-                        {time}
-                    </Typography>
-                </CardContent>
-=======
             <Box style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
                 <CardMedia
                     component="img"
@@ -139,7 +103,6 @@ export const SearchViewCard= (props) => {
                             </Typography>
                         </CardContent>
                     </Box>
->>>>>>> 57ad8e42672a0f2af447c3543ca4c84982358543
             </Box>
             </CardActionArea>
         </Card>
