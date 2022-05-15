@@ -86,7 +86,7 @@ export const SearchViewCard= (props) => {
                     </Typography>
 
                     <Typography variant="body1" color="text.secondary" component="div">
-                        {views} views · 200k {followers}
+                        {views} views · {followers} followers
                     </Typography>
 
                     <Typography variant="body1" color="text.secondary" component="div" >

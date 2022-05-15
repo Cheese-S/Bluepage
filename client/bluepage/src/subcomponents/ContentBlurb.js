@@ -103,9 +103,11 @@ export default function ContentBlurb(props) {
     useEffect(() => {
         const getcontent = async () =>{
             try{
-                const userRes= await getUser(userID);
-                console.log(userRes);
-                setIsAdmin(userRes.data.user.isAdmin);
+                if(userID){
+                    const userRes= await getUser(userID);
+                    console.log(userRes);
+                    setIsAdmin(userRes.data.user.isAdmin);
+                }
                 const res = await getContentById(type,id);
                 if (res.data.content.published) {
                     setpublished(true);
