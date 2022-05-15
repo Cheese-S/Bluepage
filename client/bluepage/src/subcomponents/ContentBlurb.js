@@ -12,7 +12,6 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 
 export default function ContentBlurb(props) {
     const history = useNavigate();
-    const navigate = useNavigate();
     const { id, type, subtype } = props;
 
     const loggedIn = userStore(state => state.isLoggedIn);
@@ -23,6 +22,7 @@ export default function ContentBlurb(props) {
     const followingContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.followingComics) : userStore(state => state.followingStories);
     const setFollowingContent = (type === CONTENT_TYPE.COMIC) ? userStore(state => state.setFollowingComics) : userStore(state => state.setFollowingStories);
     const userID = userStore(state => state.id);
+
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
     const [description, setdescription] = useState(null);
@@ -104,8 +104,8 @@ export default function ContentBlurb(props) {
         const getcontent = async () =>{
             try{
                 const userRes= await getUser(userID);
-                console.log(userRes);
                 setIsAdmin(userRes.data.user.isAdmin);
+
                 const res = await getContentById(type,id);
                 if (res.data.content.published) {
                     setpublished(true);
@@ -113,6 +113,7 @@ export default function ContentBlurb(props) {
                 else {
                     setpublished(false);
                 }
+
                 settitle(res.data.content.title);
                 setviews(res.data.content.views);
                 setfollowers(res.data.content.followers);
@@ -221,6 +222,7 @@ export default function ContentBlurb(props) {
                     {following && loggedIn && published && <Button variant = 'contained' onClick = {unfollow}>Unfollow</Button>}
                     {isAdmin && <Button variant = 'contained' onClick = {takeOffContentNow} sx = {{marginLeft: "4px"}}>TAKE OFF</Button>}
                 </Box>
+                {published &&
                 <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%', marginRight: '20px' }}>
                     <Typography style={{ fontWeight: 'bold' }}>{dislikes}</Typography>
                     {vote === VOTE_STATE_TYPE.DISLIKE ?
@@ -233,7 +235,7 @@ export default function ContentBlurb(props) {
                         :
                         <ThumbUpOffAltIcon onClick={() => handleChangeVote(VOTE_STATE_TYPE.LIKE)} sx={{ fontSize: '40px', cursor: 'pointer' }} />
                     }
-                </Box>
+                </Box>}
             </Box>
         </Box>
     );

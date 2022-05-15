@@ -20,6 +20,8 @@ export const ViewCard = (props) => {
     const [title, settitle] = useState(null);
     const [views, setviews] = useState(0);
     const [followers, setfollowers] = useState(0);
+    const [likes, setLikes] = useState(0);
+    const [dislikes, setDislikes] = useState(0);
     const [author, setauthor] = useState(null);
     const [thumb, setthumb] = useState("https://wallpaperaccess.com/full/629055.jpg");
     const [time, settime] = useState(null);
@@ -32,6 +34,8 @@ export const ViewCard = (props) => {
                 settitle(res.data.content.title);
                 setviews(res.data.content.views);
                 setfollowers(res.data.content.followers);
+                setLikes(res.data.content.likes);
+                setDislikes(res.data.content.dislikes);
                 setauthor(res.data.content.author.name);
                 settime(new Date(res.data.content.updatedAt).toLocaleDateString());
                 settag(res.data.content.tags);
@@ -62,17 +66,17 @@ export const ViewCard = (props) => {
                     alt="green iguana"
                 />
                 <CardContent>
-                    <Typography sx={{fontWeight: "bold"}} gutterBottom variant="h5">
+                    <Typography sx={{fontWeight: "bold"}} variant="h5">
                         {title}
                     </Typography>
-                    <Typography variant="body1" color="text">
-                        Views: {getFormattedNum(views)}
+                    <Typography variant="subtitle1" color="black" gutterBottom>
+                        By {author}
                     </Typography>
                     <Typography variant="body1" color="text">
-                        Followers: {getFormattedNum(followers)}
+                        {getFormattedNum(views)} {views === 1 ? 'view' : 'views'} · {getFormattedNum(followers)} {followers === 1 ? 'follower' : 'followers'}
                     </Typography>
                     <Typography variant="body1" color="text">
-                        Author: {author}
+                        {getFormattedNum(likes)} {likes === 1 ? 'like' : 'likes'} · {getFormattedNum(dislikes)} {dislikes === 1 ? 'dislike' : 'dislikes'}
                     </Typography>
                     {tag.map((tag) =>
                             <Chip
