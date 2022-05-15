@@ -132,7 +132,7 @@ export default function ViewComicPage() {
       } catch (err) {
         // Probably unauthorized - kick out
         console.log(err);
-        navigate(`/home`);
+        navigate(`/404`);
       }
     }
     getcontent();

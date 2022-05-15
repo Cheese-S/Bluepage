@@ -123,7 +123,7 @@ export default function ViewStoryChapter(){
             } catch (err) {
                 // Probably unauthorized - kick out
                 console.log(err);
-                navigate(`/home`);
+                navigate(`/404`);
             }
         }
         getChapter();

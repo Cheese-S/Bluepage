@@ -48,7 +48,7 @@ export default function ListPage() {
             }  catch(err){
                 // Probably unauthorized - kick out
                 console.log(err);
-                navigate('/home')
+                navigate('/404')
             }
         }
         getcontent();
