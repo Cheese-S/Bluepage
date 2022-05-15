@@ -4,7 +4,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SortIcon from '@mui/icons-material/Sort';
 import { userStore } from '../store/UserStore';
-import { logout, getUser } from '../api/api';
+import { logout, getUser, removeNotification } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { CONTENT_TYPE } from '../constant';
 import Notifications from '../subcomponents/Notifications';
@@ -28,19 +28,6 @@ export const ButtonAppBar= () => {
     const siteMode = userStore(state => state.siteMode);
     const setSiteMode = userStore(state => state.setSiteMode);
     const resetUserStore = userStore((state) => state.resetStore);
-
-    let sublist;
-    let notification = 0;
-    if (comicNotification.length > 0 && siteMode == CONTENT_TYPE.COMIC) {
-        sublist = comicNotification.map((comicNotification, i) => <Notifications notification = {comicNotification} type = {"comic"}/>);
-        notification = comicNotification.length;
-    } 
-    else if (storyNotification.length > 0 && siteMode == CONTENT_TYPE.STORY) {
-        sublist = storyNotification.map((storyNotification, i) => <Notifications notification = {storyNotification} type = {"story"}/>);
-        notification = storyNotification.length;
-    } else {
-        sublist = <MenuItem component="a" style = {{width: "100%", whiteSpace: "normal"}}>No notifications here. You're all caught up!</MenuItem>
-    }
 
     useEffect(() => {
         const getUse = async () =>{
@@ -146,6 +133,59 @@ export const ButtonAppBar= () => {
             await Search();
         }
     };
+
+    const deleteNotification = async (type, id) => {
+        // Remove from local notifications
+        let tempNotifications = [];
+        if (type === CONTENT_TYPE.COMIC) {
+            tempNotifications = [...comicNotification];
+        } else {
+            tempNotifications = [...storyNotification];
+        }
+        
+        // Get index of notification to delete
+        let indexOf = -1;
+        for (let i = 0; i < tempNotifications.length; i++) {
+            if (tempNotifications[i]._id === id) {
+                indexOf = i;
+                break;
+            }
+        }
+
+        // if index somehow not found, do nothing
+        if (indexOf === -1) return;
+
+        // Remove notification from array
+        tempNotifications.splice(indexOf, 1);
+
+        // Set back into NavBar state
+        if (type === CONTENT_TYPE.COMIC) {
+            setComicNotification(tempNotifications);
+        } else {
+            setStoryNotification(tempNotifications);
+        }
+
+        // Lastly, remove from database
+        try {
+            await removeNotification(type, id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    
+    let sublist;
+    let notification = 0;
+    if (comicNotification.length > 0 && siteMode == CONTENT_TYPE.COMIC) {
+        sublist = comicNotification.map((comicNotification, i) => <Notifications key={i} deleteSelf={deleteNotification} notification = {comicNotification} type = {CONTENT_TYPE.COMIC}/>);
+        notification = comicNotification.length;
+    } 
+    else if (storyNotification.length > 0 && siteMode == CONTENT_TYPE.STORY) {
+        sublist = storyNotification.map((storyNotification, i) => <Notifications key={i} deleteSelf={deleteNotification} notification = {storyNotification} type = {CONTENT_TYPE.STORY}/>);
+        notification = storyNotification.length;
+    } else {
+        sublist = <MenuItem component="a" style = {{width: "100%", whiteSpace: "normal"}}>No notifications here. You're all caught up!</MenuItem>
+    }
 
     return (
         <div>

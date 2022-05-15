@@ -64,8 +64,8 @@ export default function ProfilePage(){
             const listOfContent =
             <Box style={{ margin: 16 }}>
                 <Grid container spacing={2}>
-                    {ownContent.map((content) => (
-                        <Grid item xs={3}>
+                    {ownContent.map((content, i) => (
+                        <Grid key={`griditem_${i}`} item xs={3}>
                             <ProfileContentCard id={content._id} type={siteMode} key={content.id} />
                         </Grid>
                     ))}
