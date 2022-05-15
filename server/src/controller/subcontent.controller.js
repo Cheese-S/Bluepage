@@ -256,6 +256,7 @@ const SubcontentController = {
 
             const result = await SubcontentService.publishSubcontents(subcontentType, userID, parentID, subcontentIDs);
             if (result.modifiedCount) {
+                console.log("here");
                 await UserService.addNotificationToFollowers(subcontentType, content._id, user.followers,
                     { text: `New ${subcontentType} has been published for the ${contentType} "${content.title}".`, link: parentID }
                 )

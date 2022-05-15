@@ -309,6 +309,7 @@ const UserService = {
 
     addNotificationToUser: async (contentType, userID, notification) => {
         let updateAction;
+        console.log("ADD NOTIFICATION: %s, %s ", contentType, userID);
         if (contentType === CONSTANT.CONTENT_TYPE.COMIC || contentType === CONSTANT.SUBCONTENT_TYPE.PAGE) {
             updateAction = { $push: { comicNotifications: notification } };
         } else {
@@ -322,6 +323,7 @@ const UserService = {
 
     removeNotificationFromUser: async (contentType, userID, notificationID) => {
         let updateAction;
+        console.log("REMOVE NOTIFICATION: %s, %s, %s", contentType, userID, notificationID);
         if (contentType === CONSTANT.CONTENT_TYPE.COMIC || contentType === CONSTANT.CONTENT_TYPE.PAGE) {
             updateAction = {
                 $pull:

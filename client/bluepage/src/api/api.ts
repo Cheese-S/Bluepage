@@ -174,7 +174,7 @@ export const getUserByID = (id: string) => {
 };
 
 export const removeNotification = (contentType: CONTENT_TYPE, notificationID: string) => {
-    return api.put('/api/users/notification/remove', {
+    return api.put('/users/notification/remove', {
         contentType: contentType,
         notificationID: notificationID
     })
