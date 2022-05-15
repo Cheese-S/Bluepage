@@ -14,7 +14,7 @@ export const ButtonAppBar= () => {
 
     const search = useRef(null);
 
-    const [searchmode, setsearchmode] =useState(0);
+    const [searchmode, setsearchmode] = useState(0);
     const [sort, setsort] = useState(0);
 
     const [useranchorEl, setuserAnchorEl] =  useState(null);
@@ -127,6 +127,10 @@ export const ButtonAppBar= () => {
         history(his);
     };
 
+    const handleMyFollowing = () => {
+        history('/following');
+    };
+
     const Search = async () => {
         let re="-";
         if(search.current.value!=""){
@@ -135,7 +139,13 @@ export const ButtonAppBar= () => {
         var his = `/search/${sort}/${searchmode}/${re}`
         history(his);
         window.location.reload();
-    } 
+    };
+
+    const handleKeyPress = async (event) => {
+        if (event.keyCode === 13) {
+            await Search();
+        }
+    };
 
     return (
         <div>
@@ -198,7 +208,7 @@ export const ButtonAppBar= () => {
                                 onClose={handleuserClose}
                             >
                                 <MenuItem onClick={handlemyprofile}>My Profile</MenuItem>
-                                <MenuItem onClick={handleuserClose}>My following</MenuItem>
+                                <MenuItem onClick={handleMyFollowing}>{siteMode === CONTENT_TYPE.COMIC ? 'Comics' : 'Stories'} I'm Following</MenuItem>
                                 <MenuItem onClick={handleuserClose}><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSfaVOX_I84bfUAoMuxvQLdzR4FOVNErYoVYUnf5HKfuNcM-EQ/viewform?usp=sf_link">Report Comics/Stories</a></MenuItem>
                                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
                             </Menu>
@@ -262,6 +272,7 @@ export const ButtonAppBar= () => {
                             name="Search"
                             autoComplete="Search"
                             inputRef={search}
+                            onKeyDown={handleKeyPress}
                             autoFocus
                             InputLabelProps={{style : {color : 'white'} }}
                             sx={{ color:'white',input: { color: 'white' }}}
