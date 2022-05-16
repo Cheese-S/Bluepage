@@ -23,8 +23,8 @@ export const HomePage = () => {
                 <Grid container>
                     {viewcontent.data.result.docs.length > 0 ?
                         viewcontent.data.result.docs.map((content) => (
-                            <Grid item xs={2} style={{ marginLeft: 16, marginBottom: 16 }}>
-                                <ViewCard id={content._id} type={siteMode} key={content._id} />
+                            <Grid item xs={2} style={{ marginLeft: 16, marginBottom: 16 }} key={content._id}>
+                                <ViewCard id={content._id} type={siteMode} />
                             </Grid>
                         ))
                     :
@@ -39,8 +39,8 @@ export const HomePage = () => {
                 <Grid container>
                     {newcontent.data.result.docs.length > 0 ?
                         newcontent.data.result.docs.map((content) => (
-                            <Grid item xs={2} style={{ marginLeft: 16, marginBottom: 16, overflowX: 'auto' }}>
-                                <ViewCard id={content._id} type={siteMode} key={content._id} />
+                            <Grid item xs={2} style={{ marginLeft: 16, marginBottom: 16, overflowX: 'auto' }} key={content._id}>
+                                <ViewCard id={content._id} type={siteMode} />
                             </Grid>
                         ))
                     :

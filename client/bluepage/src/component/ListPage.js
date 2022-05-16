@@ -71,7 +71,7 @@ export default function ListPage() {
     const createNewChapter  = async () =>{
         const emptyBody = {
         };
-        const res = await createNewSubcontent(id, subtype, 'Untitled Page', emptyBody);
+        const res = await createNewSubcontent(id, subtype, 'Untitled Chapter', emptyBody);
         const pageID = res.data.subcontent._id;
         navigate(`/${subtype}/edit/${pageID}`);
     }

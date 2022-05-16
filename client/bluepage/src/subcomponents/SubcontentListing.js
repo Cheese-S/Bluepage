@@ -17,6 +17,7 @@ export default function SubcontentListing(props) {
     const [published, setpublished] = useState(true);
     const user = userStore(state => state.id);
     const sameUser = (user === userID);
+
     useEffect(() => {
         const getcontent = async () => {
             try {

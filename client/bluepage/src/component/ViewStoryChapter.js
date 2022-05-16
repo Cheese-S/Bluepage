@@ -1,7 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, TextField } from '@mui/material/';
-import { getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent, takeOffSubcontent } from '../api/api';
+import { getContentById, getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent, takeOffSubcontent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
 import { userStore } from '../store/UserStore';
 import ContentBlurb from '../subcomponents/ContentBlurb';
@@ -26,6 +26,9 @@ export default function ViewStoryChapter(){
     const dislikedChapters = userStore(state => state.dislikedChapters);
     const setDislikedChapters = userStore(state => state.setDislikedChapters);
 
+    const [previousPage, setPreviousPage] = useState('');
+    const [nextPage, setNextPage] = useState('');
+  
     const [title, settitle] = useState(null);
     const [views, setViews] = useState(0);
     const [vote, setVote] = useState(VOTE_STATE_TYPE.NEUTRAL);
@@ -35,10 +38,61 @@ export default function ViewStoryChapter(){
     const [newComment, setNewComment] = useState('');
     const [html,sethtml] = useState('');
 
+    const getPrevious = async (contentList, startIndex) => {
+        // We have to see if the 'previous' is actually published, requiring queries
+        for (let i = startIndex; i >= 0; i--) {
+            try {
+                const res = await getSubcontentByID(contentList[i].subcontent._id, SUBCONTENT_TYPE.CHAPTER);
+
+                // If this page is published, it can be the previous
+                if (res.data.subcontent.published) {
+                    setPreviousPage(contentList[i].subcontent._id);
+                    return;
+                }
+            } catch (err) {
+                // Might be unauthorized - just keep going
+                continue;
+            }
+        }
+    };
+
+    const getNext = async (contentList, startIndex) => {
+        // We have to see if the 'previous' is actually published, requiring queries
+        for (let i = startIndex; i < contentList.length; i++) {
+            try {
+                const res = await getSubcontentByID(contentList[i].subcontent._id, SUBCONTENT_TYPE.CHAPTER);
+
+                // If this page is published, it can be the previous
+                if (res.data.subcontent.published) {
+                    setNextPage(contentList[i].subcontent._id);
+                    return;
+                }
+            } catch (err) {
+                // Might be unauthorized - just keep going
+                continue;
+            }
+        }
+    };
+
+    const setPrevNext = async (contentList) => {
+        // Search the given contentList for this page's id
+        for (let i = 0; i < contentList.length; i++) {
+            if (contentList[i].subcontent._id === id) {
+                // id has been found - set prev and next accordingly
+                await getPrevious(contentList, i - 1);
+                await getNext(contentList, i + 1);
+            }
+        }
+
+        // if we reached here, the id wasn't found, meaning something's wrong
+        // let both remain blank
+        return;
+    };
+
     /**
-   * Handles changing the like/dislike front-end and then send corresponding request
-   * @param {Number} newVote from the imported VOTE_STATE_TYPE constant
-   */
+     * Handles changing the like/dislike front-end and then send corresponding request
+     * @param {Number} newVote from the imported VOTE_STATE_TYPE constant
+     */
     const handleChangeVote = async (newVote) => {
         if (!loggedIn) return;
 
@@ -120,9 +174,14 @@ export default function ViewStoryChapter(){
                         setVote(VOTE_STATE_TYPE.DISLIKE);
                     }
                 }
+
+                // Load in the parent's data
+                const parentRes = await getContentById(CONTENT_TYPE.STORY, res.data.subcontent.parentID);
+
+                // Set the previous/next page information from the parent's info
+                setPrevNext(parentRes.data.content.contentList);
             } catch (err) {
                 // Probably unauthorized - kick out
-                console.log(err);
                 navigate(`/404`);
             }
         }
@@ -168,6 +227,16 @@ export default function ViewStoryChapter(){
         }
     };
 
+    const handlePrevious = () => {
+        navigate(`/chapter/${previousPage}/chapter`);
+        window.location.reload();
+    };
+
+    const handleNext = () => {
+        navigate(`/chapter/${nextPage}/chapter`);
+        window.location.reload();
+    };
+    
     return (
         <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
             <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
@@ -192,6 +261,10 @@ export default function ViewStoryChapter(){
                                 <Button onClick={takeOffChapter} sx={{ width: '10%', alignSelf: 'flex-end' }}>Take Off</Button>
                             </Box>
                         }
+                    </Box>
+                    <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Button disabled={previousPage === ''} onClick={handlePrevious} variant='contained' style={{ margin: 8 }}>Previous Page</Button>
+                        <Button disabled={nextPage === ''} onClick={handleNext} variant='contained' style={{ margin: 8 }}>Next Page</Button>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <Typography style={{ fontWeight: 'bold', width: '70%' }}>{views} views</Typography>

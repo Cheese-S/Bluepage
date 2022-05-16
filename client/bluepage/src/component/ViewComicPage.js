@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material/';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent, takeOffSubcontent } from '../api/api';
+import { getContentById, getSubcontentByID, viewSubcontent, voteOnSubcontent, commentSubcontent, subcommentSubcontent, takeOffSubcontent } from '../api/api';
 import { CONTENT_TYPE, SUBCONTENT_TYPE, VOTE_STATE_TYPE } from '../constant';
 import { Stage, Layer, Line, Rect, Arrow, Circle } from 'react-konva';
 import { userStore } from '../store/UserStore';
@@ -33,9 +33,63 @@ export default function ViewComicPage() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
 
+  const [previousPage, setPreviousPage] = useState('');
+  const [nextPage, setNextPage] = useState('');
+
   const [lines, setLines] = useState([]);
   const [shapes, setShapes] = useState([]);
   const [arrows, setArrows] = useState([]);
+
+  const getPrevious = async (contentList, startIndex) => {
+    // We have to see if the 'previous' is actually published, requiring queries
+    for (let i = startIndex; i >= 0; i--) {
+      try {
+        const res = await getSubcontentByID(contentList[i].subcontent._id, SUBCONTENT_TYPE.PAGE);
+
+        // If this page is published, it can be the previous
+        if (res.data.subcontent.published) {
+          setPreviousPage(contentList[i].subcontent._id);
+          return;
+        }
+      } catch (err) {
+        // Might be unauthorized - just keep going
+        continue;
+      }
+    }
+  };
+
+  const getNext = async (contentList, startIndex) => {
+    // We have to see if the 'previous' is actually published, requiring queries
+    for (let i = startIndex; i < contentList.length; i++) {
+      try {
+        const res = await getSubcontentByID(contentList[i].subcontent._id, SUBCONTENT_TYPE.PAGE);
+
+        // If this page is published, it can be the previous
+        if (res.data.subcontent.published) {
+          setNextPage(contentList[i].subcontent._id);
+          return;
+        }
+      } catch (err) {
+        // Might be unauthorized - just keep going
+        continue;
+      }
+    }
+  };
+
+  const setPrevNext = async (contentList) => {
+    // Search the given contentList for this page's id
+    for (let i = 0; i < contentList.length; i++) {
+      if (contentList[i].subcontent._id === id) {
+        // id has been found - set prev and next accordingly
+        await getPrevious(contentList, i - 1);
+        await getNext(contentList, i + 1);
+      }
+    }
+
+    // if we reached here, the id wasn't found, meaning something's wrong
+    // let both remain blank
+    return;
+  };
 
   /**
    * Handles changing the like/dislike front-end and then send corresponding request
@@ -129,6 +183,12 @@ export default function ViewComicPage() {
             setVote(VOTE_STATE_TYPE.DISLIKE);
           }
         }
+
+        // Load in the parent's data
+        const parentRes = await getContentById(CONTENT_TYPE.COMIC, res.data.subcontent.parentID);
+
+        // Set the previous/next page information from the parent's info
+        setPrevNext(parentRes.data.content.contentList);
       } catch (err) {
         // Probably unauthorized - kick out
         console.log(err);
@@ -175,6 +235,16 @@ export default function ViewComicPage() {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handlePrevious = () => {
+    navigate(`/page/${previousPage}/page`);
+    window.location.reload();
+  };
+
+  const handleNext = () => {
+    navigate(`/page/${nextPage}/page`);
+    window.location.reload();
   };
 
   return (
@@ -260,6 +330,10 @@ export default function ViewComicPage() {
               <Button onClick={takeOffPage} sx={{ width: '10%', alignSelf: 'flex-end' }}>Take Off</Button>
             </Box>
           }
+        </Box>
+        <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Button disabled={previousPage === ''} onClick={handlePrevious} variant='contained' style={{ margin: 8 }}>Previous Page</Button>
+          <Button disabled ={nextPage === ''} onClick={handleNext} variant='contained' style={{ margin: 8 }}>Next Page</Button>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <Typography style={{ fontWeight: 'bold', width: '70%', marginLeft: '10px' }}>{views} views</Typography>
