@@ -305,6 +305,7 @@ export const ButtonAppBar= () => {
                         </Link>
                         <Divider orientation="vertical" sx={{ flexGrow: 1 }} flexItem>  
                         </Divider>
+                        <Typography sx={{pr:"2%", paddingLeft: '5px', paddingRight: '0%'}}>Search {siteMode}</Typography>
                         <Switch onClick={Switchmode} />
                         <Typography sx={{pr:"2%"}}>Search User</Typography>
                         <TextField
