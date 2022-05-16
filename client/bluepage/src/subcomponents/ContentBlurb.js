@@ -212,7 +212,7 @@ export default function ContentBlurb(props) {
         <Box style={{ backgroundColor: 'white', padding: '10px' }}>
             <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Link onClick={handleToContent} underline="hover">
-                    <Typography style={{ color: 'black', fontWeight: 'bold' }}>{title}</Typography>
+                    <Typography style={{ fontWeight: 'bold' }}>{title}</Typography>
                 </Link>
                 <Link href='/home'>
                     <HomeIcon style={{ color: 'black', fontSize: 32 }} />
