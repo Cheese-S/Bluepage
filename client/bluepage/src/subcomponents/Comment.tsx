@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button } from '@mui/material/';
+import { userStore } from '../store/UserStore';
 import Subcomment from './Subcomment';
 import PersonIcon from '@mui/icons-material/Person';
 
@@ -26,6 +27,8 @@ interface Props {
 }
 
 export default function Comment(props: Props) {
+    const isLoggedIn = userStore(state => state.isLoggedIn);
+
     const { comment, subcomment } = props;
     const [replying, setReplying] = useState(false);
     const [newSubcomment, setNewSubcomment] = useState('');
@@ -62,7 +65,7 @@ export default function Comment(props: Props) {
                                 <Button onClick={cancelReply} variant='contained' sx={{ width: '7%' }}>Cancel</Button>
                             </Box>
                         </Box>
-                    :
+                    : isLoggedIn &&
                         <Button onClick={() => setReplying(true)} sx={{ paddingTop: '10px', alignSelf: 'flex-start', fontSize: '14px' }}>Reply</Button>
                     }
                     <Box style={{ padding: '10px' }}>
