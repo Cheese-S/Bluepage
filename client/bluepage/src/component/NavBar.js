@@ -110,8 +110,9 @@ export const ButtonAppBar= () => {
     };
 
     const handlemyprofile = () =>{
-        var his = `/profile/${id}`
+        var his = `/profile/${id}`;
         history(his);
+        window.location.reload();
     };
 
     const handleMyFollowing = () => {
