@@ -97,7 +97,7 @@ export default function SearchPage(){
             <Box style={{ display: 'flex', flexDirection: 'column' }}>
                 {contentList}
                 <Stack spacing={2}>
-                    {pagination}
+                    {(Number(page) != 0) && pagination}
                 </Stack>
             </Box>
         </Box>
