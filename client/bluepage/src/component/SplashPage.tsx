@@ -26,7 +26,7 @@ export const SplashPage: React.FC = () => {
             </Box>
             <Divider> </Divider>
             <Box  width="100%" height="40%" sx={{  display: 'flex' }}>
-                <Box width="50%" sx={{borderRight: 1 ,borderColor:"#3d63d4"}} >
+                <Box width="50%" sx={{borderRight: 1 ,borderColor:"#82afd6"}} >
                     <Button onClick={goToComic} variant='contained' sx={{ backgroundColor: '#5227cc', pl: '10%', pr: '10%', pt: '2%', pb: '2%', ml: '30%', mt: '15%' }}>
                         <Typography variant="h6" align='center' sx={{ color: 'white', variant: 'body1' }}>COMIC</Typography>
                     </Button>
