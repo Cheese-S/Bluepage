@@ -8,7 +8,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-
+import HomeIcon from '@mui/icons-material/Home';
 
 export default function ContentBlurb(props) {
     const history = useNavigate();
@@ -39,9 +39,14 @@ export default function ContentBlurb(props) {
     const [dislikes, setDislikes] = useState(0);
     const [following, setFollowing] = useState(false);
     const [published, setpublished] = useState(false);
+
     const handletoauthor= () =>{
         var his = `/profile/${authoridlink}`
         history(his);
+    };
+
+    const handleToContent = () => {
+        history(`/list/${id}/${type}/`)
     };
 
     /**
@@ -205,7 +210,14 @@ export default function ContentBlurb(props) {
     }
     return (
         <Box style={{ backgroundColor: 'white', padding: '10px' }}>
-            <Typography style={{ fontWeight: 'bold' }}>{title}</Typography>
+            <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Link onClick={handleToContent} underline="hover">
+                    <Typography style={{ color: 'black', fontWeight: 'bold' }}>{title}</Typography>
+                </Link>
+                <Link href='/home'>
+                    <HomeIcon style={{ color: 'black', fontSize: 32 }} />
+                </Link>
+            </Box>
             <Link onClick={handletoauthor} underline="hover">by {author}</Link>
             <Typography style={{ paddingTop: '20px' }}>{description}</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems:'center', paddingTop: '10px' }}>
