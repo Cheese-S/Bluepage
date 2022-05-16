@@ -84,7 +84,7 @@ export default function ProfilePage(){
 
     const handleCreateChange = (event) => {
         const {target: { value }} = event;
-        console.log(value);
+
         setTags(
           typeof value === 'string' ? value.split(',') : value,
         );

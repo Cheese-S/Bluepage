@@ -50,7 +50,7 @@ export default function SearchPage(){
                     content = await getContentPage(siteMode, querry,{"sort[updatedAt]": 1,"limit":10,"page":pagenum} );
                 }
                 let list = content.data.result.docs;
-                console.log(content.data.result.totalPages);
+
                 const pagenationoption =    
                 <Pagination count={content.data.result.totalPages}
                     page={pagenum}
