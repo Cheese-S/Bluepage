@@ -156,7 +156,7 @@ export default function ProfilePage(){
         }
     }
     return (
-        <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
+        <Box style={{ backgroundColor: '#81c4ff', alignItems: 'center', justifyContent: 'center' }}>
             <Dialog open={openDescModal} onClose={() => setOpenDescModal(false)} >
                 <DialogTitle>Edit description</DialogTitle>
                 <DialogContent>

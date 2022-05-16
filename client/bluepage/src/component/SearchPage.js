@@ -91,7 +91,7 @@ export default function SearchPage(){
         window.location.reload();
     };
     return (
-        <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
+        <Box style={{ backgroundColor: '#81c4ff', alignItems: 'center', justifyContent: 'center' }}>
             <ButtonAppBar/>
             <Box style={{ padding: '20px' }} />
             <Box style={{ display: 'flex', flexDirection: 'column' }}>

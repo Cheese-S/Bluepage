@@ -248,7 +248,7 @@ export default function ViewComicPage() {
   };
 
   return (
-    <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
+    <Box style={{ backgroundColor: '#81c4ff', alignItems: 'center', justifyContent: 'center' }}>
       <Box style={{ width: '90%', margin: 'auto', paddingTop: '10px', paddingBottom: '10px' }}>
         <ContentBlurb id={parentID} type={CONTENT_TYPE.COMIC} subtype={SUBCONTENT_TYPE.PAGE} />
       </Box>

@@ -24,7 +24,7 @@ export const MyFollowing = () => {
         </>;
     
     return (
-        <Box style={{ backgroundColor: '#3c78d8', alignItems: 'center', justifyContent: 'center' }}>
+        <Box style={{ backgroundColor: '#81c4ff', alignItems: 'center', justifyContent: 'center' }}>
             <ButtonAppBar/>
             <Typography variant='h4' style={{ marginLeft: '2%', marginTop: '1%', marginBottom: '1%' }}>{(siteMode === CONTENT_TYPE.COMIC) ? 'Comics' : 'Stories'} You're Following</Typography>
             <Box style={{ display: 'flex', flexDirection: 'column' }}>
