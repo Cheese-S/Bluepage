@@ -34,7 +34,7 @@ export const LogInPage: React.FC = () => {
         <>
             <Box  width="100%" height="100%" sx={{  display: 'flex' }}>
                 <Box  width="40%" height="100%" sx={{ borderRight: 1,borderColor:"#3d63d4",overflow:'hidden' }}>
-                    <Typography variant="h1" align='center' sx={{color:'white', variant:'body1',height: '100%', pt: '20%'}}>BLUE <br /> PAGE</Typography>
+                    <Typography variant="h1" align='center' sx={{color:'black', variant:'body1',height: '100%', pt: '20%'}}>BLUE <br /> PAGE</Typography>
                 </Box>
                 <Modal
                     open={modalVisible}
@@ -52,7 +52,7 @@ export const LogInPage: React.FC = () => {
                     </Box>
                 </Modal>
                 <Box component="form" onSubmit={handleSubmit} width="40%" height="100%" sx={{ml:"10%",mr:"10%" }}>
-                    <Typography variant="h6" align='left' sx={{color:'white', variant:'body1', pt: '20%'}}>Login</Typography>
+                    <Typography variant="h6" align='left' sx={{color:'black', variant:'body1', pt: '20%'}}>Login</Typography>
                     <TextField
                         margin="normal"
                         required
@@ -62,8 +62,8 @@ export const LogInPage: React.FC = () => {
                         name="EmailOrUserName"
                         autoComplete="EmailOrUserName"
                         autoFocus
-                        InputLabelProps={{style : {color : 'white'} }}
-                        sx={{ color:'white',input: { color: 'white' } }}
+                        InputLabelProps={{style : {color : 'black'} }}
+                        sx={{ color:'black',input: { color: 'black' } }}
                     />
                     <TextField
                         margin="normal"
@@ -74,10 +74,10 @@ export const LogInPage: React.FC = () => {
                         type="Password"
                         id="Password"
                         autoComplete="Password"
-                        InputLabelProps={{style : {color : 'white'} }}
-                        sx={{ color:'white',input: { color: 'white' } }}
+                        InputLabelProps={{style : {color : 'black'} }}
+                        sx={{ color:'black',input: { color: 'black' } }}
                     />
-                    <Link href="/signup" variant="body2" color="#ffffff">
+                    <Link href="/signup" variant="body2" color="#000000">
                         Don't have a account? Sign up now
                     </Link>
                     <Button
@@ -88,7 +88,7 @@ export const LogInPage: React.FC = () => {
                     >
                         Log In
                     </Button>
-                    <Link href="/resetpassword" variant="body2" color="#ffffff">
+                    <Link href="/resetpassword" variant="body2" color="#000000">
                         Forgot Password? Click Here
                     </Link>
             </Box>

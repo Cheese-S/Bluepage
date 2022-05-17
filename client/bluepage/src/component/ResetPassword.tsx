@@ -43,7 +43,7 @@ export const ResetPasswordPage: React.FC = () => {
     return (
             <Box  width="100%" height="100%" sx={{  display: 'flex' }}>
                 <Box  width="40%" height="100%" sx={{ borderRight: 1,borderColor:"#3d63d4",overflow:'hidden' }}>
-                    <Typography variant="h1" align='center' sx={{color:'white', variant:'body1',height: '100%', pt: '20%'}}>BLUE <br /> PAGE</Typography>
+                    <Typography variant="h1" align='center' sx={{color:'black', variant:'body1',height: '100%', pt: '20%'}}>BLUE <br /> PAGE</Typography>
                 </Box>
                 <Modal
                     open={modalVisible}
@@ -69,7 +69,7 @@ export const ResetPasswordPage: React.FC = () => {
                     </Box>
                 </Modal>
                 <Box component="form" onSubmit={handleSubmit} width="40%" height="100%" sx={{ml:"10%",mr:"10%" }}>
-                    <Typography variant="h6" align='left' sx={{color:'white', variant:'body1', pt: '20%'}}>Reset Your Password</Typography>
+                    <Typography variant="h6" align='left' sx={{color:'black', variant:'body1', pt: '20%'}}>Reset Your Password</Typography>
                     <TextField
                         margin="normal"
                         required
@@ -79,8 +79,8 @@ export const ResetPasswordPage: React.FC = () => {
                         name="usernameOrEmail"
                         autoComplete="usernameOrEmail"
                         autoFocus
-                        InputLabelProps={{style : {color : 'white'} }}
-                        sx={{ color:'white',input: { color: 'white' } }}
+                        InputLabelProps={{style : {color : 'black'} }}
+                        sx={{ color:'black',input: { color: 'black' } }}
                     />
                     <TextField
                         margin="normal"
@@ -91,8 +91,8 @@ export const ResetPasswordPage: React.FC = () => {
                         type="password"
                         id="password"
                         autoComplete="password"
-                        InputLabelProps={{style : {color : 'white'} }}
-                        sx={{ color:'white',input: { color: 'white' } }}
+                        InputLabelProps={{style : {color : 'black'} }}
+                        sx={{ color:'black',input: { color: 'black' } }}
                     />
                     <TextField
                         margin="normal"
@@ -103,10 +103,10 @@ export const ResetPasswordPage: React.FC = () => {
                         type="password"
                         id="passwordConfirm"
                         autoComplete="password"
-                        InputLabelProps={{style : {color : 'white'} }}
-                        sx={{ color:'white',input: { color: 'white' } }}
+                        InputLabelProps={{style : {color : 'black'} }}
+                        sx={{ color:'black',input: { color: 'black' } }}
                     />
-                    <Typography variant="h6" align='left' sx={{color:'white', variant:'body1', pt: '5%'}}>Security Questions</Typography>
+                    <Typography variant="h6" align='left' sx={{color:'black', variant:'body1', pt: '5%'}}>Security Questions</Typography>
                     <TextField
                         margin="normal"
                         required
@@ -115,8 +115,8 @@ export const ResetPasswordPage: React.FC = () => {
                         label="In what country were you born?"
                         type="sec1"
                         id="sec1"
-                        InputLabelProps={{style : {color : 'white'} }}
-                        sx={{ color:'white',input: { color: 'white' } }}
+                        InputLabelProps={{style : {color : 'black'} }}
+                        sx={{ color:'black',input: { color: 'black' } }}
                     />
                     <TextField
                         margin="normal"
@@ -126,8 +126,8 @@ export const ResetPasswordPage: React.FC = () => {
                         label="What town did you grow up in?"
                         type="sec2"
                         id="sec2"
-                        InputLabelProps={{style : {color : 'white'} }}
-                        sx={{ color:'white',input: { color: 'white' } }}
+                        InputLabelProps={{style : {color : 'black'} }}
+                        sx={{ color:'black',input: { color: 'black' } }}
                     />
                     <TextField
                         margin="normal"
@@ -137,10 +137,10 @@ export const ResetPasswordPage: React.FC = () => {
                         label="What is your mother's maiden name?"
                         type="sec3"
                         id="sec3"
-                        InputLabelProps={{style : {color : 'white'} }}
-                        sx={{ color:'white',input: { color: 'white' } }}
+                        InputLabelProps={{style : {color : 'black'} }}
+                        sx={{ color:'black',input: { color: 'black' } }}
                     />
-                    <Link href="/login" variant="body2" color="#ffffff">
+                    <Link href="/login" variant="body2" color="#000000">
                         Already have a account? Login Here
                     </Link>
                     <Button
