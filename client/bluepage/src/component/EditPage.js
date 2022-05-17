@@ -155,6 +155,7 @@ export default function EditPage() {
   };
 
   const handleMouseUp = () => {
+    if (isDrawing.current === false) return; // prevent trying to add object when not doing anything
     isDrawing.current = false;
 
     /**
@@ -271,6 +272,7 @@ export default function EditPage() {
               onMouseDown={handleMouseDown}
               onMousemove={handleMouseMove}
               onMouseup={handleMouseUp}
+              onMouseLeave={handleMouseUp}
             >
               <Layer>
                 {shapes.map((shape, i) => (
