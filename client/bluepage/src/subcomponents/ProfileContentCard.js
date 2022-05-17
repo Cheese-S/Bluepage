@@ -115,7 +115,7 @@ export const ProfileContentCard = (props) => {
                     </Box>
                 </Box>
             </Modal>
-         <CardActionArea onClick={handlecontent}>
+         <CardActionArea onClick={handlecontent} style={{ height: '100%' }}>
             <Box style={{ flexDirection: 'column'}}>
                 <CardMedia
                     component="img"
